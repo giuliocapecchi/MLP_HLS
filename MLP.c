@@ -3,9 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Funzione di creazione dell'MLP
 MLP* create_mlp(int input_neurons, int num_layers, int *layer_sizes, int *activations, int loss_function) {
-    static MLP mlp;  // dichiarazione statica per evitare malloc
+    static MLP mlp;  // static declare to avoid malloc 
     mlp.num_layers = num_layers;
     mlp.loss_function = loss_function;
 
@@ -26,7 +25,7 @@ MLP* create_mlp(int input_neurons, int num_layers, int *layer_sizes, int *activa
     return &mlp;
 }
 
-// Funzione per selezionare la funzione di attivazione
+// choose an activation function
 float activate(int function_id, float x) {
     switch (function_id) {
         case 0: return sigmoid(x);
@@ -38,44 +37,44 @@ float activate(int function_id, float x) {
     }
 }
 
-// Funzione per selezionare la derivata della funzione di attivazione
+// choose the derivative of an activation function
 float activate_derivative(int function_id, float x) {
     switch (function_id) {
         case 0: return sigmoid_derivative(x);
         case 1: return reLu_derivative(x);
-        case 2: return leakyReLu(x);
-        case 3: return heavySide(x); // Aggiungi la derivata di heavySide se necessario
+        case 2: return leakyReLu(x); // TODO: Leaky ReLu derivative
+        case 3: return heavySide(x); // TODO: Heavy side derivative
         case 4: return linear_derivative();
         default: return 1.0;
     }
 }
 
-// Propagazione in avanti
+// forward pass
 int forward(MLP *mlp, float *input, int input_size) {
     float current_input[MAX_NEURONS];
     float next_input[MAX_NEURONS];
 
-    // Copia l'input iniziale in current_input
+    // copy input in current_input
     for (int i = 0; i < input_size; i++) {
         current_input[i] = input[i];
     }
 
     for (int i = 0; i < mlp->num_layers; i++) {
         Layer *layer = &mlp->layers[i];
-        for (int j = 0; j < layer->output_size; j++) {
+        for (int j = 0; j < layer->output_size; j++) { // for each neuron in the layer
             float sum = layer->biases[j];
             for (int k = 0; k < layer->input_size; k++) {
                 sum += layer->weights[j][k] * current_input[k];
             }
             next_input[j] = activate(layer->activation_function, sum);
         }
-        // Copia next_input in current_input per il prossimo layer
+        // copy next_input in current_input for the next layer
         for (int j = 0; j < layer->output_size; j++) {
             current_input[j] = next_input[j];
         }
     }
 
-    // Copia l'output finale nel layer di output
+    // copy the output of the last layer in the output field of the MLP
     for (int i = 0; i < mlp->layers[mlp->num_layers - 1].output_size; i++) {
         mlp->layers[mlp->num_layers - 1].output[i] = current_input[i];
     }
@@ -83,7 +82,7 @@ int forward(MLP *mlp, float *input, int input_size) {
     return 0;
 }
 
-// Calcola l'errore di output
+// calculate the error of the output layer
 void calculate_output_error(MLP *mlp, float *predicted, float *true_value, int loss_function) {
     Layer *output_layer = &mlp->layers[mlp->num_layers - 1];
     for (int i = 0; i < output_layer->output_size; i++) {
@@ -96,7 +95,7 @@ void calculate_output_error(MLP *mlp, float *predicted, float *true_value, int l
     }
 }
 
-// Backpropagation
+// backpropagation
 void backpropagate(MLP *mlp, float *input, float *true_value, float learning_rate) {
     calculate_output_error(mlp, mlp->layers[mlp->num_layers - 1].output, true_value, mlp->loss_function);
 
@@ -104,7 +103,7 @@ void backpropagate(MLP *mlp, float *input, float *true_value, float learning_rat
         Layer *layer = &mlp->layers[i];
         float prev_output[MAX_NEURONS];
 
-        // Copia l'output del layer precedente in prev_output
+        // copy the input in prev_output
         if (i == 0) {
             for (int j = 0; j < layer->input_size; j++) {
                 prev_output[j] = input[j];
@@ -135,7 +134,7 @@ void backpropagate(MLP *mlp, float *input, float *true_value, float learning_rat
     }
 }
 
-// Funzione di addestramento
+// This function trains the MLP with the given features and labels
 void train(MLP *mlp, float features[MAX_SAMPLES][MAX_FEATURES], float labels[MAX_SAMPLES], int epochs, float learning_rate) {
     for (int epoch = 0; epoch < epochs; epoch++) {
         for (int i = 0; i < MAX_SAMPLES; i++) {

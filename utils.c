@@ -7,7 +7,7 @@
 // Sigmoid approssimata per HLS
 float sigmoid(float x) {
     #pragma HLS INLINE
-    return 1.0 / (1.0 + exp_approx(-x));
+    return 1.0 / (1.0 + exp_approx(-x)); // TODO ; controlla che vada bene
 }
 
 // ReLU
@@ -22,13 +22,13 @@ float leakyReLu(float x) {
     return x > 0 ? x : 0.01 * x;
 }
 
-// HeavySide (step function)
+// HeavySide
 float heavySide(float x) {
     #pragma HLS INLINE
     return x > 0 ? 1.0 : 0.0;
 }
 
-// Linear (identity function)
+// Linear
 float linear(float x) {
     #pragma HLS INLINE
     return x;
@@ -36,20 +36,19 @@ float linear(float x) {
 
 /*----------Derivative of activation functions--------------*/
 
-// Derivata del Sigmoid (utilizza sigmoid approssimato)
+// Derivata del Sigmoid
 float sigmoid_derivative(float x) {
     #pragma HLS INLINE
-    float sig = sigmoid(x);
-    return sig * (1.0 - sig);
+    return sigmoid(x) * (1.0 - sigmoid(x));
 }
 
-// Derivata del Linear
+// Derivata della Linear activation function
 float linear_derivative() {
     #pragma HLS INLINE
     return 1.0;
 }
 
-// Derivata del ReLU
+// Derivata della ReLU
 float reLu_derivative(float x) {
     #pragma HLS INLINE
     return x > 0 ? 1.0 : 0.0;
