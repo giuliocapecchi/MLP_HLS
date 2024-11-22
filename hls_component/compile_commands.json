@@ -1,0 +1,38 @@
+[
+  {
+    "directory": "C:\\Users\\giuli\\Documents\\GitHub\\MLC_HLS\\hls_component",
+    "arguments": [
+      "C:\\Xilinx\\Vitis_HLS\\2024.1\\vcxx\\libexec\\clang++.exe",
+      "-fhls",
+      "-hls-syn-headers-dir=C:\\Xilinx\\Vitis_HLS\\2024.1\\common\\technology\\autopilot",
+      "",
+      "-c",
+      "C:/Users/giuli/Documents/GitHub/MLC_HLS/utils.c"
+    ],
+    "file": "C:/Users/giuli/Documents/GitHub/MLC_HLS/utils.c"
+  },
+  {
+    "directory": "C:\\Users\\giuli\\Documents\\GitHub\\MLC_HLS\\hls_component",
+    "arguments": [
+      "C:\\Xilinx\\Vitis_HLS\\2024.1\\vcxx\\libexec\\clang++.exe",
+      "-fhls",
+      "-hls-syn-headers-dir=C:\\Xilinx\\Vitis_HLS\\2024.1\\common\\technology\\autopilot",
+      "",
+      "-c",
+      "C:/Users/giuli/Documents/GitHub/MLC_HLS/MLP.c"
+    ],
+    "file": "C:/Users/giuli/Documents/GitHub/MLC_HLS/MLP.c"
+  },
+  {
+    "directory": "C:\\Users\\giuli\\Documents\\GitHub\\MLC_HLS\\hls_component",
+    "arguments": [
+      "C:\\Xilinx\\Vitis_HLS\\2024.1\\vcxx\\libexec\\clang++.exe",
+      "-fhls-tb",
+      "-hls-sim-headers-dir=C:\\Xilinx\\Vitis_HLS\\2024.1\\include",
+      "",
+      "-c",
+      "C:/Users/giuli/Documents/GitHub/MLC_HLS/testbench.c"
+    ],
+    "file": "C:/Users/giuli/Documents/GitHub/MLC_HLS/testbench.c"
+  }
+]
