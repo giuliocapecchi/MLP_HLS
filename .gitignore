@@ -25,3 +25,4 @@ hls
 /hls_component/hls_component/hls
 /hls_component/.cache
 /hls_component/hls_component/reports
+*._summary
