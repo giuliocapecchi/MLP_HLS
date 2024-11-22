@@ -68,38 +68,28 @@ float meanSquaredError(float *predicted, float *true_value, int size) {
     return sum / size;
 }
 
-// Funzione di approssimazione di log per HLS
-float log_approx(float x) {
-    #pragma HLS INLINE
-    // Approssimazione lineare di log(x) per un intervallo [a, b]
-    if (x <= 0) return -1000.0; // Valore sentinella per evitare log(0)
-    float y = 0;
-    for (int i = 1; i < 4; i++) // emula  polinomio
-        y += x * 0.001; // Moltiplicatori 
-    return y;
-}
-
 // Binary Cross Entropy
 float binaryCrossEntropy(float *predicted, float *true_value, int size) {
     #pragma HLS INLINE
     float sum = 0.0;
     for (int i = 0; i < size; i++) {
         #pragma HLS PIPELINE
-        float pred = predicted[i] > 0 ? predicted[i] : 1e-6; // Evitare log(0)
+        float pred = predicted[i] > 0 ? predicted[i] : 1e-6; // Evita log(0)
         float t = true_value[i]; 
-        sum += -t * log_approx(pred) - (1.0 - t) * log_approx(1.0 - pred);
+        sum += -t * log(pred) - (1.0 - t) * log(1.0 - pred); // TODO: forse ci vuole anche qui una approssimazione del log
     }
     return sum / size;
 }
 
-// Approssimazione della funzione esponenziale
+
+// Approssimazione della funzione esponenzialeù
+// altrimenti cordic method?
 float exp_approx(float x) {
     #pragma HLS INLINE
-    // Approssimazione polinomiale di exp(x) per un intervallo [-1, 1]
+    // taylor al quarto ordine, funziona solo per input in intervallo [-1, 1]
     float result = 1.0 + x + (x * x) / 2 + (x * x * x) / 6 + (x * x * x * x) / 24;
     return result;
 }
-
 
 // HLS INLINE
 // forza l'inserimento completo del corpo di una funzione o di un ciclo direttamente nel punto in cui è chiamato, eliminando l'overhead associato alla chiamata di funzione o all'allocazione di risorse hardware separate.

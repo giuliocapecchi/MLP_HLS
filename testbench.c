@@ -15,7 +15,7 @@ int main() {
     float input_data[MAX_SAMPLES][MAX_FEATURES] = {{0.5, 0.2, 0.1, 0.7}};
     float true_value[MAX_SAMPLES] = {1.0};
 
-    MLP *mlp = create_mlp(input_neurons, num_layers, layer_sizes, activations, 0); // 0 per MEAN_SQUARED_ERROR
+    MLP *mlp = create_mlp(input_neurons, num_layers, layer_sizes, activations, 0); // 0 : MEAN_SQUARED_ERROR, 1 : BINARY_CROSS_ENTROPY
     train(mlp, input_data, true_value, epochs, learning_rate);
 
     return 0;
