@@ -56,7 +56,7 @@ int read_data_from_file(const char *path, int num_features, int label_size, floa
 
 int main() {
     // MLP parameters
-    int number_of_features = 1; // Dimensione delle feature
+    int number_of_features = 1;
     int input_neurons = number_of_features;
     int layer_sizes[] = {1};
     int activations[] = {4}; // 0 : sigmoid, 4 : linear
