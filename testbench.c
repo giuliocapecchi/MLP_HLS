@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 void print_mlp(MLP *mlp) {
-    printf("Printing the MLP...\n");
+    printf("*-----------------------------*\nPrinting the MLP...\n");
     for (int i = 0; i < mlp->num_layers; i++) {
         Layer *layer = &mlp->layers[i];
         printf("Layer %d:\n", i);
@@ -25,7 +25,7 @@ void print_mlp(MLP *mlp) {
     for (int i = 0; i < mlp->layers[mlp->num_layers - 1].output_size; i++) {
         printf("%f ", mlp->layers[mlp->num_layers - 1].output[i]);
     }
-    printf("\n");
+    printf("\n*-----------------------------*\n");
 }
 
 
@@ -61,7 +61,7 @@ int main() {
     int layer_sizes[] = {1};
     int activations[] = {4}; // 0 : sigmoid, 4 : linear
     int num_layers = sizeof(layer_sizes) / sizeof(layer_sizes[0]);
-    int epochs = 1000;
+    int epochs = 100;
     float learning_rate = 0.001;
 
     // Example input data
