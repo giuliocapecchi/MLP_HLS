@@ -2,9 +2,11 @@
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+
 
 void print_mlp(MLP *mlp) {
-    printf("*-----------------------------*\nPrinting the MLP...\n");
+    printf("*-----------------------------*\n");
     for (int i = 0; i < mlp->num_layers; i++) {
         Layer *layer = &mlp->layers[i];
         printf("Layer %d:\n", i);
@@ -21,11 +23,20 @@ void print_mlp(MLP *mlp) {
         }
         printf("\n");
     }
-    printf("Final output:\n");
-    for (int i = 0; i < mlp->layers[mlp->num_layers - 1].output_size; i++) {
-        printf("%f ", mlp->layers[mlp->num_layers - 1].output[i]);
-    }
     printf("\n*-----------------------------*\n");
+}
+
+
+float calculate_accuracy(MLP *mlp, float labels[MAX_SAMPLES], int sample_count, float tolerance) {
+    int correct_predictions = 0;
+    for (int i = 0; i < sample_count; i++) {
+        float prediction = mlp->layers[mlp->num_layers - 1].output[0];
+        //printf("%f ",prediction);
+        if (fabs(prediction - labels[i]) <= tolerance) { // fabs : valore assoluto
+            correct_predictions++;
+        }
+    }
+    return (float)correct_predictions / sample_count * 100.0;
 }
 
 
@@ -56,12 +67,12 @@ int read_data_from_file(const char *path, int num_features, int label_size, floa
 
 int main() {
     // MLP parameters
+    int epochs = 10;
     int number_of_features = 1;
     int input_neurons = number_of_features;
     int layer_sizes[] = {1};
-    int activations[] = {4}; // 0 : sigmoid, 4 : linear
+    int activations[] = {4}; // 0 : sigmoid, 1: ReLu, 2: LeakyReLu, 3: HeavySide, 4 : linear
     int num_layers = sizeof(layer_sizes) / sizeof(layer_sizes[0]);
-    int epochs = 100;
     float learning_rate = 0.001;
 
     // Example input data
@@ -77,38 +88,22 @@ int main() {
         return 1;
     }
 
-
-    printf("input_data:\n");
-    for (int i = 0; i < sample_count; i++) {
-        for (int j = 0; j < number_of_features; j++) {
-            printf("%f ", input_data[i][j]);
-        }
-    }
-    printf("\ntrue_value:\n");
-    for (int i = 0; i < sample_count; i++) {
-        printf("%f ", true_value[i]);
-    }
-    printf("\n");
-    
-
     // HLS pragmas
     //partizionano l'array lungo la prima dimensione (accesso parallelo agli elementi)
     #pragma HLS ARRAY_PARTITION variable=input_data complete dim=1 
     #pragma HLS ARRAY_PARTITION variable=true_value complete dim=1
 
+    printf("Creating an MLP with %d input neurons and %d layers in %d epochs...\n", input_neurons, num_layers, epochs);
     MLP *mlp = create_mlp(input_neurons, num_layers, layer_sizes, activations, 0); // 0 : MEAN_SQUARED_ERROR, 1 : BINARY_CROSS_ENTROPY
-
-    // Print initial weights and biases
-    printf("Initial weights and biases:\n");
-    print_mlp(mlp);
 
     // Train for each epoch and print the results
     for (int epoch = 0; epoch < epochs; epoch++) {
         train(mlp, input_data, true_value, sample_count, learning_rate);
-        printf("After epoch %d:\n", epoch + 1);
-        print_mlp(mlp);
+        float loss = meanSquaredError(mlp->layers[mlp->num_layers - 1].output, true_value, sample_count);
+        float accuracy = calculate_accuracy(mlp, true_value, sample_count, 0.1);
+        printf("Epoch %d\tLoss: %f\tAccuracy: %f\n", epoch + 1, loss, accuracy);
     }
-
     printf("Training completed.\n");
+    print_mlp(mlp);
     return 0;
 }

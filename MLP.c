@@ -91,7 +91,7 @@ void calculate_output_error(MLP *mlp, float *predicted, float *true_value, int l
         if (loss_function == 0) { // MEAN_SQUARED_ERROR
             output_layer->errors[i] = error * activate_derivative(output_layer->activation_function, predicted[i]);
         } else if (loss_function == 1) { // BINARY_CROSS_ENTROPY
-            output_layer->errors[i] = (predicted[i] - true_value[i]) * activate_derivative(output_layer->activation_function, predicted[i]);
+            // TODO : implement binary cross entropy
         }
     }
 }
