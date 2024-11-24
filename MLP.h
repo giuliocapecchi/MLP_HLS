@@ -37,6 +37,6 @@ void calculate_output_error(MLP *mlp, float *predicted, float *true_value, int l
 
 void backpropagate(MLP *mlp, float *input, float *true_value, float learning_rate);
 
-void train(MLP *mlp, float features[MAX_SAMPLES][MAX_FEATURES], float labels[MAX_SAMPLES], int epochs, float learning_rate);
+void train(MLP *mlp, float features[MAX_SAMPLES][MAX_FEATURES], float labels[MAX_SAMPLES], int sample_count, float learning_rate);
 
 #endif // MLP_H

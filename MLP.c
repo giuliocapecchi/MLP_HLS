@@ -18,6 +18,7 @@ MLP* create_mlp(int input_neurons, int num_layers, int *layer_sizes, int *activa
             mlp.layers[i].biases[j] = 0.0f;
             for (int k = 0; k < mlp.layers[i].input_size; k++) {
                 mlp.layers[i].weights[j][k] = ((float)rand() / RAND_MAX) - 0.5f; // Random initialization
+                //mlp.layers[i].weights[j][k] = 0.0f; // Zero initialization
             }
         }
     }
@@ -134,12 +135,10 @@ void backpropagate(MLP *mlp, float *input, float *true_value, float learning_rat
     }
 }
 
-// This function trains the MLP with the given features and labels
-void train(MLP *mlp, float features[MAX_SAMPLES][MAX_FEATURES], float labels[MAX_SAMPLES], int epochs, float learning_rate) {
-    for (int epoch = 0; epoch < epochs; epoch++) {
-        for (int i = 0; i < MAX_SAMPLES; i++) {
+// training for a single epoch
+void train(MLP *mlp, float features[MAX_SAMPLES][MAX_FEATURES], float labels[MAX_SAMPLES], int sample_count, float learning_rate) {
+    for (int i = 0; i < sample_count; i++) {
             forward(mlp, features[i], MAX_FEATURES);
             backpropagate(mlp, features[i], &labels[i], learning_rate);
         }
-    }
 }
