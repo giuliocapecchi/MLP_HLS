@@ -7,7 +7,7 @@
 // Sigmoid approssimata per HLS
 float sigmoid(float x) {
     #pragma HLS INLINE
-    return 1.0 / (1.0 + exp_approx(-x)); // TODO ; controlla che vada bene
+    return 1.0 / (1.0 + exp_approx(-x)); // TODO : controlla che vada bene
 }
 
 // ReLU
