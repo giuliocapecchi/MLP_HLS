@@ -6,6 +6,7 @@
 #define MAX_SAMPLES 1000           // numero massimo di campioni
 #define MAX_FEATURES 4             // numero massimo di features per campione
 #define LEARNING_RATE 0.01
+ 
 
 #include "utils.h"
 

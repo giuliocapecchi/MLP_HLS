@@ -51,7 +51,7 @@ float activate_derivative(int function_id, float x) {
 }
 
 // forward pass
-int forward(MLP *mlp, float *input, int input_size) {
+int forward(MLP *mlp, float *input, int input_size) { // TODO : fagli prendere solo input
     float current_input[MAX_NEURONS];
     float next_input[MAX_NEURONS];
 

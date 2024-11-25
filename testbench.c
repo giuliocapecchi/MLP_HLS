@@ -90,8 +90,8 @@ int main() {
 
     // HLS pragmas
     //partizionano l'array lungo la prima dimensione (accesso parallelo agli elementi)
-    #pragma HLS ARRAY_PARTITION variable=input_data complete dim=1 
-    #pragma HLS ARRAY_PARTITION variable=true_value complete dim=1
+    //#pragma HLS ARRAY_PARTITION variable=input_data complete dim=1 
+    //#pragma HLS ARRAY_PARTITION variable=true_value complete dim=1
 
     printf("Creating an MLP with %d input neurons and %d layers in %d epochs...\n", input_neurons, num_layers, epochs);
     MLP *mlp = create_mlp(input_neurons, num_layers, layer_sizes, activations, 0); // 0 : MEAN_SQUARED_ERROR, 1 : BINARY_CROSS_ENTROPY
@@ -103,7 +103,7 @@ int main() {
         float accuracy = calculate_accuracy(mlp, true_value, sample_count, 0.1);
         printf("Epoch %d\tLoss: %f\tAccuracy: %f\n", epoch + 1, loss, accuracy);
     }
-    printf("Training completed.\n");
+    printf("Training completed. \n");
     print_mlp(mlp);
     return 0;
 }

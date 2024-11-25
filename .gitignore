@@ -27,3 +27,6 @@ hls
 /hls_component/hls_component/reports
 *_summary
 *.log
+/hls_component/forward/reports/hls_compile.rpt
+/hls_component/forward/reports/*.html
+.db
