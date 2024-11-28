@@ -54,6 +54,10 @@ MLP mlp = {
 
 
 int forward(float input0, float input1, float input2, float input3) {
+    // Inizializza array statico per le dimensioni degli input
+    const int input_sizes[4] = {4, 10, 10, 3}; // Numero di feature e neuroni dei layer successivi
+    const int num_layers = 3; // Numero di layer
+
     float current_input[MAX_NEURONS];
     float next_input[MAX_NEURONS];
 
@@ -63,29 +67,26 @@ int forward(float input0, float input1, float input2, float input3) {
     current_input[2] = input2;
     current_input[3] = input3;
 
-    int input_size = MAX_FEATURES; // Numero iniziale di feature
+    for (int i = 0; i < num_layers; i++) {
+        Layer *layer = &mlp.layers[0]; 
 
-    for (int i = 0; i < mlp.num_layers; i++) {
-        Layer *layer = &mlp.layers[i];
-        int output_size = sizeof(layer->biases) / sizeof(float); // Numero di neuroni del layer corrente
-        for (int j = 0; j < output_size; j++) {
+        for (int j = 0; j < input_sizes[i + 1]; j++) {
             float sum = layer->biases[j];
-            for (int k = 0; k < input_size; k++) {
+            for (int k = 0; k < input_sizes[i]; k++) {
                 sum += layer->weights[j][k] * current_input[k];
             }
             next_input[j] = reLu(sum); // Funzione di attivazione
         }
 
         // Copia l'output come input per il prossimo layer
-        input_size = output_size;
-        for (int j = 0; j < input_size; j++) {
+        for (int j = 0; j < input_sizes[i + 1]; j++) {
             current_input[j] = next_input[j];
         }
     }
 
     // Trova l'indice dell'output massimo (argmax)
     int max_index = 0;
-    for (int i = 1; i < input_size; i++) {
+    for (int i = 1; i < input_sizes[num_layers]; i++) {
         if (current_input[i] > current_input[max_index]) {
             max_index = i;
         }
@@ -93,6 +94,7 @@ int forward(float input0, float input1, float input2, float input3) {
 
     return max_index;
 }
+
 
 
 // // choose an activation function

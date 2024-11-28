@@ -3407,7 +3407,7 @@ window.onload = function () { addSorting(); }
 <center><h1>Design Guidance Report</h1></center><center><table class="header" border="0">
 <tr><td><b>Copyright</b></td><td>Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.</td></tr>
 <tr><td><b>Tool Version</b></td><td>xcd v.2024.1 (win64) Build 0 </td></tr>
-<tr><td><b>Date</b></td><td>Thu Nov 28 18:50:33 2024</td></tr>
+<tr><td><b>Date</b></td><td>Thu Nov 28 19:42:14 2024</td></tr>
 <tr><td><b>Host</b></td><td>Legion-di-Cape running 64-bit major release  (build 9200)</td></tr>
 <tr><td><b>Command</b></td><td>C:/Xilinx/Vitis/2024.1/bin/unwrapped/win64.o/v++.exe  -c --mode hls --config C:\Users\giuli\Documents\GitHub\MLC_HLS\hls_component\hls_config.cfg --work_dir forward </td></tr>
 </table></center><br>
@@ -3434,68 +3434,35 @@ window.onload = function () { addSorting(); }
 <th align="left" width="380">Resolution</th>
 </tr>
 <tr>
-<td align="left">4</td>
-<td align="left">Throughput</td>
-<td align="left">WARNING</td>
-<td align="left"><undefined></td>
-<td align="left">HLS Throughput Related</td>
-<td align="left">Accelerator.forward.Throughput</td>
-<td align="left">The II Violation in module 'forward_Pipeline_VITIS_LOOP_73_3' (loop 'VITIS_LOOP_73_3'): Unable to enforce a carried dependence constraint (II = 3, distance = 1, offset = 1) between 'store' operation 0 bit ('sum_1_write_ln72', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=72">MLP.c</a>) of variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a> on local variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=72">MLP.c</a> and 'fadd' operation 32 bit ('sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a>).
-</td>
-<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
-</tr>
-<tr>
-<td align="left">1</td>
-<td align="left">Latency</td>
-<td align="left">WARNING</td>
-<td align="left"><undefined></td>
-<td align="left">HLS Latency Related</td>
-<td align="left">Accelerator.forward.Latency</td>
-<td align="left">Cannot flatten loop 'VITIS_LOOP_71_2' (<a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=71">MLP.c</a>) in function 'forward' the outer loop is not a perfect loop because there is nontrivial logic in the loop latch.
-</td>
-<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
-</tr>
-<tr>
-<td align="left">7</td>
-<td align="left">Throughput</td>
-<td align="left">ADVISORY</td>
-<td align="left"><undefined></td>
-<td align="left">HLS Throughput Related</td>
-<td align="left">Accelerator.forward.Throughput</td>
-<td align="left">Pipelining result : Target II = NA, Final II = 6, Depth = 12, loop 'VITIS_LOOP_73_3'
-</td>
-<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
-</tr>
-<tr>
 <td align="left">5</td>
 <td align="left">Throughput</td>
 <td align="left">WARNING</td>
 <td align="left"><undefined></td>
 <td align="left">HLS Throughput Related</td>
 <td align="left">Accelerator.forward.Throughput</td>
-<td align="left">The II Violation in module 'forward_Pipeline_VITIS_LOOP_73_3' (loop 'VITIS_LOOP_73_3'): Unable to enforce a carried dependence constraint (II = 4, distance = 1, offset = 1) between 'store' operation 0 bit ('sum_1_write_ln72', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=72">MLP.c</a>) of variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a> on local variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=72">MLP.c</a> and 'fadd' operation 32 bit ('sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a>).
+<td align="left">The II Violation in module 'forward_Pipeline_VITIS_LOOP_75_3' (loop 'VITIS_LOOP_75_3'): Unable to enforce a carried dependence constraint (II = 4, distance = 1, offset = 1) between 'store' operation 0 bit ('sum_1_write_ln74', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a>) of variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=76">MLP.c</a> on local variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a> and 'fadd' operation 32 bit ('sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=76">MLP.c</a>).
 </td>
 <td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
 </tr>
 <tr>
-<td align="left">13</td>
-<td align="left">Kernel</td>
-<td align="left">ADVISORY</td>
-<td align="left"><undefined></td>
-<td align="left">HLS Kernel Related</td>
-<td align="left">Accelerator.forward.Kernel</td>
-<td align="left">**** Estimated Fmax: 141.27 MHz
-</td>
-<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
-</tr>
-<tr>
-<td align="left">8</td>
+<td align="left">9</td>
 <td align="left">Throughput</td>
-<td align="left">ADVISORY</td>
+<td align="left">WARNING</td>
 <td align="left"><undefined></td>
 <td align="left">HLS Throughput Related</td>
 <td align="left">Accelerator.forward.Throughput</td>
-<td align="left">Pipelining result : Target II = NA, Final II = 1, Depth = 2, loop 'VITIS_LOOP_81_4'
+<td align="left">The II Violation in module 'forward_Pipeline_VITIS_LOOP_89_5' (loop 'VITIS_LOOP_89_5'): Unable to enforce a carried dependence constraint (II = 1, distance = 1, offset = 1) between 'fcmp' operation 1 bit ('tmp_4', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=90">MLP.c</a>) and 'load' operation 32 bit ('current_input_load_1', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=90">MLP.c</a>) on array 'current_input'.
+</td>
+<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="left">Throughput</td>
+<td align="left">WARNING</td>
+<td align="left"><undefined></td>
+<td align="left">HLS Throughput Related</td>
+<td align="left">Accelerator.forward.Throughput</td>
+<td align="left">The II Violation in module 'forward_Pipeline_VITIS_LOOP_75_3' (loop 'VITIS_LOOP_75_3'): Unable to enforce a carried dependence constraint (II = 3, distance = 1, offset = 1) between 'store' operation 0 bit ('sum_1_write_ln74', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a>) of variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=76">MLP.c</a> on local variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a> and 'fadd' operation 32 bit ('sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=76">MLP.c</a>).
 </td>
 <td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
 </tr>
@@ -3506,7 +3473,95 @@ window.onload = function () { addSorting(); }
 <td align="left"><undefined></td>
 <td align="left">HLS Throughput Related</td>
 <td align="left">Accelerator.forward.Throughput</td>
-<td align="left">Pipelining result : Target II = NA, Final II = 3, Depth = 4, loop 'VITIS_LOOP_88_5'
+<td align="left">Pipelining result : Target II = NA, Final II = 3, Depth = 4, loop 'VITIS_LOOP_89_5'
+</td>
+<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
+</tr>
+<tr>
+<td align="left">13</td>
+<td align="left">Kernel</td>
+<td align="left">ADVISORY</td>
+<td align="left"><undefined></td>
+<td align="left">HLS Kernel Related</td>
+<td align="left">Accelerator.forward.Kernel</td>
+<td align="left">**** Estimated Fmax: 142.84 MHz
+</td>
+<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="left">Throughput</td>
+<td align="left">ADVISORY</td>
+<td align="left"><undefined></td>
+<td align="left">HLS Throughput Related</td>
+<td align="left">Accelerator.forward.Throughput</td>
+<td align="left">Pipelining result : Target II = NA, Final II = 1, Depth = 2, loop 'VITIS_LOOP_82_4'
+</td>
+<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left">Throughput</td>
+<td align="left">WARNING</td>
+<td align="left"><undefined></td>
+<td align="left">HLS Throughput Related</td>
+<td align="left">Accelerator.forward.Throughput</td>
+<td align="left">The II Violation in module 'forward_Pipeline_VITIS_LOOP_75_3' (loop 'VITIS_LOOP_75_3'): Unable to enforce a carried dependence constraint (II = 2, distance = 1, offset = 1) between 'store' operation 0 bit ('sum_1_write_ln74', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a>) of variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=76">MLP.c</a> on local variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a> and 'fadd' operation 32 bit ('sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=76">MLP.c</a>).
+</td>
+<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="left">Throughput</td>
+<td align="left">ADVISORY</td>
+<td align="left"><undefined></td>
+<td align="left">HLS Throughput Related</td>
+<td align="left">Accelerator.forward.Throughput</td>
+<td align="left">Pipelining result : Target II = NA, Final II = 6, Depth = 12, loop 'VITIS_LOOP_75_3'
+</td>
+<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
+</tr>
+<tr>
+<td align="left">10</td>
+<td align="left">Throughput</td>
+<td align="left">WARNING</td>
+<td align="left"><undefined></td>
+<td align="left">HLS Throughput Related</td>
+<td align="left">Accelerator.forward.Throughput</td>
+<td align="left">The II Violation in module 'forward_Pipeline_VITIS_LOOP_89_5' (loop 'VITIS_LOOP_89_5'): Unable to enforce a carried dependence constraint (II = 2, distance = 1, offset = 1) between 'fcmp' operation 1 bit ('tmp_4', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=90">MLP.c</a>) and 'load' operation 32 bit ('current_input_load_1', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=90">MLP.c</a>) on array 'current_input'.
+</td>
+<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left">Throughput</td>
+<td align="left">WARNING</td>
+<td align="left"><undefined></td>
+<td align="left">HLS Throughput Related</td>
+<td align="left">Accelerator.forward.Throughput</td>
+<td align="left">The II Violation in module 'forward_Pipeline_VITIS_LOOP_75_3' (loop 'VITIS_LOOP_75_3'): Unable to enforce a carried dependence constraint (II = 1, distance = 1, offset = 1) between 'store' operation 0 bit ('sum_1_write_ln74', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a>) of variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=76">MLP.c</a> on local variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a> and 'fadd' operation 32 bit ('sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=76">MLP.c</a>).
+</td>
+<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="left">Latency</td>
+<td align="left">WARNING</td>
+<td align="left"><undefined></td>
+<td align="left">HLS Latency Related</td>
+<td align="left">Accelerator.forward.Latency</td>
+<td align="left">Cannot flatten loop 'VITIS_LOOP_73_2' (<a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=73">MLP.c</a>) in function 'forward' the outer loop is not a perfect loop because there is nontrivial logic in the loop latch.
+</td>
+<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="left">Throughput</td>
+<td align="left">WARNING</td>
+<td align="left"><undefined></td>
+<td align="left">HLS Throughput Related</td>
+<td align="left">Accelerator.forward.Throughput</td>
+<td align="left">The II Violation in module 'forward_Pipeline_VITIS_LOOP_75_3' (loop 'VITIS_LOOP_75_3'): Unable to enforce a carried dependence constraint (II = 5, distance = 1, offset = 1) between 'store' operation 0 bit ('sum_1_write_ln74', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a>) of variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=76">MLP.c</a> on local variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a> and 'fadd' operation 32 bit ('sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=76">MLP.c</a>).
 </td>
 <td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
 </tr>
@@ -3518,61 +3573,6 @@ window.onload = function () { addSorting(); }
 <td align="left">HLS Kernel Related</td>
 <td align="left">Accelerator.forward.Kernel</td>
 <td align="left">**** Loop Constraint Status: All loop constraints were NOT satisfied.
-</td>
-<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
-</tr>
-<tr>
-<td align="left">10</td>
-<td align="left">Throughput</td>
-<td align="left">WARNING</td>
-<td align="left"><undefined></td>
-<td align="left">HLS Throughput Related</td>
-<td align="left">Accelerator.forward.Throughput</td>
-<td align="left">The II Violation in module 'forward_Pipeline_VITIS_LOOP_88_5' (loop 'VITIS_LOOP_88_5'): Unable to enforce a carried dependence constraint (II = 2, distance = 1, offset = 1) between 'fcmp' operation 1 bit ('tmp_2', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=89">MLP.c</a>) and 'load' operation 32 bit ('current_input_load_1', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=89">MLP.c</a>) on array 'current_input'.
-</td>
-<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
-</tr>
-<tr>
-<td align="left">3</td>
-<td align="left">Throughput</td>
-<td align="left">WARNING</td>
-<td align="left"><undefined></td>
-<td align="left">HLS Throughput Related</td>
-<td align="left">Accelerator.forward.Throughput</td>
-<td align="left">The II Violation in module 'forward_Pipeline_VITIS_LOOP_73_3' (loop 'VITIS_LOOP_73_3'): Unable to enforce a carried dependence constraint (II = 2, distance = 1, offset = 1) between 'store' operation 0 bit ('sum_1_write_ln72', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=72">MLP.c</a>) of variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a> on local variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=72">MLP.c</a> and 'fadd' operation 32 bit ('sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a>).
-</td>
-<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
-</tr>
-<tr>
-<td align="left">6</td>
-<td align="left">Throughput</td>
-<td align="left">WARNING</td>
-<td align="left"><undefined></td>
-<td align="left">HLS Throughput Related</td>
-<td align="left">Accelerator.forward.Throughput</td>
-<td align="left">The II Violation in module 'forward_Pipeline_VITIS_LOOP_73_3' (loop 'VITIS_LOOP_73_3'): Unable to enforce a carried dependence constraint (II = 5, distance = 1, offset = 1) between 'store' operation 0 bit ('sum_1_write_ln72', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=72">MLP.c</a>) of variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a> on local variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=72">MLP.c</a> and 'fadd' operation 32 bit ('sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a>).
-</td>
-<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
-</tr>
-<tr>
-<td align="left">2</td>
-<td align="left">Throughput</td>
-<td align="left">WARNING</td>
-<td align="left"><undefined></td>
-<td align="left">HLS Throughput Related</td>
-<td align="left">Accelerator.forward.Throughput</td>
-<td align="left">The II Violation in module 'forward_Pipeline_VITIS_LOOP_73_3' (loop 'VITIS_LOOP_73_3'): Unable to enforce a carried dependence constraint (II = 1, distance = 1, offset = 1) between 'store' operation 0 bit ('sum_1_write_ln72', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=72">MLP.c</a>) of variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a> on local variable 'sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=72">MLP.c</a> and 'fadd' operation 32 bit ('sum', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=74">MLP.c</a>).
-</td>
-<td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
-</tr>
-<tr>
-<td align="left">9</td>
-<td align="left">Throughput</td>
-<td align="left">WARNING</td>
-<td align="left"><undefined></td>
-<td align="left">HLS Throughput Related</td>
-<td align="left">Accelerator.forward.Throughput</td>
-<td align="left">The II Violation in module 'forward_Pipeline_VITIS_LOOP_88_5' (loop 'VITIS_LOOP_88_5'): Unable to enforce a carried dependence constraint (II = 1, distance = 1, offset = 1) between 'fcmp' operation 1 bit ('tmp_2', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=89">MLP.c</a>) and 'load' operation 32 bit ('current_input_load_1', <a href="file:///C:/Users/giuli/Documents/GitHub/MLC_HLS/hls_component\../MLP.c#line=89">MLP.c</a>) on array 'current_input'.
 </td>
 <td align="left"><a href="http:///docs.xilinx.com/access/sources/dita/map?Doc_Version=2024.1%20English&url=ug1399-vitis-hls">Vitis HLS User Guide (UG1399)</a></td>
 </tr>
