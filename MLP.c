@@ -50,15 +50,19 @@ float activate_derivative(int function_id, float x) {
     }
 }
 
+// TODO olny input as parameter, because:
+// - size in known, application specific
+// - input -> 4 float, not the array (more clear for the synthesis)
+// TODO return the argmax(predited labels)
 // forward pass
-int forward(MLP *mlp, float *input, int input_size) {
+int forward(float input0, float input1, float input2, float input3) {
     float current_input[MAX_NEURONS];
     float next_input[MAX_NEURONS];
 
-    // copy input in current_input
-    for (int i = 0; i < input_size; i++) {
-        current_input[i] = input[i];
-    }
+    current_input[0] = input0;
+    current_input[1] = input1;
+    current_input[2] = input2;
+    current_input[3] = input3;
 
     for (int i = 0; i < mlp->num_layers; i++) {
         Layer *layer = &mlp->layers[i];
@@ -138,7 +142,7 @@ void backpropagate(MLP *mlp, float *input, float *true_value, float learning_rat
 // training for a single epoch
 void train(MLP *mlp, float features[MAX_SAMPLES][MAX_FEATURES], float labels[MAX_SAMPLES], int sample_count, float learning_rate) {
     for (int i = 0; i < sample_count; i++) {
-            forward(mlp, features[i], MAX_FEATURES);
+            forward(features[i][0], features[i][1], features[i][2], features[i][3]);
             backpropagate(mlp, features[i], &labels[i], learning_rate);
         }
 }

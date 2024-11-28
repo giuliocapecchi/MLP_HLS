@@ -31,7 +31,7 @@ typedef struct {
 
 MLP* create_mlp(int input_neurons, int num_layers, int *number_of_neurons, int *activations, int loss_function);
 
-int forward(MLP *mlp, float *input, int input_size);
+int forward(float input0, float input1, float input2, float input3);
 
 void calculate_output_error(MLP *mlp, float *predicted, float *true_value, int loss_function);
 
