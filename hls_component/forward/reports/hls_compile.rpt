@@ -4,7 +4,7 @@
 == Synthesis Summary Report of 'forward'
 ================================================================
 + General Information: 
-    * Date:           Sun Nov 24 12:04:43 2024
+    * Date:           Thu Nov 28 18:50:31 2024
     * Version:        2024.1 (Build 5069499 on May 21 2024)
     * Project:        forward
     * Solution:       hls (Vivado IP Flow Target)
@@ -15,61 +15,35 @@
 + Performance & Resource Estimates: 
     
     PS: '+' for module; 'o' for loop; '*' for dataflow
-    +---------------------------------------+--------+-------+---------+-----------+----------+---------+------+----------+--------+----------+-----------+------------+-----+
-    |                Modules                |  Issue |       | Latency |  Latency  | Iteration|         | Trip |          |        |          |           |            |     |
-    |                & Loops                |  Type  | Slack | (cycles)|    (ns)   |  Latency | Interval| Count| Pipelined|  BRAM  |    DSP   |     FF    |     LUT    | URAM|
-    +---------------------------------------+--------+-------+---------+-----------+----------+---------+------+----------+--------+----------+-----------+------------+-----+
-    |+ forward                              |  Timing|  -0.14|        -|          -|         -|        -|     -|        no|  2 (2%)|  19 (28%)|  2495 (8%)|  4004 (27%)|    -|
-    | + forward_Pipeline_VITIS_LOOP_59_1    |       -|   1.33|        -|          -|         -|        -|     -|        no|       -|         -|   10 (~0%)|    67 (~0%)|    -|
-    |  o VITIS_LOOP_59_1                    |       -|   7.30|        -|          -|         1|        1|     -|       yes|       -|         -|          -|           -|    -|
-    | + forward_Pipeline_VITIS_LOOP_79_6    |       -|   1.76|        -|          -|         -|        -|     -|        no|       -|         -|   23 (~0%)|    90 (~0%)|    -|
-    |  o VITIS_LOOP_79_6                    |       -|   7.30|        -|          -|         2|        1|     -|       yes|       -|         -|          -|           -|    -|
-    | o VITIS_LOOP_63_2                     |       -|   7.30|        -|          -|         -|        -|     -|        no|       -|         -|          -|           -|    -|
-    |  + forward_Pipeline_VITIS_LOOP_73_5   |       -|   1.76|      257|  2.570e+03|         -|      257|     -|        no|       -|         -|   19 (~0%)|    54 (~0%)|    -|
-    |   o VITIS_LOOP_73_5                   |       -|   7.30|      255|  2.550e+03|         2|        1|   255|       yes|       -|         -|          -|           -|    -|
-    |  o VITIS_LOOP_65_3                    |       -|   7.30|        -|          -|         -|        -|     -|        no|       -|         -|          -|           -|    -|
-    |   + forward_Pipeline_VITIS_LOOP_67_4  |       -|   0.97|        -|          -|         -|        -|     -|        no|       -|    2 (3%)|   406 (1%)|    556 (3%)|    -|
-    |    o VITIS_LOOP_67_4                  |      II|   7.30|        -|          -|        12|        6|     -|       yes|       -|         -|          -|           -|    -|
-    +---------------------------------------+--------+-------+---------+-----------+----------+---------+------+----------+--------+----------+-----------+------------+-----+
+    +---------------------------------------+------+------+---------+-----------+----------+---------+------+----------+------------+--------+----------+------------+-----+
+    |                Modules                | Issue|      | Latency |  Latency  | Iteration|         | Trip |          |            |        |          |            |     |
+    |                & Loops                | Type | Slack| (cycles)|    (ns)   |  Latency | Interval| Count| Pipelined|    BRAM    |   DSP  |    FF    |     LUT    | URAM|
+    +---------------------------------------+------+------+---------+-----------+----------+---------+------+----------+------------+--------+----------+------------+-----+
+    |+ forward                              |     -|  0.22|   184518|  1.845e+06|         -|   184519|     -|        no|  132 (132%)|  5 (7%)|  761 (2%)|  1485 (10%)|    -|
+    | + forward_Pipeline_VITIS_LOOP_88_5    |     -|  0.30|      299|  2.990e+03|         -|      299|     -|        no|           -|       -|  88 (~0%)|    185 (1%)|    -|
+    |  o VITIS_LOOP_88_5                    |    II|  7.30|      297|  2.970e+03|         3|        3|    99|       yes|           -|       -|         -|           -|    -|
+    | o VITIS_LOOP_68_1                     |     -|  7.30|   184215|  1.842e+06|     61405|        -|     3|        no|           -|       -|         -|           -|    -|
+    |  + forward_Pipeline_VITIS_LOOP_81_4   |     -|  1.76|      102|  1.020e+03|         -|      102|     -|        no|           -|       -|  17 (~0%)|    52 (~0%)|    -|
+    |   o VITIS_LOOP_81_4                   |     -|  7.30|      100|  1.000e+03|         2|        1|   100|       yes|           -|       -|         -|           -|    -|
+    |  o VITIS_LOOP_71_2                    |     -|  7.30|    61300|  6.130e+05|       613|        -|   100|        no|           -|       -|         -|           -|    -|
+    |   + forward_Pipeline_VITIS_LOOP_73_3  |     -|  0.97|      607|  6.070e+03|         -|      607|     -|        no|  128 (128%)|  5 (7%)|  525 (1%)|    827 (5%)|    -|
+    |    o VITIS_LOOP_73_3                  |    II|  7.30|      605|  6.050e+03|        12|        6|   100|       yes|           -|       -|         -|           -|    -|
+    +---------------------------------------+------+------+---------+-----------+----------+---------+------+----------+------------+--------+----------+------------+-----+
 
 
 ================================================================
 == HW Interfaces
 ================================================================
-* AP_MEMORY
-+-----------------------------------------+-----------+----------+
-| Port                                    | Direction | Bitwidth |
-+-----------------------------------------+-----------+----------+
-| mlp_layers_activation_function_address0 | out       | 3        |
-| mlp_layers_activation_function_q0       | in        | 32       |
-| mlp_layers_biases_address0              | out       | 10       |
-| mlp_layers_biases_q0                    | in        | 32       |
-| mlp_layers_errors_address0              | out       | 10       |
-| mlp_layers_errors_address1              | out       | 10       |
-| mlp_layers_errors_d0                    | out       | 32       |
-| mlp_layers_errors_d1                    | out       | 32       |
-| mlp_layers_errors_q0                    | in        | 32       |
-| mlp_layers_errors_q1                    | in        | 32       |
-| mlp_layers_input_size_address0          | out       | 3        |
-| mlp_layers_input_size_q0                | in        | 32       |
-| mlp_layers_output_address0              | out       | 10       |
-| mlp_layers_output_d0                    | out       | 32       |
-| mlp_layers_output_size_address0         | out       | 3        |
-| mlp_layers_output_size_q0               | in        | 32       |
-| mlp_layers_weights_address0             | out       | 17       |
-| mlp_layers_weights_q0                   | in        | 32       |
-+-----------------------------------------+-----------+----------+
-
 * Other Ports
-+-------------------+---------+-----------+----------+
-| Port              | Mode    | Direction | Bitwidth |
-+-------------------+---------+-----------+----------+
-| ap_return         |         | out       | 32       |
-| input_r           | ap_none | in        | 32       |
-| input_size        | ap_none | in        | 32       |
-| mlp_loss_function | ap_none | in        | 32       |
-| mlp_num_layers    | ap_none | in        | 32       |
-+-------------------+---------+-----------+----------+
++-----------+---------+-----------+----------+
+| Port      | Mode    | Direction | Bitwidth |
++-----------+---------+-----------+----------+
+| ap_return |         | out       | 32       |
+| input0    | ap_none | in        | 32       |
+| input1    | ap_none | in        | 32       |
+| input2    | ap_none | in        | 32       |
+| input3    | ap_none | in        | 32       |
++-----------+---------+-----------+----------+
 
 * TOP LEVEL CONTROL
 +-----------+------------+-----------------------------------+
@@ -85,162 +59,108 @@
 == SW I/O Information
 ================================================================
 * Top Function Arguments
-+------------+-----------+----------+
-| Argument   | Direction | Datatype |
-+------------+-----------+----------+
-| mlp        | inout     | pointer  |
-| input      | in        | float*   |
-| input_size | in        | int      |
-| return     | out       | int      |
-+------------+-----------+----------+
++----------+-----------+----------+
+| Argument | Direction | Datatype |
++----------+-----------+----------+
+| input0   | in        | float    |
+| input1   | in        | float    |
+| input2   | in        | float    |
+| input3   | in        | float    |
+| return   | out       | int      |
++----------+-----------+----------+
 
 * SW-to-HW Mapping
-+------------+-----------------------------------------+---------+----------+
-| Argument   | HW Interface                            | HW Type | HW Usage |
-+------------+-----------------------------------------+---------+----------+
-| mlp        | mlp_num_layers                          | port    |          |
-| mlp        | mlp_layers_input_size_address0          | port    | offset   |
-| mlp        | mlp_layers_input_size_ce0               | port    |          |
-| mlp        | mlp_layers_input_size_q0                | port    |          |
-| mlp        | mlp_layers_output_size_address0         | port    | offset   |
-| mlp        | mlp_layers_output_size_ce0              | port    |          |
-| mlp        | mlp_layers_output_size_q0               | port    |          |
-| mlp        | mlp_layers_weights_address0             | port    | offset   |
-| mlp        | mlp_layers_weights_ce0                  | port    |          |
-| mlp        | mlp_layers_weights_q0                   | port    |          |
-| mlp        | mlp_layers_biases_address0              | port    | offset   |
-| mlp        | mlp_layers_biases_ce0                   | port    |          |
-| mlp        | mlp_layers_biases_q0                    | port    |          |
-| mlp        | mlp_layers_output_address0              | port    | offset   |
-| mlp        | mlp_layers_output_ce0                   | port    |          |
-| mlp        | mlp_layers_output_we0                   | port    |          |
-| mlp        | mlp_layers_output_d0                    | port    |          |
-| mlp        | mlp_layers_errors_address0              | port    | offset   |
-| mlp        | mlp_layers_errors_ce0                   | port    |          |
-| mlp        | mlp_layers_errors_we0                   | port    |          |
-| mlp        | mlp_layers_errors_d0                    | port    |          |
-| mlp        | mlp_layers_errors_q0                    | port    |          |
-| mlp        | mlp_layers_errors_address1              | port    | offset   |
-| mlp        | mlp_layers_errors_ce1                   | port    |          |
-| mlp        | mlp_layers_errors_we1                   | port    |          |
-| mlp        | mlp_layers_errors_d1                    | port    |          |
-| mlp        | mlp_layers_errors_q1                    | port    |          |
-| mlp        | mlp_layers_activation_function_address0 | port    | offset   |
-| mlp        | mlp_layers_activation_function_ce0      | port    |          |
-| mlp        | mlp_layers_activation_function_q0       | port    |          |
-| mlp        | mlp_loss_function                       | port    |          |
-| input      | input_r                                 | port    |          |
-| input_size | input_size                              | port    |          |
-| return     | ap_return                               | port    |          |
-+------------+-----------------------------------------+---------+----------+
++----------+--------------+---------+
+| Argument | HW Interface | HW Type |
++----------+--------------+---------+
+| input0   | input0       | port    |
+| input1   | input1       | port    |
+| input2   | input2       | port    |
+| input3   | input3       | port    |
+| return   | ap_return    | port    |
++----------+--------------+---------+
 
 
 ================================================================
 == Bind Op Report
 ================================================================
-+--------------------------------------+-----+--------+--------------+---------+----------+---------+
-| Name                                 | DSP | Pragma | Variable     | Op      | Impl     | Latency |
-+--------------------------------------+-----+--------+--------------+---------+----------+---------+
-| + forward                            | 19  |        |              |         |          |         |
-|   icmp_ln63_fu_379_p2                |     |        | icmp_ln63    | setlt   | auto     | 0       |
-|   add_ln63_fu_384_p2                 |     |        | add_ln63     | add     | fabric   | 0       |
-|   icmp_ln65_fu_416_p2                |     |        | icmp_ln65    | setgt   | auto     | 0       |
-|   icmp_ln65_1_fu_434_p2              |     |        | icmp_ln65_1  | seteq   | auto     | 0       |
-|   add_ln65_fu_439_p2                 |     |        | add_ln65     | add     | fabric   | 0       |
-|   add_ln68_fu_449_p2                 |     |        | add_ln68     | add     | fabric   | 0       |
-|   icmp_ln28_fu_498_p2                |     |        | icmp_ln28    | setne   | auto     | 0       |
-|   icmp_ln28_1_fu_504_p2              |     |        | icmp_ln28_1  | seteq   | auto     | 0       |
-|   or_ln28_fu_510_p2                  |     |        | or_ln28      | or      | auto     | 0       |
-|   fcmp_32ns_32ns_1_2_no_dsp_1_U24    |     |        | tmp_5        | fcmp    | auto     | 1       |
-|   and_ln28_fu_516_p2                 |     |        | and_ln28     | and     | auto     | 0       |
-|   select_ln28_fu_522_p3              |     |        | select_ln28  | select  | auto_sel | 0       |
-|   icmp_ln22_fu_547_p2                |     |        | icmp_ln22    | setne   | auto     | 0       |
-|   icmp_ln22_1_fu_553_p2              |     |        | icmp_ln22_1  | seteq   | auto     | 0       |
-|   or_ln22_fu_559_p2                  |     |        | or_ln22      | or      | auto     | 0       |
-|   fcmp_32ns_32ns_1_2_no_dsp_1_U24    |     |        | tmp_3        | fcmp    | auto     | 1       |
-|   and_ln22_fu_565_p2                 |     |        | and_ln22     | and     | auto     | 0       |
-|   fpext_32ns_64_2_no_dsp_1_U23       |     |        | conv_i3_i    | fpext   | auto     | 1       |
-|   dmul_64ns_64ns_64_6_max_dsp_1_U26  | 11  |        | mul_i_i      | dmul    | maxdsp   | 5       |
-|   select_ln22_fu_570_p3              |     |        | select_ln22  | select  | auto_sel | 0       |
-|   fptrunc_64ns_32_2_no_dsp_1_U22     |     |        | conv2_i_i    | fptrunc | auto     | 1       |
-|   icmp_ln16_fu_595_p2                |     |        | icmp_ln16    | setne   | auto     | 0       |
-|   icmp_ln16_1_fu_601_p2              |     |        | icmp_ln16_1  | seteq   | auto     | 0       |
-|   or_ln16_fu_607_p2                  |     |        | or_ln16      | or      | auto     | 0       |
-|   fcmp_32ns_32ns_1_2_no_dsp_1_U24    |     |        | tmp_1        | fcmp    | auto     | 1       |
-|   and_ln16_fu_613_p2                 |     |        | and_ln16     | and     | auto     | 0       |
-|   select_ln16_fu_619_p3              |     |        | select_ln16  | select  | auto_sel | 0       |
-|   xor_ln10_fu_637_p2                 |     |        | xor_ln10     | xor     | auto     | 0       |
-|   fpext_32ns_64_2_no_dsp_1_U23       |     |        | conv_i_i_i   | fpext   | auto     | 1       |
-|   dadd_64ns_64ns_64_7_full_dsp_1_U25 | 3   |        | add_i_i_i    | dadd    | fulldsp  | 6       |
-|   fmul_32ns_32ns_32_4_max_dsp_1_U20  | 3   |        | mul_i_i_i    | fmul    | maxdsp   | 3       |
-|   fmul_32ns_32ns_32_4_max_dsp_1_U20  | 3   |        | div_i_i_i    | fmul    | maxdsp   | 3       |
-|   fpext_32ns_64_2_no_dsp_1_U23       |     |        | conv1_i_i_i  | fpext   | auto     | 1       |
-|   dadd_64ns_64ns_64_7_full_dsp_1_U25 | 3   |        | add2_i_i_i   | dadd    | fulldsp  | 6       |
-|   fmul_32ns_32ns_32_4_max_dsp_1_U20  | 3   |        | mul4_i_i_i   | fmul    | maxdsp   | 3       |
-|   fdiv_32ns_32ns_32_12_no_dsp_1_U21  |     |        | div5_i_i_i   | fdiv    | fabric   | 11      |
-|   fpext_32ns_64_2_no_dsp_1_U23       |     |        | conv6_i_i_i  | fpext   | auto     | 1       |
-|   dadd_64ns_64ns_64_7_full_dsp_1_U25 | 3   |        | add7_i_i_i   | dadd    | fulldsp  | 6       |
-|   fmul_32ns_32ns_32_4_max_dsp_1_U20  | 3   |        | mul10_i_i_i  | fmul    | maxdsp   | 3       |
-|   fdiv_32ns_32ns_32_12_no_dsp_1_U21  |     |        | div11_i_i_i  | fdiv    | fabric   | 11      |
-|   fpext_32ns_64_2_no_dsp_1_U23       |     |        | conv12_i_i_i | fpext   | auto     | 1       |
-|   dadd_64ns_64ns_64_7_full_dsp_1_U25 | 3   |        | add13_i_i_i  | dadd    | fulldsp  | 6       |
-|   fptrunc_64ns_32_2_no_dsp_1_U22     |     |        | result       | fptrunc | auto     | 1       |
-|   fpext_32ns_64_2_no_dsp_1_U23       |     |        | conv_i_i     | fpext   | auto     | 1       |
-|   dadd_64ns_64ns_64_7_full_dsp_1_U25 | 3   |        | add_i_i      | dadd    | fulldsp  | 6       |
-|   ddiv_64ns_64ns_64_31_no_dsp_1_U27  |     |        | div_i_i      | ddiv    | fabric   | 30      |
-|   fptrunc_64ns_32_2_no_dsp_1_U22     |     |        | conv1_i_i    | fptrunc | auto     | 1       |
-|   sub_fu_399_p2                      |     |        | sub          | add     | fabric   | 0       |
-|  + forward_Pipeline_VITIS_LOOP_59_1  | 0   |        |              |         |          |         |
-|    icmp_ln59_fu_72_p2                |     |        | icmp_ln59    | setlt   | auto     | 0       |
-|    add_ln59_fu_78_p2                 |     |        | add_ln59     | add     | fabric   | 0       |
-|  + forward_Pipeline_VITIS_LOOP_73_5  | 0   |        |              |         |          |         |
-|    icmp_ln73_fu_79_p2                |     |        | icmp_ln73    | seteq   | auto     | 0       |
-|    add_ln73_fu_85_p2                 |     |        | add_ln73     | add     | fabric   | 0       |
-|  + forward_Pipeline_VITIS_LOOP_67_4  | 2   |        |              |         |          |         |
-|    icmp_ln67_fu_128_p2               |     |        | icmp_ln67    | setlt   | auto     | 0       |
-|    add_ln67_fu_134_p2                |     |        | add_ln67     | add     | fabric   | 0       |
-|    add_ln68_fu_149_p2                |     |        | add_ln68     | add     | fabric   | 0       |
-|    fadd_32ns_32ns_32_5_full_dsp_1_U4 | 2   |        | sum_2        | fadd    | fulldsp  | 4       |
-|  + forward_Pipeline_VITIS_LOOP_79_6  | 0   |        |              |         |          |         |
-|    icmp_ln79_fu_90_p2                |     |        | icmp_ln79    | setlt   | auto     | 0       |
-|    add_ln79_fu_96_p2                 |     |        | add_ln79     | add     | fabric   | 0       |
-|    add_ln80_fu_107_p2                |     |        | add_ln80     | add     | fabric   | 0       |
-+--------------------------------------+-----+--------+--------------+---------+----------+---------+
++--------------------------------------+-----+--------+-------------+--------+----------+---------+
+| Name                                 | DSP | Pragma | Variable    | Op     | Impl     | Latency |
++--------------------------------------+-----+--------+-------------+--------+----------+---------+
+| + forward                            | 5   |        |             |        |          |         |
+|   add_ln68_1_fu_276_p2               |     |        | add_ln68_1  | add    | fabric   | 0       |
+|   icmp_ln68_fu_282_p2                |     |        | icmp_ln68   | seteq  | auto     | 0       |
+|   add_ln68_fu_288_p2                 |     |        | add_ln68    | add    | fabric   | 0       |
+|   icmp_ln71_fu_294_p2                |     |        | icmp_ln71   | seteq  | auto     | 0       |
+|   add_ln71_fu_300_p2                 |     |        | add_ln71    | add    | fabric   | 0       |
+|   add_ln72_fu_310_p2                 |     |        | add_ln72    | add    | fabric   | 0       |
+|   mul_9ns_8ns_15_1_1_U17             |     |        | mul_ln71    | mul    | auto     | 0       |
+|   icmp_ln16_fu_363_p2                |     |        | icmp_ln16   | setne  | auto     | 0       |
+|   icmp_ln16_1_fu_369_p2              |     |        | icmp_ln16_1 | seteq  | auto     | 0       |
+|   or_ln16_fu_375_p2                  |     |        | or_ln16     | or     | auto     | 0       |
+|   fcmp_32ns_32ns_1_2_no_dsp_1_U16    |     |        | tmp_4       | fcmp   | auto     | 1       |
+|   and_ln16_fu_381_p2                 |     |        | and_ln16    | and    | auto     | 0       |
+|   select_ln16_fu_387_p3              |     |        | select_ln16 | select | auto_sel | 0       |
+|  + forward_Pipeline_VITIS_LOOP_88_5  | 0   |        |             |        |          |         |
+|    icmp_ln88_fu_99_p2                |     |        | icmp_ln88   | seteq  | auto     | 0       |
+|    icmp_ln89_fu_165_p2               |     |        | icmp_ln89   | setne  | auto     | 0       |
+|    icmp_ln89_1_fu_171_p2             |     |        | icmp_ln89_1 | seteq  | auto     | 0       |
+|    or_ln89_fu_189_p2                 |     |        | or_ln89     | or     | auto     | 0       |
+|    icmp_ln89_2_fu_177_p2             |     |        | icmp_ln89_2 | setne  | auto     | 0       |
+|    icmp_ln89_3_fu_183_p2             |     |        | icmp_ln89_3 | seteq  | auto     | 0       |
+|    or_ln89_1_fu_193_p2               |     |        | or_ln89_1   | or     | auto     | 0       |
+|    and_ln89_fu_197_p2                |     |        | and_ln89    | and    | auto     | 0       |
+|    and_ln89_1_fu_203_p2              |     |        | and_ln89_1  | and    | auto     | 0       |
+|    max_index_4_fu_212_p3             |     |        | max_index_4 | select | auto_sel | 0       |
+|    add_ln88_fu_118_p2                |     |        | add_ln88    | add    | fabric   | 0       |
+|  + forward_Pipeline_VITIS_LOOP_81_4  | 0   |        |             |        |          |         |
+|    icmp_ln81_fu_69_p2                |     |        | icmp_ln81   | seteq  | auto     | 0       |
+|    add_ln81_fu_75_p2                 |     |        | add_ln81    | add    | fabric   | 0       |
+|  + forward_Pipeline_VITIS_LOOP_73_3  | 5   |        |             |        |          |         |
+|    icmp_ln73_fu_132_p2               |     |        | icmp_ln73   | seteq  | auto     | 0       |
+|    add_ln73_fu_138_p2                |     |        | add_ln73    | add    | fabric   | 0       |
+|    add_ln74_fu_153_p2                |     |        | add_ln74    | add    | fabric   | 0       |
+|    fmul_32ns_32ns_32_4_max_dsp_1_U2  | 3   |        | mul         | fmul   | maxdsp   | 3       |
+|    fadd_32ns_32ns_32_5_full_dsp_1_U1 | 2   |        | sum_2       | fadd   | fulldsp  | 4       |
++--------------------------------------+-----+--------+-------------+--------+----------+---------+
 
 
 ================================================================
 == Storage Report
 ================================================================
-+-------------------+--------------+------+------+------+--------+---------------+------+---------+------------------+
-| Name              | Usage        | Type | BRAM | URAM | Pragma | Variable      | Impl | Latency | Bitwidth, Depth, |
-|                   |              |      |      |      |        |               |      |         | Banks            |
-+-------------------+--------------+------+------+------+--------+---------------+------+---------+------------------+
-| + forward         |              |      | 2    | 0    |        |               |      |         |                  |
-|   current_input_U | ram_1p array |      | 2    |      |        | current_input | auto | 1       | 32, 128, 1       |
-|   next_input_U    | ram_1p array |      | 1    |      |        | next_input    | auto | 1       | 32, 128, 1       |
-+-------------------+--------------+------+------+------+--------+---------------+------+---------+------------------+
++-------------------------------------+---------------+------+------+------+--------+--------------------+------+---------+------------------+
+| Name                                | Usage         | Type | BRAM | URAM | Pragma | Variable           | Impl | Latency | Bitwidth, Depth, |
+|                                     |               |      |      |      |        |                    |      |         | Banks            |
++-------------------------------------+---------------+------+------+------+--------+--------------------+------+---------+------------------+
+| + forward                           |               |      | 132  | 0    |        |                    |      |         |                  |
+|   current_input_U                   | ram_t2p array |      | 2    |      |        | current_input      | auto | 1       | 32, 100, 1       |
+|   next_input_U                      | ram_1p array  |      | 1    |      |        | next_input         | auto | 1       | 32, 100, 1       |
+|   mlp_layers_biases_U               | rom_1p        |      | 1    |      |        | mlp_layers_biases  | auto | 1       | 32, 500, 1       |
+|  + forward_Pipeline_VITIS_LOOP_73_3 |               |      | 128  | 0    |        |                    |      |         |                  |
+|    mlp_layers_weights_U             | rom_1p        |      | 128  |      |        | mlp_layers_weights | auto | 1       | 32, 50000, 1     |
++-------------------------------------+---------------+------+------+------+--------+--------------------+------+---------+------------------+
 
 
 ================================================================
 == Pragma Report
 ================================================================
 * Valid Pragma Syntax
-+----------+---------+----------------------------------------------------+
-| Type     | Options | Location                                           |
-+----------+---------+----------------------------------------------------+
-| inline   |         | ../../MLC_HLS/utils.c:9 in sigmoid             |
-| inline   |         | ../../MLC_HLS/utils.c:15 in relu               |
-| inline   |         | ../../MLC_HLS/utils.c:21 in leakyrelu          |
-| inline   |         | ../../MLC_HLS/utils.c:27 in heavyside          |
-| inline   |         | ../../MLC_HLS/utils.c:33 in linear             |
-| inline   |         | ../../MLC_HLS/utils.c:41 in sigmoid_derivative |
-| inline   |         | ../../MLC_HLS/utils.c:47 in linear_derivative  |
-| inline   |         | ../../MLC_HLS/utils.c:53 in relu_derivative    |
-| inline   |         | ../../MLC_HLS/utils.c:61 in meansquarederror   |
-| pipeline |         | ../../MLC_HLS/utils.c:64 in meansquarederror   |
-| inline   |         | ../../MLC_HLS/utils.c:73 in binarycrossentropy |
-| pipeline |         | ../../MLC_HLS/utils.c:76 in binarycrossentropy |
-| inline   |         | ../../MLC_HLS/utils.c:88 in exp_approx         |
-+----------+---------+----------------------------------------------------+
++----------+---------+-------------------------------------+
+| Type     | Options | Location                            |
++----------+---------+-------------------------------------+
+| inline   |         | ../utils.c:9 in sigmoid             |
+| inline   |         | ../utils.c:15 in relu               |
+| inline   |         | ../utils.c:21 in leakyrelu          |
+| inline   |         | ../utils.c:27 in heavyside          |
+| inline   |         | ../utils.c:33 in linear             |
+| inline   |         | ../utils.c:41 in sigmoid_derivative |
+| inline   |         | ../utils.c:47 in linear_derivative  |
+| inline   |         | ../utils.c:53 in relu_derivative    |
+| inline   |         | ../utils.c:61 in meansquarederror   |
+| pipeline |         | ../utils.c:64 in meansquarederror   |
+| inline   |         | ../utils.c:73 in binarycrossentropy |
+| pipeline |         | ../utils.c:76 in binarycrossentropy |
+| inline   |         | ../utils.c:88 in exp_approx         |
++----------+---------+-------------------------------------+
 
 
