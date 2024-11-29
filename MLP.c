@@ -67,7 +67,6 @@ int forward(float input0, float input1, float input2, float input3) {
     current_input[2] = input2;
     current_input[3] = input3;
 
-    //for (int i = 0; i < num_layers; i++) {
     Layer *layer = &mlp.layers[0]; 
     int i = 0;
 
@@ -119,31 +118,17 @@ int forward(float input0, float input1, float input2, float input3) {
     }
 
 
-    //}
-
-    // Trova l'indice dell'output massimo (argmax)
-    /*int max_index = 0;
-    for (int i = 1; i < input_sizes[num_layers]; i++) {
-        #pragma HLS PIPELINE II=1
-        if (current_input[i] > current_input[max_index]) {
-            max_index = i;
-        }
-    }*/
-
     int max_index = 0;
-    i = 1;
-    if (current_input[i] > current_input[max_index]) {
-            max_index = i;
+    if (current_input[1] > current_input[max_index]) {
+            max_index = 1;
     }
 
-    i = 2;
-    if (current_input[i] > current_input[max_index]) {
-            max_index = i;
+    if (current_input[2] > current_input[max_index]) {
+            max_index = 2;
     }
 
-    i = 3;
-    if (current_input[i] > current_input[max_index]) {
-            max_index = i;
+    if (current_input[3] > current_input[max_index]) {
+            max_index = 3;
     }
 
 
