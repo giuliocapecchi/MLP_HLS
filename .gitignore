@@ -30,3 +30,6 @@ hls
 /hls_component/forward/reports/hls_compile.rpt
 /hls_component/forward/reports/*.html
 .db
+/hls_component/hls_config.cfg
+/hls_component/compile_commands.json
+/hls_component/forward
