@@ -52,61 +52,49 @@ MLP mlp = {
     };
 
 
-
 int forward(float input0, float input1, float input2, float input3) {
-    // Inizializza array statico per le dimensioni degli input
-    const int input_sizes[4] = {4, 10, 10, 3}; // Numero di feature e neuroni dei layer successivi
-    const int num_layers = 3; // Numero di layer
+    const int input_sizes[4] = {4, 10, 10, 3};
+    const int num_layers = 3;
 
     float current_input[MAX_NEURONS];
     float next_input[MAX_NEURONS];
 
-    // Inizializza l'input con le feature
     current_input[0] = input0;
     current_input[1] = input1;
     current_input[2] = input2;
     current_input[3] = input3;
 
-    for (int i = 0; i < 3; i++) { // Itera sui layer
+    for (int i = 0; i < num_layers; i++) {
+        #pragma HLS UNROLL
         Layer *layer = &mlp.layers[i];
-        
-        // Calcolo del layer
         for (int j = 0; j < input_sizes[i + 1]; j++) {
             float sum = layer->biases[j];
             
-            // Somma ponderata degli input
-            #pragma HLS UNROLL
             for (int k = 0; k < input_sizes[i]; k++) {
+
                 sum += layer->weights[j][k] * current_input[k];
             }
-
-            // Funzione di attivazione
             next_input[j] = reLu(sum);
         }
 
-        // Copia l'output come input per il prossimo layer
-        #pragma HLS UNROLL
+        
         for (int j = 0; j < input_sizes[i + 1]; j++) {
             current_input[j] = next_input[j];
         }
     }
 
-
-
     int max_index = 0;
     float max = current_input[0];
-
-    if (current_input[1] > max) {
-            max_index = 1;
-            max = current_input[1];
+    for (int i = 1; i < NUM_CLASSES; i++) {
+        #pragma HLS UNROLL
+        if (current_input[i] > max) {
+            max = current_input[i];
+            max_index = i;
+        }
     }
-
-    if (current_input[2] > max) {
-            max_index = 2;
-    }
-
     return max_index;
 }
+
 
 
 

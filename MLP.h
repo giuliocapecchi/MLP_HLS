@@ -5,6 +5,7 @@
 #define MAX_NEURONS 100            // numero massimo di neuroni per layer
 #define MAX_SAMPLES 1000           // numero massimo di campioni
 #define MAX_FEATURES 4             // numero massimo di features per campione
+#define NUM_CLASSES 3              // numero di classi
 #define LEARNING_RATE 0.01
 #define OUTPUT_SIZE 3
 
