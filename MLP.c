@@ -67,70 +67,43 @@ int forward(float input0, float input1, float input2, float input3) {
     current_input[2] = input2;
     current_input[3] = input3;
 
-    Layer *layer = &mlp.layers[0]; 
-    int i = 0;
+    for (int i = 0; i < 3; i++) { // Itera sui layer
+        Layer *layer = &mlp.layers[i];
+        
+        // Calcolo del layer
+        for (int j = 0; j < input_sizes[i + 1]; j++) {
+            float sum = layer->biases[j];
+            
+            // Somma ponderata degli input
+            #pragma HLS UNROLL
+            for (int k = 0; k < input_sizes[i]; k++) {
+                sum += layer->weights[j][k] * current_input[k];
+            }
 
-    for (int j = 0; j < input_sizes[i + 1]; j++) {
-        float sum = layer->biases[j];
-        for (int k = 0; k < input_sizes[i]; k++) {
-            sum += layer->weights[j][k] * current_input[k];
+            // Funzione di attivazione
+            next_input[j] = reLu(sum);
         }
-        next_input[j] = reLu(sum); // Funzione di attivazione
-    }
 
-    // Copia l'output come input per il prossimo layer
-    for (int j = 0; j < input_sizes[i + 1]; j++) {
-        current_input[j] = next_input[j];
-    }
-
-    // second layer
-    layer = &mlp.layers[1]; 
-    i = 1;
-
-    for (int j = 0; j < input_sizes[i + 1]; j++) {
-        float sum = layer->biases[j];
-        for (int k = 0; k < input_sizes[i]; k++) {
-            sum += layer->weights[j][k] * current_input[k];
+        // Copia l'output come input per il prossimo layer
+        #pragma HLS UNROLL
+        for (int j = 0; j < input_sizes[i + 1]; j++) {
+            current_input[j] = next_input[j];
         }
-        next_input[j] = reLu(sum); // Funzione di attivazione
     }
 
-    // Copia l'output come input per il prossimo layer
-    for (int j = 0; j < input_sizes[i + 1]; j++) {
-        current_input[j] = next_input[j];
-    }
-
-    // third layer
-    layer = &mlp.layers[2]; 
-    i = 2;
-
-    for (int j = 0; j < input_sizes[i + 1]; j++) {
-        float sum = layer->biases[j];
-        for (int k = 0; k < input_sizes[i]; k++) {
-            sum += layer->weights[j][k] * current_input[k];
-        }
-        next_input[j] = reLu(sum); // Funzione di attivazione
-    }
-
-    // Copia l'output come input per il prossimo layer
-    for (int j = 0; j < input_sizes[i + 1]; j++) {
-        current_input[j] = next_input[j];
-    }
 
 
     int max_index = 0;
-    if (current_input[1] > current_input[max_index]) {
+    float max = current_input[0];
+
+    if (current_input[1] > max) {
             max_index = 1;
+            max = current_input[1];
     }
 
-    if (current_input[2] > current_input[max_index]) {
+    if (current_input[2] > max) {
             max_index = 2;
     }
-
-    if (current_input[3] > current_input[max_index]) {
-            max_index = 3;
-    }
-
 
     return max_index;
 }
