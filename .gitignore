@@ -33,3 +33,8 @@ hls
 /hls_component/hls_config.cfg
 /hls_component/compile_commands.json
 /hls_component/forward
+hls_config.cfg
+v++_compile_forward_guidance.html
+hls_compile.rpt
+v++_compile_forward_guidance.pb3
+/hls_component
