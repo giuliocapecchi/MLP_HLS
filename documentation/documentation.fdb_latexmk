@@ -1,8 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1736788442.49658 "c:/MLC_HLS/documentation/documentation.tex" "documentation.pdf" "documentation" 1736788443.50213 0
-  "assets/MLP-accuracy.png" 1736786506 51036 79f91c0f6ab333c50fdf47154c77e454 ""
-  "assets/MLP-training.png" 1736786470 52504 b9c5bf5eb258b2847099a3886b925fbc ""
-  "c:/MLC_HLS/documentation/documentation.tex" 1736788442 10084 6621b205098a13213fcc4bdd41acf4d1 ""
+["pdflatex"] 1736795462.87157 "c:/MLC_HLS/documentation/documentation.tex" "documentation.pdf" "documentation" 1736795463.66088 0
+  "c:/MLC_HLS/documentation/documentation.tex" 1736795461 10611 9fbfa41bf21abe57a71be2485e20fbfb ""
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1733023900 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1733023892 1004 54797486969f23fa377b128694d548df ""
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1733023892 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -130,8 +128,8 @@
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk" 1735466457 11524 c66f5fec70880a8dbd99e99bb5a95c86 ""
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf-var/web2c/pdftex/pdflatex.fmt" 1733024004 1918134 af6f731535e8305d900c5f91f63e81b1 ""
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf.cnf" 1733023869 903 164c5b127cd0d6dc91abad2f62421ea2 ""
-  "documentation.aux" 1736788443 2052 25d3a91241739eb54d6da2c588e783b6 "pdflatex"
-  "documentation.tex" 1736788442 10084 6621b205098a13213fcc4bdd41acf4d1 ""
+  "documentation.aux" 1736795463 2209 97a408ef59c7907b1d480e428d3a6cc4 "pdflatex"
+  "documentation.tex" 1736795461 10611 9fbfa41bf21abe57a71be2485e20fbfb ""
   (generated)
   "documentation.aux"
   "documentation.log"

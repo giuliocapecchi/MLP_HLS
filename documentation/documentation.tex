@@ -84,7 +84,8 @@ An example of the dataset is shown below:
 ...
 \end{tcolorbox}
 
-\subsection{Model Architecture}
+\subsection{PyTorch Model}
+\subsubsection{Model Architecture}
 The architecture of the MLP model consists of three fully connected (dense) layers.
 The input layer has 4 neurons corresponding to the 4 features of the Iris dataset. 
 The first and second hidden layers each have 10 neurons, and the output layer has 3 neurons corresponding to the 3 classes of the Iris dataset.
@@ -112,106 +113,110 @@ class MLP(nn.Module):
 \end{lstlisting}
 
 
-\subsection{PyTorch Training}
-The following code snippet demonstrates the trainign process using \textit{PyTorch}. The model is trained for 100 epochs, and the loss and accuracy are printed every 10 epochs.
+\subsubsection{Model Training}
+For the training phase, we first defined the model, loss function, and optimizer.
+We utilized the \textit{CrossEntropyLoss} loss function, which is commonly used for multi-class classification problems, and the \textit{Adam} optimizer, which is an adaptive learning rate optimization algorithm.
 
 \begin{lstlisting}[language=Python]
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import train_test_split
-import numpy as np
-
-# Load and preprocess the dataset
-data = np.loadtxt('../datasets/iris_dataset.txt')
-X = data[:, :4] # get the first 4 columns (features)
-y = data[:, 4] # get the last column (labels)
-
-# Encode labels
-label_encoder = LabelEncoder()
-y = label_encoder.fit_transform(y) # fit_transform returns the encoded labels as integers [e.g. setosa -> 0]
-
-# Split the dataset into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Convert to PyTorch tensors
-X_train = torch.tensor(X_train, dtype=torch.float32)
-X_test = torch.tensor(X_test, dtype=torch.float32)
-y_train = torch.tensor(y_train, dtype=torch.long)
-y_test = torch.tensor(y_test, dtype=torch.long)
-
-# Define the MLP model
-class MLP(nn.Module):
-    def __init__(self):
-        super(MLP, self).__init__()
-        self.fc1 = nn.Linear(4, 10)
-        self.fc2 = nn.Linear(10, 10)
-        self.fc3 = nn.Linear(10, 3)
-    
-    def forward(self, x):
-        x = torch.relu(self.fc1(x))
-        x = torch.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x
-
-# Initialize the model, loss function, and optimizer
 model = MLP()
+
+# Check if GPU is available
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model = model.to(device)
+
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.01)
-
-# Training loop
-num_epochs = 100
-for epoch in range(num_epochs):
-    model.train()
-    optimizer.zero_grad()
-    outputs = model(X_train)
-    loss = criterion(outputs, y_train)
-    loss.backward()
-    optimizer.step()
-    
-    # Evaluate the model
-    model.eval()
-    with torch.no_grad():
-        outputs = model(X_test)
-        _, predicted = torch.max(outputs.data, 1) 
-        accuracy = (predicted == y_test).sum().item() / y_test.size(0)
-    
-    if (epoch+1) % 10 == 0:
-        print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}, Accuracy: {accuracy * 100:.2f}%')
 \end{lstlisting}
 
-Results of the training process are shown below:
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7\textwidth]{./assets/MLP-training.png}
-    \caption{Training loss and accuracy of the MLP over 100 epochs.}
-    \label{fig:mlp-training}
-\end{figure}
+The following code snippet demonstrates the trainign process using \textit{PyTorch}. The model is trained for 100 epochs.
 
-Accuracy on the test set reached 100\% after 100 epochs of training.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{./assets/MLP-accuracy.png}
-    \caption{Accuracy of the MLP on the test set after 100 epochs of training.}
-    \label{fig:mlp-accuracy}
-\end{figure}
-
-\subsection{Exporting Parameters}
-The trained model's parameters were exported to be hardcoded into the \texttt{C} implementation. The weights and biases of each layer were extracted and saved in a format compatible with the hardware implementation.
 \begin{lstlisting}[language=Python]
-# Export the trained model's parameters
-weights = {name: param.detach().numpy() for name, param in model.named_parameters()}
+# Training loop
+NUM_EPOCHS = 100
+for epoch in range(NUM_EPOCHS):
+    model.train()
+    running_loss = 0.0
+    for inputs, labels in train_loader:
+        inputs, labels = inputs.to(device), labels.to(device)
+        
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
 
-with open('weights.txt', 'w') as f:
-    for name, weight in weights.items():
-        f.write(f"{name}\n")
-        np.savetxt(f, weight, fmt='%f')
+        running_loss += loss.item()
+
+    # Evaluate the model after each epoch
+    model.eval()
+    correct = 0
+    total = 0
+    with torch.no_grad():
+        for inputs, labels in test_loader:
+            inputs, labels = inputs.to(device), labels.to(device)
+            outputs = model(inputs)
+            _, predicted = torch.max(outputs.data, 1) # Get the class index with the highest probability
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
+
+    accuracy = correct / total
+
+    if (epoch + 1) % 10 == 0:
+        print(f'Epoch [{epoch+1}/{NUM_EPOCHS}], Loss: {running_loss/len(train_loader):.4f}, Accuracy: {accuracy * 100:.2f}%')
 \end{lstlisting}
 
-\subsection{Implementation}
+The results of the training process are reported in the table below:
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Epoch} & \textbf{Loss} & \textbf{Train Accuracy} & \textbf{Test Accuracy} \\
+        \hline
+        10 & 0.3258 & 90.48\% & 88.89\% \\
+        20 & 0.1060 & 97.14\% & 97.78\% \\
+        30 & 0.1312 & 95.24\% & 97.78\% \\
+        40 & 0.0853 & 97.14\% & 100.00\% \\
+        50 & 0.0675 & 98.10\% & 100.00\% \\
+        60 & 0.0971 & 96.19\% & 97.78\% \\
+        70 & 0.0952 & 96.19\% & 97.78\% \\
+        80 & 0.1020 & 96.19\% & 97.78\% \\
+        90 & 0.0929 & 96.19\% & 97.78\% \\
+        100 & 0.0788 & 94.29\% & 97.78\% \\
+        \hline
+    \end{tabular}
+    \caption{\centering Training loss, train accuracy, and test accuracy of the MLP over 100 epochs.}
+    \label{tab:mlp-training}
+\end{table}
+
+
+The training process shows that the model is able to achieve a high level of accuracy on both the training and test sets: this is to be expected given the simplicity of the Iris dataset and the effectiveness of the MLP architecture in solving such problems.
+Given the relatively small dataset and the fact that the model achieves near-perfect accuracy on the test set, we can conclude that the model is generalizing well.
+
+\subsubsection{Exporting Parameters}
+The trained model's parameters were exported to be hardcoded into the \texttt{C} implementation. The weights and biases of each layer were extracted and saved in a txt file, \textit{weights.txt}, as shown below:
+\begin{lstlisting}[language=Python]
+import numpy as np
+
+weights = {}
+for name, param in model.named_parameters():
+    weights[name] = param.detach().numpy()
+
+# Print their shapes to verify the network architecture
+for name, weight in weights.items():
+    print(f"{name}: {weight.shape}")
+
+with open('./weights.txt', 'w') as f:
+for name, weight in weights.items():
+    f.write(f"{name}\n")
+    np.savetxt(f, weight, fmt='%f')
+\end{lstlisting}
+
+\subsection{C Implementation}
+\subsubsection{Implementation}
 The forward pass for an MLP is implemented in \texttt{C} using a sequence of functions for each layer type. The function takes four input features and processes them through three layers, each with its own weights and biases. The output is the predicted class index.
 
+
+\subsubsection{Forward Pass}
 The forward pass function is defined as follows:
 \begin{lstlisting}
 int forward(float input0, float input1, float input2, float input3) {

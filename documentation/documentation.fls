@@ -206,16 +206,6 @@ INPUT c:/Users/giuli/scoop/apps/tinytex/current/texmf-dist/tex/latex/listings/ls
 INPUT c:/Users/giuli/scoop/apps/tinytex/current/texmf-dist/tex/latex/listings/lstlang1.sty
 INPUT c:/Users/giuli/scoop/apps/tinytex/current/texmf-dist/fonts/tfm/public/cm/cmtt9.tfm
 INPUT c:/Users/giuli/scoop/apps/tinytex/current/texmf-dist/fonts/tfm/public/cm/cmr9.tfm
-INPUT ./assets/MLP-training.png
-INPUT ./assets/MLP-training.png
-INPUT ./assets/MLP-training.png
-INPUT ./assets/MLP-training.png
-INPUT ./assets/MLP-training.png
-INPUT ./assets/MLP-accuracy.png
-INPUT ./assets/MLP-accuracy.png
-INPUT ./assets/MLP-accuracy.png
-INPUT ./assets/MLP-accuracy.png
-INPUT ./assets/MLP-accuracy.png
 INPUT documentation.aux
 INPUT c:/Users/giuli/scoop/apps/tinytex/current/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk
 INPUT c:/Users/giuli/scoop/apps/tinytex/current/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
