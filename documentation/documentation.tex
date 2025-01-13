@@ -1,15 +1,82 @@
 \documentclass{article}
+% Useful packages
 \usepackage{graphicx} % Required for inserting images
+\usepackage{xcolor} % Required for color definitions
+\usepackage{listings}
+
+% Code settings
+\lstset{
+    language=C,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!50!black},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    stepnumber=1
+}
 
 \title{SEAI\_2024\_R12}
-\author{....}
+\author{Giulio Capecchi, Jacopo Niccolai}
 \date{December 2024}
 
 \begin{document}
 
 \maketitle
 
+
 \section{Introduction}
+This project focuses on the implementation of a \textbf{Multilayer Perceptron (MLP)}, 
+a \textbf{Convolutional Neural Network (ConvNet)}, and a \textbf{Transformer}. The main objective was to synthesize the forward pass of these networks on an FPGA.
+To achieve this, the parameters of the networks were first extracted using Python and \textit{PyTorch}. These parameters were then hardcoded into \texttt{C} code, enabling hardware synthesis.
+
+\section{Project Description}
+\subsection{Parameter Extraction}
+The neural networks were built and trained using \textit{PyTorch}. The weights and biases were exported in a format compatible with the \texttt{C} implementation.
+
+\subsection{C Implementation}
+The \texttt{C} code developed includes the forward pass for:
+\begin{itemize}
+    \item \textbf{MLP}: implementation of propagation through dense layers.
+    \item \textbf{ConvNet}: handling of convolution and pooling operations.
+    \item \textbf{Transformer}: managing complex operations like attention.
+\end{itemize}
+
+The network parameters (weights and biases) were directly integrated into the code in a hardcoded manner.
+
+\section{Code Architecture}
+\subsection{C File Structure}
+The forward pass is implemented using a sequence of functions for each layer type:
+\begin{itemize}
+    \item Activation functions (\texttt{relu}, \texttt{softmax}, etc.).
+    \item Functions for convolution and pooling operations.
+    \item Functions for attention mechanisms in Transformers.
+\end{itemize}
+
+Example of code for the forward pass:
+\begin{lstlisting}
+float relu(float x) {
+    return x > 0 ? x : 0;
+}
+
+void forward_layer(float input[], float output[], ...) {
+    // Implementation
+}
+\end{lstlisting}
+
+\subsection{Hardware Synthesis}
+The code was designed to be compatible with tools such as Vitis HLS, leveraging specific pragmas to optimize the implementation.
+
+\section{Results}
+The networks implemented in hardware were tested and compared with their software versions. The FPGA synthesis demonstrated advantages in terms of performance and power consumption.
+
+\section{Conclusions}
+
+
+
 
 \end{document}
 
