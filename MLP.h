@@ -1,7 +1,7 @@
 #ifndef MLP_H
 #define MLP_H
 
-#define MAX_LAYERS 5                // max number of layers
+#define MAX_LAYERS 3                // max number of layers
 #define MAX_NEURONS 100             // max neurons per layer
 #define MAX_SAMPLES 1000            // max number of samples
 #define MAX_FEATURES 4              // max number of features per sample

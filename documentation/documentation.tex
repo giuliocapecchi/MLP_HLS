@@ -101,6 +101,9 @@ An example of the dataset is shown below:
 ...
 \end{tcolorbox}
 
+The dataset's labels were encoded as integers using the Scikit-learn \texttt{LabelEncoder} class, which maps each class to a unique integer value.
+To facilitate its further usage inside the \texttt{C} implementation, this encoded version of the dataset was saved to a txt file, \textit{iris\_dataset\_encoded.txt}.
+
 \subsection{PyTorch Model}
 \subsubsection{Model Architecture}
 The architecture of the MLP model consists of three fully connected (dense) layers.
@@ -229,15 +232,37 @@ for name, weight in weights.items():
 \end{lstlisting}
 
 \subsection{C Implementation}
-\subsubsection{Implementation}
-The forward pass for an MLP is implemented in \texttt{C} using a sequence of functions for each layer type. The function takes four input features and processes them through three layers, each with its own weights and biases. The output is the predicted class index.
 
+The implementation for Vitis HLS of the MLP was produced with three files:
+\begin{itemize}
+    \item \texttt{mlp.c}, which contains the forward pass function, the activation function, and the definition of the MLP structure.
+    \item \texttt{mlp.h}, which contains the definition of the MLP structure and the forward pass function prototype.
+    \item \texttt{testbench.c}, which reads the \textit{iris\_dataset\_encoded.txt}  and contains the main function to test the forward pass function.
+\end{itemize}
+
+\subsubsection{MLP Structure}
+The MLP structure was defined as follows (inside \texttt{mlp.h}):
+\begin{lstlisting}
+typedef struct {
+    float weights[MAX_NEURONS][MAX_NEURONS]; // matrix
+    float biases[MAX_NEURONS];   // biases of the layer
+    float output[MAX_NEURONS];   // output of the layer
+} Layer;
+
+typedef struct {
+    int num_layers;              // number of layers
+    Layer layers[MAX_LAYERS];    // layers of the MLP (array of layers)
+} MLP;
+\end{lstlisting}
+
+\texttt{MAX\_NEURONS} and \texttt{MAX\_LAYERS} are defined as 100 and 3, respectively.
 
 \subsubsection{Forward Pass}
-The forward pass function is defined as follows:
+The forward pass for the MLP is implemented in \texttt{mlp.c} as a sequence of operations applied to each layer of the network. The function processes four input features through three layers, each defined by its respective weights and biases, to produce the predicted class index.
+It is defined as follows:
 \begin{lstlisting}
 int forward(float input0, float input1, float input2, float input3) {
-    const int input_sizes[4] = {4, 10, 10, 3};
+    const int input_sizes[4] = {4, 10, 10, 3}; 
     const int num_layers = 3;
 
     float current_input[MAX_NEURONS];
@@ -278,6 +303,63 @@ int forward(float input0, float input1, float input2, float input3) {
 }
 \end{lstlisting}
 
+In this implementation, all weights and biases are hardcoded and directly integrated into the MLP definition at the top of \texttt{mlp.c}. These values are exported from the PyTorch model and inserted manually during the setup phase.
+\\A notable feature of this implementation is the use of the \texttt{\#pragma HLS UNROLL} directive. This instructs the High-Level Synthesis (HLS) tool to unroll loops, which replicates the loop body multiple times. This mechanism significantly enhances the throughput of the design by enabling parallel execution of loop iterations: as a result, the forward pass should achieve higher performances, making it suitable for FPGA-based acceleration.
+
+\subsubsection{Testbench}
+The testbench function reads the encoded Iris dataset file and applies the forward pass function to each sample. The file is read line-by-line by using the \texttt{fscanf} function, and the four features are passed to the forward pass function. The predicted class index is then compared with the actual class index to calculate the accuracy of the model.
+\\\\Below the code for the testbench function:
+\begin{lstlisting}
+int read_data_from_file(const char *path, int num_features, int label_size, float input_data[MAX_SAMPLES][MAX_FEATURES], float true_value[MAX_SAMPLES]) {
+    FILE *file = fopen(path, "r");
+    if (!file) {
+        perror("Failed to open file");
+        return -1;
+    }
+
+    int sample_count = 0;
+    while (fscanf(file, "%f", &input_data[sample_count][0]) != EOF) {
+        for (int i = 1; i < num_features; i++) {
+            fscanf(file, "%f", &input_data[sample_count][i]);
+        }
+        for (int j = 0; j < label_size; j++) {
+            fscanf(file, "%f", &true_value[sample_count]);
+        }
+        sample_count++;
+        if (sample_count >= MAX_SAMPLES) {
+            break;
+        }
+    }
+
+    fclose(file);
+    return sample_count;
+}
+
+int main() {
+float input_data[MAX_SAMPLES][MAX_FEATURES];
+float true_value[MAX_SAMPLES];
+
+// Read data from file
+const char *path = "./datasets/iris_dataset/iris_dataset_encoded.txt";
+int sample_count = read_data_from_file(path, MAX_FEATURES, 1, input_data, true_value);
+
+// call the forward function and calculate the accuracy
+int correct_predictions = 0;
+for (int i = 0; i < sample_count; i++) {
+    int prediction = forward(input_data[i][0], input_data[i][1], input_data[i][2], input_data[i][3]);
+    if (prediction == true_value[i]) {
+        correct_predictions++;
+    }else{
+        printf("Prediction: %d, True value: %f for input: %f %f %f %f\n", prediction, true_value[i], input_data[i][0], input_data[i][1], input_data[i][2], input_data[i][3]);
+    }
+}
+float accuracy = (float)correct_predictions / sample_count * 100.0;
+printf("Accuracy: %.2f%%\n", accuracy);
+}
+\end{lstlisting}
+
+The testbench is used to test that everything is working correctly and to evaluate the accuracy of the model on the Iris dataset. The accuracy obtained should be similar to the one achieved during the training phase in \textit{PyTorch}, confirming that the forward pass function is correctly implemented in \texttt{C}.
+We always obtained an accuracy of 98\% with it, consistent with the results obtained with \textit{PyTorch}.
 
 \section{Results}
 TODO
