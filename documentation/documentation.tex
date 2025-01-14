@@ -411,15 +411,12 @@ By consulting these reports, the development process is highly transparent: each
 \subsubsection{Performance Metrics}
 Let's go into detail about the performance metrics obtained during the synthesis of the MLP forward pass on the FPGA.
 
-\paragraph{C-Simulation}
-The C-simulation stage in the Vitis Unified IDE serves as the initial validation step for the functional correctness of the high-level C implementation. At this stage, all metrics are presented as pre-synthesis estimates, offering insights into the steady-state performance of the design assuming repeated kernel execution with ready interfaces. These metrics, while useful, are optimistic until the code is made canonical, as they do not account for potential canonicalization issues. 
-
-Key metrics analyzed include the **Transaction Interval (TI)**, which represents the minimal delay between two process executions. Optimizing processes with the largest TIs is critical to improving overall region performance. Channels are characterized by metrics such as **Volume**, indicating the amount of data transmitted per region execution, and **Throughput**, which reflects the data transfer rate and is influenced by the TI and channel volume. Additionally, **Width**, defined by the size of data elements, plays a crucial role in enhancing throughput by widening communication channels. 
-
-Through these metrics, C-simulation provides a foundational understanding of performance bottlenecks and potential optimization opportunities, setting the stage for more accurate evaluations in subsequent synthesis and co-simulation phases.
+\paragraph{C-Simulation}  
+C-simulation provides preliminary performance metrics, focusing on the steady-state execution of the design. These estimates, including the Transaction Interval (TI), highlight potential bottlenecks and optimization areas but may be overly optimistic unless the code is made canonical. This stage serves as an initial evaluation, guiding further refinement and more accurate analysis during synthesis and co-simulation.
 
 
 \section{Convolutional Neural Network (ConvNet)}
+The ConvNet forward pass was implemented in a similar manner to the MLP, with the main difference being the convolution and pooling operations. The ConvNet was trained on the \textit{CIFAR-10} dataset, which contains 60,000 32x32 color images in 10 classes.
 
 
 \end{document}
