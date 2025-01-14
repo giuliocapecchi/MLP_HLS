@@ -51,6 +51,7 @@
 This project focuses on the synthesis of the forward pass for three types of neural network architectures: a \textbf{Multilayer Perceptron (MLP)}, a \textbf{Convolutional Neural Network (ConvNet)}, and a \textbf{Transformer}, implemented on an FPGA.  
 To achieve this, the network parameters were first obtained using Python and the \textit{PyTorch} library. These parameters were subsequently hardcoded into \texttt{C} code, enabling the hardware synthesis process.
 
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{assets/vitis-hls.png}
@@ -237,7 +238,7 @@ The training process shows that the model is able to achieve a high level of acc
 Given the relatively small dataset and the fact that the model achieves near-perfect accuracy on the test set, we can conclude that the model is generalizing well.
 
 \subsubsection{Exporting Parameters}
-The trained model's parameters were exported to be hardcoded into the \texttt{C} implementation. The weights and biases of each layer were extracted and saved in a txt file, \textit{weights.txt}, as shown below:
+The trained model's parameters were exported to be hardcoded into the \texttt{C} implementation. The weights and biases of each layer were extracted and saved in a txt file, \textit{mlp\_weights.txt}, as shown below:
 \begin{lstlisting}[language=Python]
 import numpy as np
 
@@ -249,7 +250,7 @@ for name, param in model.named_parameters():
 for name, weight in weights.items():
     print(f"{name}: {weight.shape}")
 
-with open('./weights.txt', 'w') as f:
+with open('./mlp_weights.txt', 'w') as f:
 for name, weight in weights.items():
     f.write(f"{name}\n")
     np.savetxt(f, weight, fmt='%f')
@@ -388,7 +389,7 @@ The testbench is used to test that everything is working correctly and to evalua
 We always obtained an accuracy of 98\% with it, consistent with the results obtained with \textit{PyTorch}.
 
 \subsection{Results}
-The results obtained using the Vitis Unified IDE confirm the successful synthesis and implementation of the MLP forward pass on the FPGA. The development process in Vitis offers several stages where detailed reports are generated, providing valuable insights into the design's functionality and performance.
+The results obtained using the Vitis Unified IDE confirm the successful synthesis and implementation of the MLP forward pass on the FPGA. The development process in Vitis offers several stages where detailed reports are generated, providing valuable insights into the design's functionality and performance. The used device for this section was from the Product family \textbf{zynq}, and the Target device used was the \textbf{xc7z007s-clg225-2}.
 
 \subsubsection{Stages of Development}
 These stages include:
@@ -412,11 +413,31 @@ By consulting these reports, the development process is highly transparent: each
 Let's go into detail about the performance metrics obtained during the synthesis of the MLP forward pass on the FPGA.
 
 \paragraph{C-Simulation}  
-C-simulation provides preliminary performance metrics, focusing on the steady-state execution of the design. These estimates, including the Transaction Interval (TI), highlight potential bottlenecks and optimization areas but may be overly optimistic unless the code is made canonical. This stage serves as an initial evaluation, guiding further refinement and more accurate analysis during synthesis and co-simulation.
+C-simulation provides preliminary performance metrics, focusing on the steady-state execution of the design. These estimates, including the Transaction Interval (TI), highlight potential bottlenecks and optimization areas but may be overly optimistic unless the code is made canonical. This stage serves as an initial evaluation, guiding further refinement and more accurate analysis during synthesis and co-simulation.  
+Here, we could mainly observe the correctness of the code (given by the expected output in the terminal), but we also noticed that there are some dependencies in the code: indeed, we obtained the following guidance message \texttt{SIM 211-201A cyclic dependence prevents further acceleration of this process. This generally requires some algorithmic changes to improve}. However, we still have to remember that this is the pre-synthesis phase, so we can't expect the best performance metrics yet. As we will see, results will be good in the following stages. 
 
+
+\paragraph{C-Synthesis}
+Here, we can see the results of the synthesis of the MLP forward pass on the FPGA. The table below shows the \textit{Estmated Quality of results}, which is the first metric presented in the report:
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{TARGET} & \textbf{ESTIMATED} & \textbf{UNCERTAINTY} \\
+        \hline
+        10.00 ns & 6.329 ns & 2.70 ns \\
+        \hline
+    \end{tabular}
+    \caption{\centering Estimated Quality of Results for MLP Forward Pass}
+    \label{tab:mlp-quality}
+\end{table}
+
+
+//TODO sei qui
 
 \section{Convolutional Neural Network (ConvNet)}
-The ConvNet forward pass was implemented in a similar manner to the MLP, with the main difference being the convolution and pooling operations. The ConvNet was trained on the \textit{CIFAR-10} dataset, which contains 60,000 32x32 color images in 10 classes.
+The ConvNet forward pass was implemented in a similar manner to the MLP, with the main difference being the convolution and pooling operations. The ConvNet was trained on the famous \textit{MNIST} dataset, which contains 70.000 32x32 black and white images in 10 classes (representing hand-written digits).
 
 
 \end{document}
