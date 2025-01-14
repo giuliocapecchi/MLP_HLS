@@ -55,8 +55,6 @@ int main() {
     const char *path = "./datasets/iris_dataset/iris_dataset.txt";
     int sample_count = read_data_from_file(path, MAX_FEATURES, 1, input_data, true_value);
     //sample_count = 3;
-
-
     
     // call the forward function for all the samples, and calculate the accuracy
     int correct_predictions = 0;
