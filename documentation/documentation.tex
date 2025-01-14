@@ -29,14 +29,35 @@
 \author{Giulio Capecchi, Jacopo Niccolai}
 \date{December 2024}
 
+
 \begin{document}
 
 \maketitle
 
+\vspace{3cm}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{assets/unipi.png}
+    \label{fig:unipi_logo}
+\end{figure}
+
+\newpage
+
+\tableofcontents
+
+\newpage
 
 \section{Introduction}
 This project focuses on the synthesis of the forward pass for three types of neural network architectures: a \textbf{Multilayer Perceptron (MLP)}, a \textbf{Convolutional Neural Network (ConvNet)}, and a \textbf{Transformer}, implemented on an FPGA.  
 To achieve this, the network parameters were first obtained using Python and the \textit{PyTorch} library. These parameters were subsequently hardcoded into \texttt{C} code, enabling the hardware synthesis process.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{assets/vitis-hls.png}
+    \caption{Xilinx Vitis HLS}
+    \label{fig:vitis_hls}
+\end{figure}
+
 
 \section{Project Description}
 \subsection{Workflow Overview}
@@ -51,6 +72,8 @@ The \texttt{C} code developed includes the forward pass for:
     \item \textbf{Transformer}: managing complex operations like attention.
 \end{itemize}
 
+\#TODO : parlare delle direttive HLS
+/*
 HLS INLINE
 forza l'inserimento completo del corpo di una funzione o di un ciclo direttamente nel punto in cui è chiamato, eliminando l'overhead associato alla chiamata di funzione o all'allocazione di risorse hardware separate.
 Riduce la latenza perché elimina il ritardo di chiamata della funzione. Può aumentare l'area hardware utilizzata, perché la logica della funzione viene replicata ovunque venga chiamata.
@@ -66,6 +89,7 @@ rewind (riavvia automaticamente il ciclo alla fine).
 Uso tipico
 Nei loop che processano grandi quantità di dati.
 Per aumentare il throughput in operazioni ripetitive.
+*/
 
 The network parameters (weights and biases) were directly integrated into the code in a hardcoded manner.
 
@@ -307,7 +331,9 @@ In this implementation, all weights and biases are hardcoded and directly integr
 \\A notable feature of this implementation is the use of the \texttt{\#pragma HLS UNROLL} directive. This instructs the High-Level Synthesis (HLS) tool to unroll loops, which replicates the loop body multiple times. This mechanism significantly enhances the throughput of the design by enabling parallel execution of loop iterations: as a result, the forward pass should achieve higher performances, making it suitable for FPGA-based acceleration.
 
 \subsubsection{Testbench}
-The testbench function reads the encoded Iris dataset file and applies the forward pass function to each sample. The file is read line-by-line by using the \texttt{fscanf} function, and the four features are passed to the forward pass function. The predicted class index is then compared with the actual class index to calculate the accuracy of the model.
+The testbench function reads the encoded Iris dataset file and applies the forward pass function to each sample.
+The file is read line-by-line by using the \texttt{fscanf} function, and the four features are passed to the forward pass function.
+The predicted class index is then compared with the actual class index to calculate the accuracy of the model.
 \\\\Below the code for the testbench function:
 \begin{lstlisting}
 int read_data_from_file(const char *path, int num_features, int label_size, float input_data[MAX_SAMPLES][MAX_FEATURES], float true_value[MAX_SAMPLES]) {
@@ -358,14 +384,43 @@ printf("Accuracy: %.2f%%\n", accuracy);
 }
 \end{lstlisting}
 
-The testbench is used to test that everything is working correctly and to evaluate the accuracy of the model on the Iris dataset. The accuracy obtained should be similar to the one achieved during the training phase in \textit{PyTorch}, confirming that the forward pass function is correctly implemented in \texttt{C}.
+The testbench is used to test that everything is working correctly and to evaluate the accuracy of the model on the dataset. The accuracy obtained should be similar to the one achieved during the training phase in \textit{PyTorch}, confirming that the forward pass function is correctly implemented in \texttt{C}.
 We always obtained an accuracy of 98\% with it, consistent with the results obtained with \textit{PyTorch}.
 
-\section{Results}
-TODO
+\subsection{Results}
+The results obtained using the Vitis Unified IDE confirm the successful synthesis and implementation of the MLP forward pass on the FPGA. The development process in Vitis offers several stages where detailed reports are generated, providing valuable insights into the design's functionality and performance.
 
-\section{Conclusions}
-TODO
+\subsubsection{Stages of Development}
+These stages include:
+
+\begin{itemize}
+    \item \textbf{C Simulation:} This initial step ensures the functional correctness of the high-level C implementation. During this phase, the input data is processed entirely in software, and the generated reports confirm that the output matches the expected results, validating the logic before hardware synthesis.
+
+    \item \textbf{C Synthesis:} In this phase, the high-level C code is converted into a hardware description optimized for the target FPGA. The synthesis report provides crucial details, such as estimated resource utilization (LUTs, DSPs, BRAMs), latency, and initiation intervals. These metrics help identify potential bottlenecks and guide optimization efforts.
+
+    \item \textbf{C/RTL Simulation:} This step bridges the gap between high-level and low-level design by validating the synthesized hardware description against the functional requirements. This stage is particularly important as it ensures consistency between the high-level model and the Register Transfer Level (RTL) implementation. The reports include timing diagrams, functional waveforms, and a comparison of C simulation outputs with RTL simulation outputs to confirm correctness.
+
+    \item \textbf{Packaging:} After verifying the synthesized hardware, the design is packaged into an IP (Intellectual Property) core. The packaging reports detail the generated IP core's properties, ensuring that it adheres to the FPGA's integration requirements and is ready for system-level implementation.
+
+    \item \textbf{Implementation:} In the final stage, the IP core is placed and routed on the FPGA. Implementation reports include metrics such as timing analysis, power estimates, and resource utilization on the physical FPGA fabric. These reports confirm that the design meets the FPGA's constraints, such as timing closure and power consumption.
+
+\end{itemize}
+By consulting these reports, the development process is highly transparent: each step ensures the correctness, performance, and compliance with the FPGA's requirements, resulting in an efficient and reliable implementation of the top-function, in this case the forward pass.
+\\\\These steps are valid also for the further architectures, so we will not repeat them in the following sections, but just present them.
+
+\subsubsection{Performance Metrics}
+Let's go into detail about the performance metrics obtained during the synthesis of the MLP forward pass on the FPGA.
+
+\paragraph{C-Simulation}
+The C-simulation stage in the Vitis Unified IDE serves as the initial validation step for the functional correctness of the high-level C implementation. At this stage, all metrics are presented as pre-synthesis estimates, offering insights into the steady-state performance of the design assuming repeated kernel execution with ready interfaces. These metrics, while useful, are optimistic until the code is made canonical, as they do not account for potential canonicalization issues. 
+
+Key metrics analyzed include the **Transaction Interval (TI)**, which represents the minimal delay between two process executions. Optimizing processes with the largest TIs is critical to improving overall region performance. Channels are characterized by metrics such as **Volume**, indicating the amount of data transmitted per region execution, and **Throughput**, which reflects the data transfer rate and is influenced by the TI and channel volume. Additionally, **Width**, defined by the size of data elements, plays a crucial role in enhancing throughput by widening communication channels. 
+
+Through these metrics, C-simulation provides a foundational understanding of performance bottlenecks and potential optimization opportunities, setting the stage for more accurate evaluations in subsequent synthesis and co-simulation phases.
+
+
+\section{Convolutional Neural Network (ConvNet)}
+
 
 \end{document}
 

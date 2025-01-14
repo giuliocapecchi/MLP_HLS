@@ -1,0 +1,22 @@
+\contentsline {section}{\numberline {1}Introduction}{3}{}%
+\contentsline {section}{\numberline {2}Project Description}{3}{}%
+\contentsline {subsection}{\numberline {2.1}Workflow Overview}{3}{}%
+\contentsline {subsection}{\numberline {2.2}C Implementation}{3}{}%
+\contentsline {section}{\numberline {3}Code Architecture}{4}{}%
+\contentsline {subsection}{\numberline {3.1}C File Structure}{4}{}%
+\contentsline {subsection}{\numberline {3.2}Hardware Synthesis}{4}{}%
+\contentsline {section}{\numberline {4}Multi-Layer Perceptron}{4}{}%
+\contentsline {subsection}{\numberline {4.1}Dataset}{4}{}%
+\contentsline {subsection}{\numberline {4.2}PyTorch Model}{5}{}%
+\contentsline {subsubsection}{\numberline {4.2.1}Model Architecture}{5}{}%
+\contentsline {subsubsection}{\numberline {4.2.2}Model Training}{6}{}%
+\contentsline {subsubsection}{\numberline {4.2.3}Exporting Parameters}{7}{}%
+\contentsline {subsection}{\numberline {4.3}C Implementation}{8}{}%
+\contentsline {subsubsection}{\numberline {4.3.1}MLP Structure}{8}{}%
+\contentsline {subsubsection}{\numberline {4.3.2}Forward Pass}{8}{}%
+\contentsline {subsubsection}{\numberline {4.3.3}Testbench}{9}{}%
+\contentsline {subsection}{\numberline {4.4}Results}{11}{}%
+\contentsline {subsubsection}{\numberline {4.4.1}Stages of Development}{11}{}%
+\contentsline {subsubsection}{\numberline {4.4.2}Performance Metrics}{12}{}%
+\contentsline {paragraph}{C-Simulation}{12}{}%
+\contentsline {section}{\numberline {5}Convolutional Neural Network (ConvNet)}{13}{}%

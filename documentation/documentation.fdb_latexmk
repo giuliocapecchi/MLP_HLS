@@ -1,6 +1,8 @@
 # Fdb version 4
-["pdflatex"] 1736850578.48102 "c:/MLC_HLS/documentation/documentation.tex" "documentation.pdf" "documentation" 1736850579.04026 0
-  "c:/MLC_HLS/documentation/documentation.tex" 1736850578 16600 0ede6d093b0abdd48d35482045dbe4df ""
+["pdflatex"] 1736865459.4848 "c:/MLC_HLS/documentation/documentation.tex" "documentation.pdf" "documentation" 1736865460.36382 0
+  "assets/unipi.png" 1736865295 79075 10579a9aa2f7e6c5324e9d5624c2ff7b ""
+  "assets/vitis-hls.png" 1736864904 10009 4c0c1c774e164c4c8d618f41d1ba948b ""
+  "c:/MLC_HLS/documentation/documentation.tex" 1736865458 21232 f7631740bd14ddb06760e858f3a62580 ""
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1733023900 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1733023892 1004 54797486969f23fa377b128694d548df ""
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1733023892 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -128,10 +130,12 @@
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk" 1735466457 11524 c66f5fec70880a8dbd99e99bb5a95c86 ""
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf-var/web2c/pdftex/pdflatex.fmt" 1733024004 1918134 af6f731535e8305d900c5f91f63e81b1 ""
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf.cnf" 1733023869 903 164c5b127cd0d6dc91abad2f62421ea2 ""
-  "documentation.aux" 1736850578 2315 2c127693fc6d4e94dfd1eb330f26d0c0 "pdflatex"
-  "documentation.tex" 1736850578 16600 0ede6d093b0abdd48d35482045dbe4df ""
+  "documentation.aux" 1736865460 2881 c8fa5adf38569af6d4fa25d5b43a0f63 "pdflatex"
+  "documentation.tex" 1736865458 21232 f7631740bd14ddb06760e858f3a62580 ""
+  "documentation.toc" 1736865460 1502 b684641d7c7ccd51b8f5991e7ff3783b "pdflatex"
   (generated)
   "documentation.aux"
   "documentation.log"
   "documentation.pdf"
+  "documentation.toc"
   (rewritten before read)
