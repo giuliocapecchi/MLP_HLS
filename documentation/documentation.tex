@@ -51,6 +51,22 @@ The \texttt{C} code developed includes the forward pass for:
     \item \textbf{Transformer}: managing complex operations like attention.
 \end{itemize}
 
+HLS INLINE
+forza l'inserimento completo del corpo di una funzione o di un ciclo direttamente nel punto in cui è chiamato, eliminando l'overhead associato alla chiamata di funzione o all'allocazione di risorse hardware separate.
+Riduce la latenza perché elimina il ritardo di chiamata della funzione. Può aumentare l'area hardware utilizzata, perché la logica della funzione viene replicata ovunque venga chiamata.
+Tipicamente per funzioni semplici o molto usate, per ridurre la latenza.
+
+HLS PIPELINE
+La direttiva HLS PIPELINE suddivide un ciclo o una funzione in più fasi (pipeline), permettendo l'esecuzione di più iterazioni o operazioni simultaneamente, aumentando il throughput del design.
+Permette l'elaborazione di nuove iterazioni a ogni ciclo di clock (o a intervalli specificati, chiamati Initiation Interval - II).
+Aumenta la velocità del sistema a scapito del consumo di risorse hardware.
+Opzioni:
+II=N (specifica l'intervallo di avvio delle iterazioni, ad esempio, 1 ciclo di clock tra una e l'altra).
+rewind (riavvia automaticamente il ciclo alla fine).
+Uso tipico
+Nei loop che processano grandi quantità di dati.
+Per aumentare il throughput in operazioni ripetitive.
+
 The network parameters (weights and biases) were directly integrated into the code in a hardcoded manner.
 
 \section{Code Architecture}
