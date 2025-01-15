@@ -39,3 +39,9 @@ hls_compile.rpt
 v++_compile_forward_guidance.pb3
 /hls_component
 data
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.toc
+*.synctex.gz

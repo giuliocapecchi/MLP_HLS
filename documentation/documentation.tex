@@ -537,6 +537,40 @@ Regarding the \textit{Package} section, there is  not much to be said, since the
 
 Here in this section we can mainly analyze the \textit{RTL synthesis} and the \textit{Place and Route} stages: the first provides a detailed report on the synthesis of the design into Register-Transfer Level (RTL) code, while the latter focuses on the physical implementation of the design on the FPGA.
 Regarding the \textit{RTL synthesis}, the report provides insights into the resource utilization, timing constraints, and design hierarchy. The metrics include the number of Look-Up Tables (LUTs), Flip-Flops (FFs), and Digital Signal Processors (DSPs) used, as well as the critical path delay and maximum frequency. These metrics are crucial for assessing the design's efficiency and performance, guiding further optimization efforts.
+\\\\ From the \textit{Implementation Report} results, the following observations can be made:
+
+\begin{itemize}
+    \item \textbf{Resource Utilization:} The design consumes a total of 4,438 LUTs, 5,332 FFs, 50 DSP blocks, 11 BRAMs, and 104 SRLs. Notably, no URAM, latches, or slices are utilized. This indicates an efficient use of FPGA resources without exceeding critical limits.
+    \item \textbf{Timing Constraints:} The required clock period is set to 10.000 ns. Post-synthesis, the achieved clock period is 6.872 ns, which satisfies the requirement and demonstrates that the design meets its performance constraints. However, the post-implementation clock period is marked as \textit{N/A}, suggesting that the design has not yet undergone the complete implementation flow. This requires further steps to validate whether the timing remains consistent after placement and routing.
+\end{itemize}
+
+\subsubsection{Fail Fast Analysis}
+
+The \textit{Fail Fast} section serves as an automated verification step to ensure compliance with basic design guidelines before proceeding with computationally intensive stages of the design flow. The following columns are analyzed:
+
+\begin{itemize}
+    \item \textbf{Criteria:} Key aspects of the design, such as LUT usage, FD (Flip-Flop Density), and DFP (Dynamic Floating-Point operations), are monitored to ensure they fall within acceptable thresholds.
+    \item \textbf{Guideline:} Defines a reference threshold for each criterion to guide the design toward optimal FPGA resource usage and performance.
+    \item \textbf{Actual:} Displays the measured values of each criterion after the analysis of the current design.
+    \item \textbf{State:} Indicates the compliance status of each criterion, with possible values:
+    \begin{itemize}
+        \item \textbf{OK:} The criterion satisfies the guideline and requires no action.
+        \item \textbf{WARNING:} The criterion approaches the threshold, suggesting caution.
+        \item \textbf{FAIL:} The criterion exceeds the guideline, necessitating immediate attention.
+    \end{itemize}
+\end{itemize}
+
+In this case, all criteria in the \textit{Fail Fast} analysis are marked as \textbf{OK}. This indicates that:
+\begin{itemize}
+    \item The design complies with all fundamental guidelines, including resource usage and timing constraints.
+    \item No critical issues were detected that could block or degrade the implementation flow.
+    \item The design is ready for subsequent stages, such as post-implementation and hardware validation, with a high degree of confidence.
+\end{itemize}
+
+The combination of the \textit{Implementation Report} and \textit{Fail Fast} analysis highlights the robustness of the design, ensuring efficient resource utilization and adherence to timing requirements while avoiding potential pitfalls early in the development process.
+
+
+
 
 \begin{figure}[H]
     \centering
@@ -544,6 +578,7 @@ Regarding the \textit{RTL synthesis}, the report provides insights into the reso
     \caption{Resource Usage and Final Timing Report in the RTL Synthesis}
     \label{fig:rtl-synthesis}
 \end{figure}
+
 
 
 
