@@ -45,3 +45,4 @@ data
 *.log
 *.toc
 *.synctex.gz
+hls_component
