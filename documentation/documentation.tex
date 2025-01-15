@@ -493,7 +493,8 @@ C-RTL cosimulation is a verification process that ensures the functional equival
 \end{figure}
 
 
-From the above table:
+TODO : anche questa parte va rivista
+\\\\From the above table:
 
 \subparagraph{Initiation Interval (II)}
 \begin{itemize}
@@ -527,6 +528,31 @@ From the above table:
     \item \textbf{Resource Utilization}: Resource contention or dependencies among operations might be causing the high II. Reviewing data paths and loop unrolling strategies could help alleviate bottlenecks.
     \item \textbf{C-RTL Cosimulation Validation}: Assuming the results match between the C-level and RTL-level simulations, this confirms the functional correctness of the design and prepares it for downstream FPGA implementation.
 \end{itemize}
+
+
+\paragraph{Packaging}
+Regarding the \textit{Package} section, there is  not much to be said, since the Vitis IDE doesn't provide a report for this stage. However, we can still infer that the packaging process was successful, as the design was ready for the final implementation stage.
+
+\paragraph{Implementation}
+
+Here in this section we can mainly analyze the \textit{RTL synthesis} and the \textit{Place and Route} stages: the first provides a detailed report on the synthesis of the design into Register-Transfer Level (RTL) code, while the latter focuses on the physical implementation of the design on the FPGA.
+Regarding the \textit{RTL synthesis}, the report provides insights into the resource utilization, timing constraints, and design hierarchy. The metrics include the number of Look-Up Tables (LUTs), Flip-Flops (FFs), and Digital Signal Processors (DSPs) used, as well as the critical path delay and maximum frequency. These metrics are crucial for assessing the design's efficiency and performance, guiding further optimization efforts.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./assets/MLP/implementation-resourceusagefinaltiming.png}
+    \caption{Resource Usage and Final Timing Report in the RTL Synthesis}
+    \label{fig:rtl-synthesis}
+\end{figure}
+
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./assets/MLP/implementation-failfast.png}
+    \caption{Fail Fast Report in the RTL Synthesis}
+    \label{fig:fail-fast}
+\end{figure}
 
 
 

@@ -1,12 +1,14 @@
 # Fdb version 4
-["pdflatex"] 1736954956.12296 "c:/MLC_HLS/documentation/documentation.tex" "documentation.pdf" "documentation" 1736954957.47895 0
+["pdflatex"] 1736959271.05939 "c:/MLC_HLS/documentation/documentation.tex" "documentation.pdf" "documentation" 1736959272.4582 0
   "assets/MLP/c-rtl-cosimulation.png" 1736954750 81304 db40f9aaa757d1be00da18be9952c59d ""
   "assets/MLP/c-synthesis-HWinterfaces.png" 1736953772 55807 0c2543584a430a5ab24272f9ae8c01d4 ""
   "assets/MLP/c-synthesis-performanceandresourceestimaes.png" 1736952865 97214 c002c6c720ab0b4d04ee908fd0b79782 ""
   "assets/MLP/c-synthesis-validpragmasyntax.png.png" 1736953903 22183 d229b6cab4db24770d94d8b0bb7c2c8a ""
+  "assets/MLP/implementation-failfast.png" 1736959242 99396 e567ddcbc797edfcd8769c78f5ff9331 ""
+  "assets/MLP/implementation-resourceusagefinaltiming.png" 1736958936 53490 c3e7b6cbe695a22fda66b857896517fe ""
   "assets/unipi.png" 1736865295 79075 10579a9aa2f7e6c5324e9d5624c2ff7b ""
   "assets/vitis-hls.png" 1736864904 10009 4c0c1c774e164c4c8d618f41d1ba948b ""
-  "c:/MLC_HLS/documentation/documentation.tex" 1736954954 28731 f37cee0dc44c9aa2f4d249b7fea42cd1 ""
+  "c:/MLC_HLS/documentation/documentation.tex" 1736959269 30314 d40e0970acf9f0c1f910c9db67980906 ""
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1733023900 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1733023892 1004 54797486969f23fa377b128694d548df ""
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1733023892 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -134,9 +136,9 @@
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.600pk" 1735466457 11524 c66f5fec70880a8dbd99e99bb5a95c86 ""
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf-var/web2c/pdftex/pdflatex.fmt" 1733024004 1918134 af6f731535e8305d900c5f91f63e81b1 ""
   "c:/Users/giuli/scoop/apps/tinytex/current/texmf.cnf" 1733023869 903 164c5b127cd0d6dc91abad2f62421ea2 ""
-  "documentation.aux" 1736954957 4785 857f91db1b8e5692e28317a17e217237 "pdflatex"
-  "documentation.tex" 1736954954 28731 f37cee0dc44c9aa2f4d249b7fea42cd1 ""
-  "documentation.toc" 1736954957 1998 27723fd28892938652f1e08aa19dd43d "pdflatex"
+  "documentation.aux" 1736959272 5364 ca667655ffc7844f7e8f5648d1a77cba "pdflatex"
+  "documentation.tex" 1736959269 30314 d40e0970acf9f0c1f910c9db67980906 ""
+  "documentation.toc" 1736959272 2091 1c00986c7fb6f42c727bdf70e82b8491 "pdflatex"
   (generated)
   "documentation.aux"
   "documentation.log"
