@@ -433,12 +433,105 @@ Here, we can see the results of the synthesis of the MLP forward pass on the FPG
     \label{tab:mlp-quality}
 \end{table}
 
+As we can see from the table, the estimated latency is 6.329 ns, with an uncertainty of 2.70 ns. This metric provides an initial indication of the design's performance, with lower values indicating faster execution. The uncertainty value represents the range within which the actual latency is expected to fall, providing a margin of error for the estimation. This falls within the expected range for the MLP forward pass, indicating that the design should be good for efficient execution.
 
-//TODO sei qui
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{./assets/MLP/c-synthesis-performanceandresourceestimaes.png}
+    \caption{Perfomance and Resource Estimates in the C-Synthesis Report}
+    \label{fig:c-synthesis-performance-resources}
+\end{figure}
+
+TODO : questa parte qui va controllata meglio
+\\\\From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 216 cycles, corresponding to an execution time of $2,160\ \mathrm{\mu s}$ under the target clock conditions. The report highlights that the main module was not fully pipelined, with an \textit{interval} of 217 cycles. This indicates that the module optimization could benefit from increased parallelization, especially within the internal loops.
+Examining the subsections of the \texttt{forward} module, we notice that several internal loops (\texttt{forward\_Pipeline\_VITIS\_LOOP}) were optimized using \textit{auto unrolling} and \textit{pipelining} techniques, with latencies ranging from 5 ns to 690 ns. However, the main loop of the module shows a relatively high latency (690 ns), indicating a potential bottleneck. Additionally, no usage of \texttt{URAM} is reported, while the DSP resources utilized amount to 50, with a significant number of Flip-Flops (\texttt{FF}) and Look-Up Tables (\texttt{LUT}) employed, totaling 7417 and 9689, respectively.
+These results suggest that there is room for improvement through increased parallelization and better utilization of available hardware resources, particularly by leveraging internal memory (\texttt{URAM}) and reducing the execution interval (\textit{interval}) for critical loops.
+\\\\We can also check from the report that, as expected the hardware interface corresponds to the input and output of the forward pass function, and that the utilized pragma syntax is correct and corresponds to the one we used in the code.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{./assets/MLP/c-synthesis-HWinterfaces.png}
+        \caption{Hardware interfaces}
+        \label{fig:c-synthesis-hw-interfaces}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{./assets/MLP/c-synthesis-validpragmasyntax.png}
+        \caption{Pragma syntax}
+        \label{fig:c-synthesis-pragma-syntax}
+    \end{minipage}
+\end{figure}
+
+
+\paragraph{C/RTL Simulation}
+
+C-RTL cosimulation is a verification process that ensures the functional equivalence between the high-level C/C++ design and the synthesized Register-Transfer Level (RTL) code. This step is critical as it confirms that the behavior of the RTL implementation matches the original C/C++ description after synthesis. The benefits are multiple:
+
+\begin{itemize}
+    \item \textbf{Validation of Functional Correctness}: Verifies that the generated RTL implementation functions identically to the original high-level design for the same inputs.
+    \item \textbf{Timing and Latency Estimates}: Provides insights into the actual timing behavior of the synthesized RTL.
+    \item \textbf{Resource Utilization Check}: Highlights any discrepancies between resource usage reported during synthesis and actual utilization in hardware.
+\end{itemize}
+
+\subparagraph{How It Works}
+\begin{enumerate}
+    \item \textbf{Input Stimuli}: A testbench written in C/C++ is used to provide input data to both the high-level C/C++ design and the RTL design.
+    \item \textbf{Output Comparison}: The outputs from the high-level simulation and the RTL simulation are compared.
+    \item \textbf{Reports}: Any mismatches or timing violations are reported for debugging purposes.
+\end{enumerate}
+
+\subparagraph{Analysis of Results}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{./assets/MLP/c-rtl-cosimulation.png}
+    \caption{C/RTL Cosimulation Report - Performance and resource estimates}
+    \label{fig:C-RTL-cosimulation}
+\end{figure}
+
+
+From the above table:
+
+\subparagraph{Initiation Interval (II)}
+\begin{itemize}
+    \item The initiation interval (II) across all loops is constant at \textbf{205 cycles}, which suggests that the pipeline performance for each loop is uniform and constrained by a similar bottleneck.
+\end{itemize}
+
+\subparagraph{Latencies}
+\begin{itemize}
+    \item \textbf{Average Latency}: Varies for individual loops. For instance:
+    \begin{itemize}
+        \item The \texttt{forward\_Pipeline\_VITIS\_LOOP\_73\_2} has an average latency of \textbf{37 cycles}.
+        \item Other loops like \texttt{forward\_Pipeline\_VITIS\_LOOP\_84\_44} achieve a minimal latency of \textbf{3 cycles}, indicating higher efficiency for certain tasks.
+    \end{itemize}
+    \item The overall latency for the main \texttt{forward} module is \textbf{204 cycles}, which aligns with the high-level design expectations.
+\end{itemize}
+
+\subparagraph{Total Execution Time}
+\begin{itemize}
+    \item The total execution time for the main \texttt{forward} module is reported as \textbf{30749 ns}, reflecting the aggregated runtime for the design.
+\end{itemize}
+
+\subparagraph{Pipeline Observations}
+\begin{itemize}
+    \item While the loops have been pipelined (as evidenced by consistent II values), the relatively high initiation interval of \textbf{205} could indicate that further optimization is needed to reduce dependencies or resource contention.
+\end{itemize}
+
+\subparagraph{Observations and Suggestions}
+
+\begin{itemize}
+    \item \textbf{Performance}: The latency and total execution time suggest that the design is functional, but there may be room for improvement in pipelining efficiency. Reducing the II could significantly enhance performance.
+    \item \textbf{Resource Utilization}: Resource contention or dependencies among operations might be causing the high II. Reviewing data paths and loop unrolling strategies could help alleviate bottlenecks.
+    \item \textbf{C-RTL Cosimulation Validation}: Assuming the results match between the C-level and RTL-level simulations, this confirms the functional correctness of the design and prepares it for downstream FPGA implementation.
+\end{itemize}
+
+
 
 \section{Convolutional Neural Network (ConvNet)}
 The ConvNet forward pass was implemented in a similar manner to the MLP, with the main difference being the convolution and pooling operations. The ConvNet was trained on the famous \textit{MNIST} dataset, which contains 70.000 32x32 black and white images in 10 classes (representing hand-written digits).
-
 
 \end{document}
 
