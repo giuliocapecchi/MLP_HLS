@@ -14,7 +14,7 @@
 
 // Structure to represent a convolutional layer
 typedef struct {
-    float weights[CONV1_OUTPUT_CHANNELS][INPUT_CHANNELS][3][3]; // Filters of the convolutional layer
+    float weights[CONV1_OUTPUT_CHANNELS][INPUT_CHANNELS][3][3]; // Filters of the convolutional layer 
     float biases[CONV1_OUTPUT_CHANNELS];                        // Biases for the filters
 } ConvLayer;
 
@@ -32,13 +32,6 @@ typedef struct {
 
 /*-------------------------- Functions ---------------------------*/
 
-/**
- * Performs the forward pass of the network.
- * @param input The 3D input tensor [INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS].
- * @param output The 1D output array of size [NUM_CLASSES].
- * @param net The neural network model.
- * @return 0 on success.
- */
 int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output[NUM_CLASSES]);
 
 #endif // CONVNET_H
