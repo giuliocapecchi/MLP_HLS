@@ -398,6 +398,9 @@ The selected target device belongs to the Zynq-7000 family and is designed to in
 \end{itemize}
 This combination of resources makes the \texttt{xc7z007s-clg225-2} well-suited for applications requiring both computation and flexibility, such as neural network inference on FPGA hardware.\\
 
+The selected device has a \textbf{speed grade of \texttt{-2}}, which represents a medium performance level within the Zynq-7000 family. Speed grades for this family typically range from \texttt{-1} (lowest performance) to \texttt{-3} (highest performance). The \texttt{-2} speed grade offers a balance between performance and power efficiency, providing sufficient timing capabilities for the neural network inference tasks targeted in this design. Lower speed grade numbers correspond to higher achievable clock frequencies and reduced propagation delays, making the \texttt{-2} grade an optimal choice for this application.
+
+
 For this implementation, we used the \textbf{default clock setting} provided by Vitis, which is configured to a period of \textit{10 ns}. This corresponds to a clock frequency of \textit{100 MHz}, ensuring compatibility with the Zynq-7000 device and facilitating synthesis and implementation with minimal adjustments. Using the default clock setting allowed us to focus on optimizing other aspects of the design, such as resource utilization and latency, while maintaining a reliable and stable timing configuration.
 
 The following results will demonstrate how this default clock period fits well with our solution. Notably, we achieved efficient performance without the need to modify the default clock setting, highlighting the suitability of the 10 ns period for our design goals and hardware constraints.
@@ -504,7 +507,6 @@ C-RTL cosimulation is a verification process that ensures the functional equival
     \item \textbf{Reports}: Any mismatches or timing violations are reported for debugging purposes.
 \end{enumerate}
 
-\subparagraph{Analysis of Results}
 
 \begin{figure}[H]
     \centering
@@ -513,8 +515,6 @@ C-RTL cosimulation is a verification process that ensures the functional equival
     \label{fig:C-RTL-cosimulation}
 \end{figure}
 
-
-TODO : anche questa parte va rivista
 
 \subsubsection{Analysis of Results}
 
@@ -562,12 +562,18 @@ Regarding the \textit{RTL synthesis}, the report provides insights into the reso
 
 \begin{itemize}
     \item \textbf{Resource Utilization:} The design consumes a total of 4,438 LUTs, 5,332 FFs, 50 DSP blocks, 11 BRAMs, and 104 SRLs. Notably, no URAM, latches, or slices are utilized. This indicates an efficient use of FPGA resources without exceeding critical limits.
-    \item \textbf{Timing Constraints:} The required clock period is set to 10.000 ns. Post-synthesis, the achieved clock period is 6.872 ns, which satisfies the requirement and demonstrates that the design meets its performance constraints. However, the post-implementation clock period is marked as \textit{N/A}, suggesting that the design has not yet undergone the complete implementation flow. This requires further steps to validate whether the timing remains consistent after placement and routing.
+    \item \textbf{Timing Constraints:}
+    The required clock period for the design is set to 10.000 ns, corresponding to a target clock frequency of 100 MHz. During the synthesis phase, the achieved clock period is reported as 6.872 ns, which exceeds the performance requirements and indicates that the synthesized design meets the desired constraints. However, after implementation, the achieved clock period is reported as 7.860 ns. While this is slightly higher than the synthesized value, it still satisfies the required 10.000 ns clock period. 
+    
+    The increase in the clock period from synthesis to implementation can be attributed to additional routing delays and resource constraints introduced during placement and routing. These results confirm that the design meets the required timing constraints post-implementation while providing a buffer for further optimizations if needed.
+    
 \end{itemize}
 
 \subsubsection{Fail Fast Analysis}
 
-The \textit{Fail Fast} section serves as an automated verification step to ensure compliance with basic design guidelines before proceeding with computationally intensive stages of the design flow. The following columns are analyzed:
+The Fail Fast analysis is a preliminary verification step designed to ensure that the design adheres to fundamental guidelines before proceeding to computationally intensive stages such as placement and routing. This stage evaluates key aspects of the design, including resource utilization and timing constraints, to identify potential bottlenecks early in the development process.
+
+The following columns are analyzed:
 
 \begin{itemize}
     \item \textbf{Criteria:} Key aspects of the design, such as LUT usage, FD (Flip-Flop Density), and DFP (Dynamic Floating-Point operations), are monitored to ensure they fall within acceptable thresholds.
@@ -581,12 +587,39 @@ The \textit{Fail Fast} section serves as an automated verification step to ensur
     \end{itemize}
 \end{itemize}
 
-In this case, all criteria in the \textit{Fail Fast} analysis are marked as \textbf{OK}. This indicates that:
+\paragraph{Criteria Evaluated:}
 \begin{itemize}
-    \item The design complies with all fundamental guidelines, including resource usage and timing constraints.
-    \item No critical issues were detected that could block or degrade the implementation flow.
-    \item The design is ready for subsequent stages, such as post-implementation and hardware validation, with a high degree of confidence.
+    \item \textbf{LUT Usage:} Monitors the utilization of Look-Up Tables, ensuring that logic mapping remains within device capacity.
+    \item \textbf{Flip-Flop Density:} Assesses the distribution of flip-flops to avoid routing congestion.
+    \item \textbf{DSP Allocation:} Evaluates the usage of DSP slices for arithmetic operations, critical for neural network implementations.
+    \item \textbf{Timing Constraints:} Verifies whether the design meets the required clock period and ensures no timing violations.
 \end{itemize}
+
+\paragraph{Results:}
+The analysis revealed that all criteria were marked as \texttt{OK}, indicating that the design complies with resource and timing guidelines. A summary of the key metrics is shown in Table~\ref{tab:failfast-results}.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Criteria} & \textbf{Threshold} & \textbf{Actual} & \textbf{Status} \\
+        \hline
+        LUT Usage         & 14,400             & 3,738           & OK \\
+        Flip-Flop Usage   & 28,800             & 5,364           & OK \\
+        DSP Allocation    & 66                 & 50              & OK \\
+        BRAM Usage        & 50                 & 11              & OK \\
+        \hline
+    \end{tabular}
+    \caption{Fail Fast Analysis Results}
+    \label{tab:failfast-results}
+\end{table}
+
+\paragraph{Observations and Recommendations:}
+\begin{enumerate}
+    \item \textbf{Resource Utilization:} While all resources are within acceptable thresholds, DSP allocation is relatively high at 75.8\%. Future optimizations could focus on reducing DSP dependency by leveraging LUTs for simpler arithmetic operations.
+    \item \textbf{Timing Constraints:} The achieved clock period of 7.860 ns provides sufficient margin against the required 10.000 ns, demonstrating robust timing compliance.
+    \item \textbf{Critical Loops:} If further optimizations are required, consider reviewing high-latency loops to improve pipeline efficiency and reduce initiation intervals.
+\end{enumerate}
 
 The combination of the \textit{Implementation Report} and \textit{Fail Fast} analysis highlights the robustness of the design, ensuring efficient resource utilization and adherence to timing requirements while avoiding potential pitfalls early in the development process.
 
@@ -610,7 +643,7 @@ The combination of the \textit{Implementation Report} and \textit{Fail Fast} ana
     \label{fig:fail-fast}
 \end{figure}
 
-
+\newpage
 
 \section{Convolutional Neural Network (ConvNet)}
 The ConvNet forward pass was implemented in a similar manner to the MLP, with the main difference being the convolution and pooling operations. The ConvNet was trained on the famous \textit{MNIST} dataset, which contains 70.000 32x32 black and white images in 10 classes (representing hand-written digits).
