@@ -15,3 +15,5 @@ comp.run(operation="CO_SIMULATION")
 
 comp.run(operation="CO_SIMULATION")
 
+vitis.dispose()
+
