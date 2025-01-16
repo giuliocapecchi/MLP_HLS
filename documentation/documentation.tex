@@ -48,7 +48,7 @@
 \newpage
 
 \section{Introduction}
-This project focuses on the synthesis of the forward pass for three types of neural network architectures: a \textbf{Multilayer Perceptron (MLP)}, a \textbf{Convolutional Neural Network (ConvNet)}, and a \textbf{Transformer}, implemented on an FPGA.  
+This project focuses on the synthesis of the forward pass for three types of neural network architectures: a \textbf{Multilayer Perceptron (MLP)}, a \textbf{Convolutional Neural Network (ConvNet)}, and a \textbf{Transformer}, implemented on an FPGA (Field Programmable Gate Array).  
 To achieve this, the network parameters were first obtained using Python and the \textit{PyTorch} library. These parameters were subsequently hardcoded into \texttt{C} code, enabling the hardware synthesis process.
 
 
@@ -58,6 +58,10 @@ To achieve this, the network parameters were first obtained using Python and the
     \caption{Xilinx Vitis HLS}
     \label{fig:vitis_hls}
 \end{figure}
+
+\textbf{Vitis Unified Software Platform} is a comprehensive suite designed to accelerate the development of applications on FPGAs, Adaptive SoCs, and ACAPs (Adaptive Compute Acceleration Platforms). By combining high-level software programming techniques with hardware-optimized implementations, Vitis enables developers to write applications in \textit{C}, \textit{C++}, or \textit{OpenCL} while leveraging hardware-specific optimizations for enhanced performance.  
+
+In this project, Vitis plays a pivotal role in synthesizing the neural network architectures—MLP, ConvNet, and Transformer—onto the FPGA. Its \textbf{High-Level Synthesis (HLS)} tools allow for rapid prototyping and optimization of the \textit{C} code, ensuring efficient resource utilization, parallelism, and low-latency execution. The platform's ability to integrate high-level design, simulation, and hardware synthesis streamlines the workflow, bridging the gap between software and hardware development.
 
 
 \section{Project Description}
@@ -73,26 +77,21 @@ The \texttt{C} code developed includes the forward pass for:
     \item \textbf{Transformer}: managing complex operations like attention.
 \end{itemize}
 
-\#TODO : parlare delle direttive HLS
-/*
-HLS INLINE
-forza l'inserimento completo del corpo di una funzione o di un ciclo direttamente nel punto in cui è chiamato, eliminando l'overhead associato alla chiamata di funzione o all'allocazione di risorse hardware separate.
-Riduce la latenza perché elimina il ritardo di chiamata della funzione. Può aumentare l'area hardware utilizzata, perché la logica della funzione viene replicata ovunque venga chiamata.
-Tipicamente per funzioni semplici o molto usate, per ridurre la latenza.
+To optimize the C implementation for hardware synthesis, specific \textbf{HLS directives} were applied to critical portions of the code. These directives guide the High-Level Synthesis (HLS) tool to produce more efficient hardware designs by controlling resource allocation, loop unrolling, and pipeline creation. The two main directives used in this project are:
 
-HLS PIPELINE
-La direttiva HLS PIPELINE suddivide un ciclo o una funzione in più fasi (pipeline), permettendo l'esecuzione di più iterazioni o operazioni simultaneamente, aumentando il throughput del design.
-Permette l'elaborazione di nuove iterazioni a ogni ciclo di clock (o a intervalli specificati, chiamati Initiation Interval - II).
-Aumenta la velocità del sistema a scapito del consumo di risorse hardware.
-Opzioni:
-II=N (specifica l'intervallo di avvio delle iterazioni, ad esempio, 1 ciclo di clock tra una e l'altra).
-rewind (riavvia automaticamente il ciclo alla fine).
-Uso tipico
-Nei loop che processano grandi quantità di dati.
-Per aumentare il throughput in operazioni ripetitive.
-*/
+\begin{itemize}
+    \item \textbf{\texttt{HLS INLINE}}: This directive forces the complete insertion of the body of a function or loop directly at the point where it is called, eliminating the overhead associated with function calls or separate hardware resource allocation. By doing so, it reduces latency by eliminating function call delays. However, it may increase hardware area usage since the logic is replicated wherever the function is called. It is typically used for simple or frequently invoked functions to reduce latency.
+    
+    \item \textbf{\texttt{HLS PIPELINE}}: This directive breaks a loop or function into multiple stages (pipeline), allowing multiple iterations or operations to execute simultaneously, thereby increasing the design's throughput. It enables processing of new iterations in every clock cycle (or at specific intervals called \textit{Initiation Interval (II)}). The options for this directive include \texttt{II=N} (to specify the interval between iterations, such as 1 clock cycle) and \texttt{rewind} (to automatically restart the loop after completion). It is typically used in loops that process large amounts of data to maximize throughput in repetitive operations.
+\end{itemize}
 
-The network parameters (weights and biases) were directly integrated into the code in a hardcoded manner.
+These directives were applied strategically to balance trade-offs between latency, resource utilization, and overall performance. For example, \texttt{HLS INLINE} was used in frequently called small functions to minimize latency, while \texttt{HLS PIPELINE} was applied to loops processing neural network layers to maximize parallelism and throughput. The appropriate use of these directives is crucial for achieving efficient FPGA-based implementations.\\\\
+\textbf{Hardcoding Network Parameters}
+
+The network parameters (weights and biases) exported from the trained PyTorch model were directly integrated into the \textit{C} implementation in a hardcoded manner. This process ensures that the FPGA hardware has direct access to pre-trained values during the forward pass, avoiding the need for external memory accesses and thereby reducing latency.
+
+The specific details of how the weights and biases were exported, including the Python code used to save them into a text file, can be found in Section 4.2.3 TODO(check the correct section number). These parameters were then structured in the \texttt{C} code as arrays within the MLP structure, as defined in Section 4.3.1 TODO(check the correct section number). This approach, while limiting the flexibility of re-training or updating the model without recompilation, was chosen to optimize execution time and reduce complexity in hardware synthesis.
+
 
 \section{Code Architecture}
 \subsection{C File Structure}
@@ -389,7 +388,20 @@ The testbench is used to test that everything is working correctly and to evalua
 We always obtained an accuracy of 98\% with it, consistent with the results obtained with \textit{PyTorch}.
 
 \subsection{Results}
-The results obtained using the Vitis Unified IDE confirm the successful synthesis and implementation of the MLP forward pass on the FPGA. The development process in Vitis offers several stages where detailed reports are generated, providing valuable insights into the design's functionality and performance. The used device for this section was from the Product family \textbf{zynq}, and the Target device used was the \textbf{xc7z007s-clg225-2}.
+The results obtained using the Vitis Unified IDE confirm the successful synthesis and implementation of the MLP forward pass on the FPGA. The development process in Vitis offers several stages where detailed reports are generated, providing valuable insights into the design's functionality and performance. The used device for this section was from the Product family \textbf{zynq}, and the Target device used was the \textbf{xc7z007s-clg225-2}.\\\\
+The selected target device belongs to the Zynq-7000 family and is designed to integrate ARM processing systems with programmable logic. It features the following key specifications:
+\begin{itemize}
+    \item \textbf{Logic Resources}: The device provides 14,400 Look-Up Tables (LUTs) for implementing combinatorial logic.
+    \item \textbf{Flip-Flops (FFs)}: A total of 28,800 flip-flops are available, offering robust sequential logic capabilities.
+    \item \textbf{DSP Blocks}: The device includes 66 DSP slices, making it suitable for high-performance signal processing tasks.
+    \item \textbf{Block RAM (BRAM)}: 50 BRAMs are available, ensuring ample on-chip memory for intermediate data storage.
+\end{itemize}
+This combination of resources makes the \texttt{xc7z007s-clg225-2} well-suited for applications requiring both computation and flexibility, such as neural network inference on FPGA hardware.\\
+
+For this implementation, we used the \textbf{default clock setting} provided by Vitis, which is configured to a period of \textit{10 ns}. This corresponds to a clock frequency of \textit{100 MHz}, ensuring compatibility with the Zynq-7000 device and facilitating synthesis and implementation with minimal adjustments. Using the default clock setting allowed us to focus on optimizing other aspects of the design, such as resource utilization and latency, while maintaining a reliable and stable timing configuration.
+
+The following results will demonstrate how this default clock period fits well with our solution. Notably, we achieved efficient performance without the need to modify the default clock setting, highlighting the suitability of the 10 ns period for our design goals and hardware constraints.
+
 
 \subsubsection{Stages of Development}
 These stages include:
@@ -418,7 +430,7 @@ Here, we could mainly observe the correctness of the code (given by the expected
 
 
 \paragraph{C-Synthesis}
-Here, we can see the results of the synthesis of the MLP forward pass on the FPGA. The table below shows the \textit{Estmated Quality of results}, which is the first metric presented in the report:
+Here, we can see the results of the synthesis of the MLP forward pass on the FPGA. The table below shows the \textit{Estimated Quality of results}, which is the first metric presented in the report:
 
 \begin{table}[H]
     \centering
@@ -442,10 +454,19 @@ As we can see from the table, the estimated latency is 6.329 ns, with an uncerta
     \label{fig:c-synthesis-performance-resources}
 \end{figure}
 
-TODO : questa parte qui va controllata meglio
-\\\\From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 216 cycles, corresponding to an execution time of $2,160\ \mathrm{\mu s}$ under the target clock conditions. The report highlights that the main module was not fully pipelined, with an \textit{interval} of 217 cycles. This indicates that the module optimization could benefit from increased parallelization, especially within the internal loops.
-Examining the subsections of the \texttt{forward} module, we notice that several internal loops (\texttt{forward\_Pipeline\_VITIS\_LOOP}) were optimized using \textit{auto unrolling} and \textit{pipelining} techniques, with latencies ranging from 5 ns to 690 ns. However, the main loop of the module shows a relatively high latency (690 ns), indicating a potential bottleneck. Additionally, no usage of \texttt{URAM} is reported, while the DSP resources utilized amount to 50, with a significant number of Flip-Flops (\texttt{FF}) and Look-Up Tables (\texttt{LUT}) employed, totaling 7417 and 9689, respectively.
-These results suggest that there is room for improvement through increased parallelization and better utilization of available hardware resources, particularly by leveraging internal memory (\texttt{URAM}) and reducing the execution interval (\textit{interval}) for critical loops.
+From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 216 cycles, corresponding to an execution time of 2,160 ns under the target clock frequency of 100 MHz (10 ns per cycle). The initiation interval (II) for the main module is reported as 217 cycles, which indicates that the design could benefit from further pipelining to optimize parallel execution and reduce the interval.
+
+Examining the resource utilization, the design employs:
+\begin{itemize}
+    \item \textbf{9,689 Look-Up Tables (LUTs)}, which corresponds to approximately 67.3\% of the total 14,400 LUTs available on the \texttt{xc7z007s-clg225-2}.
+    \item \textbf{7,417 Flip-Flops (FFs)}, utilizing 25.7\% of the total 28,800 FFs available.
+    \item \textbf{50 DSP slices}, accounting for 75.8\% of the total 66 available DSPs.
+    \item \textbf{No BRAM or URAM}, which indicates that the design relies solely on external or internal registers for data storage.
+\end{itemize}
+
+The internal loops of the \texttt{forward} pass module demonstrate varied latencies, with some loops optimized using \texttt{\#pragma HLS UNROLL} and \texttt{\#pragma HLS PIPELINE}. Latencies range from 5 ns to 690 ns, with the primary loop exhibiting the highest latency (690 ns). This latency suggests potential bottlenecks in data dependencies or resource contention, which could be addressed by restructuring loops or leveraging more efficient parallelization strategies.
+
+To further enhance performance, improvements such as increasing the use of internal memory resources (e.g., BRAM/URAM) and reducing loop dependencies are recommended. These adjustments would help lower the initiation interval and improve overall throughput, making the design more efficient for hardware acceleration.
 \\\\We can also check from the report that, as expected the hardware interface corresponds to the input and output of the forward pass function, and that the utilized pragma syntax is correct and corresponds to the one we used in the code.
 
 \begin{figure}[H]
@@ -494,41 +515,41 @@ C-RTL cosimulation is a verification process that ensures the functional equival
 
 
 TODO : anche questa parte va rivista
-\\\\From the above table:
 
-\subparagraph{Initiation Interval (II)}
-\begin{itemize}
-    \item The initiation interval (II) across all loops is constant at \textbf{205 cycles}, which suggests that the pipeline performance for each loop is uniform and constrained by a similar bottleneck.
-\end{itemize}
+\subsubsection{Analysis of Results}
 
-\subparagraph{Latencies}
+The analysis of the results from the C/RTL co-simulation and synthesis reports highlights several key observations and metrics:
+
 \begin{itemize}
-    \item \textbf{Average Latency}: Varies for individual loops. For instance:
+    \item \textbf{Initiation Interval (II):} The initiation interval across all loops in the design remains constant at \textbf{205 cycles}. This uniform II suggests a consistent level of pipelining efficiency across the design. However, it also indicates that certain dependencies or resource constraints may limit further reduction of the II.
+
+    \item \textbf{Loop Latencies:} The latencies for individual loops vary significantly:
     \begin{itemize}
-        \item The \texttt{forward\_Pipeline\_VITIS\_LOOP\_73\_2} has an average latency of \textbf{37 cycles}.
-        \item Other loops like \texttt{forward\_Pipeline\_VITIS\_LOOP\_84\_44} achieve a minimal latency of \textbf{3 cycles}, indicating higher efficiency for certain tasks.
+        \item The loop labeled \texttt{forward\_Pipeline\_VITIS\_LOOP\_73\_2} exhibits an average latency of \textbf{37 cycles}, which aligns with expectations for its complexity.
+        \item Other loops, such as \texttt{forward\_Pipeline\_VITIS\_LOOP\_84\_44}, achieve minimal latencies of just \textbf{3 cycles}, indicating highly efficient implementation.
     \end{itemize}
-    \item The overall latency for the main \texttt{forward} module is \textbf{204 cycles}, which aligns with the high-level design expectations.
+    The overall latency of the forward pass main module is \textbf{204 cycles}, which matches the expected values from the high-level design.
+
+    \item \textbf{Total Execution Time:} The total execution time for the forward pass is reported as 30,749 ns. This result reflects the aggregated runtime of all components and their interactions.
+
+    \item \textbf{Pipeline Observations:} While the loops in the forward pass are pipelined, the relatively high initiation interval (205 cycles) suggests potential bottlenecks. These could stem from data dependencies or limited resource availability, particularly in critical paths of the design.
+
+    \item \textbf{Resource Utilization:} 
+    \begin{itemize}
+        \item The design effectively utilizes available DSPs, LUTs, and Flip-Flops, as previously described.
+        \item However, no usage of BRAM or URAM is reported. Leveraging these resources could reduce dependency on external memory and improve performance in memory-intensive operations.
+    \end{itemize}
 \end{itemize}
 
-\subparagraph{Total Execution Time}
-\begin{itemize}
-    \item The total execution time for the main \texttt{forward} module is reported as \textbf{30749 ns}, reflecting the aggregated runtime for the design.
-\end{itemize}
+\paragraph{Observations and Suggestions}
+The results confirm that the design is functional and performs as expected. However, several areas for improvement are identified:
+\begin{enumerate}
+    \item \textbf{Reducing II:} Efforts should be directed towards decreasing the initiation interval by addressing resource contention and loop dependencies. Techniques such as loop unrolling or splitting could be beneficial.
+    \item \textbf{Memory Utilization:} Introducing BRAM or URAM for intermediate data storage can minimize external memory accesses and improve throughput.
+    \item \textbf{Optimization of Critical Loops:} High-latency loops should be reviewed and restructured to enhance parallelism, potentially improving the overall execution time.
+\end{enumerate}
 
-\subparagraph{Pipeline Observations}
-\begin{itemize}
-    \item While the loops have been pipelined (as evidenced by consistent II values), the relatively high initiation interval of \textbf{205} could indicate that further optimization is needed to reduce dependencies or resource contention.
-\end{itemize}
-
-\subparagraph{Observations and Suggestions}
-
-\begin{itemize}
-    \item \textbf{Performance}: The latency and total execution time suggest that the design is functional, but there may be room for improvement in pipelining efficiency. Reducing the II could significantly enhance performance.
-    \item \textbf{Resource Utilization}: Resource contention or dependencies among operations might be causing the high II. Reviewing data paths and loop unrolling strategies could help alleviate bottlenecks.
-    \item \textbf{C-RTL Cosimulation Validation}: Assuming the results match between the C-level and RTL-level simulations, this confirms the functional correctness of the design and prepares it for downstream FPGA implementation.
-\end{itemize}
-
+By implementing these optimizations, the design could achieve higher efficiency and better alignment with the hardware capabilities of the target FPGA device.
 
 \paragraph{Packaging}
 Regarding the \textit{Package} section, there is  not much to be said, since the Vitis IDE doesn't provide a report for this stage. However, we can still infer that the packaging process was successful, as the design was ready for the final implementation stage.
