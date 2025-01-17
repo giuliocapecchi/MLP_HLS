@@ -994,7 +994,18 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
 \end{lstlisting}
 
 This implementation uses \texttt{\#pragma HLS ARRAY\_PARTITION} to optimize memory access patterns, enabling efficient synthesis for hardware acceleration.
-As with the MLP implementation, all weights and biases in the CNN are hardcoded and directly integrated into the \texttt{ConvNet.c} file. This approach ensures that the trained parameters from the PyTorch model are seamlessly incorporated into the C-based implementation for efficient execution.
+As with the MLP implementation, all weights and biases in the CNN are hardcoded and directly integrated into the \texttt{ConvNet.c} file. This approach ensures that the trained parameters from the PyTorch model are seamlessly incorporated into the C-based implementation for efficient execution.\\
+
+\textbf{Notes on the Forward Pass C Implementation:}\\
+The forward pass implementation introduces several design features tailored for hardware synthesis and performance optimization. In particular:
+
+\begin{itemize}
+    \item The use of a temporary buffer, \texttt{temp\_input}, to manage input data and handle padding. This design centralizes boundary condition management, simplifying the convolution operation by offloading padding logic to the data-loading phase.
+    \item TODO(remove it or update the code above) To perform an HLS-specific optimization, the \texttt{\#pragma HLS PIPELINE II=1} directive is introduced to maximize throughput. Pipelining ensures that new computations can be initiated every clock cycle, reducing latency and enhancing overall performance. These directives are applied at multiple stages, including input loading, convolution, and fully connected computations, to achieve optimal hardware synthesis.
+\end{itemize}
+
+The forward pass balances modularity and performance through clear separation of computations for each layer and strategic optimizations. Temporary buffers and intermediate storage enhance clarity, while HLS pragmas optimize memory usage and processing speed. These choices ensure that the forward function aligns with the trained PyTorch model while delivering high performance on FPGA hardware.
+
 
 
 \subsubsection{Testbench}
