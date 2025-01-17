@@ -48,7 +48,7 @@
 \newpage
 
 \section{Introduction}
-This project focuses on the synthesis of the forward pass for three types of neural network architectures: a \textbf{Multilayer Perceptron (MLP)}, a \textbf{Convolutional Neural Network (ConvNet)}, and a \textbf{Transformer}, implemented on an FPGA.  
+This project focuses on the synthesis of the forward pass for three types of neural network architectures: a \textbf{Multilayer Perceptron (MLP)}, a \textbf{Convolutional Neural Network (ConvNet)}, and a \textbf{Transformer}, implemented on an FPGA (Field Programmable Gate Array).  
 To achieve this, the network parameters were first obtained using Python and the \textit{PyTorch} library. These parameters were subsequently hardcoded into \texttt{C} code, enabling the hardware synthesis process.
 
 
@@ -58,6 +58,10 @@ To achieve this, the network parameters were first obtained using Python and the
     \caption{Xilinx Vitis HLS}
     \label{fig:vitis_hls}
 \end{figure}
+
+\textbf{Vitis Unified Software Platform} is a comprehensive suite designed to accelerate the development of applications on FPGAs, Adaptive SoCs, and ACAPs (Adaptive Compute Acceleration Platforms). By combining high-level software programming techniques with hardware-optimized implementations, Vitis enables developers to write applications in \textit{C}, \textit{C++}, or \textit{OpenCL} while leveraging hardware-specific optimizations for enhanced performance.  
+
+In this project, Vitis plays a pivotal role in synthesizing the neural network architectures—MLP, ConvNet, and Transformer—onto the FPGA. Its \textbf{High-Level Synthesis (HLS)} tools allow for rapid prototyping and optimization of the \textit{C} code, ensuring efficient resource utilization, parallelism, and low-latency execution. The platform's ability to integrate high-level design, simulation, and hardware synthesis streamlines the workflow, bridging the gap between software and hardware development.
 
 
 \section{Project Description}
@@ -73,26 +77,24 @@ The \texttt{C} code developed includes the forward pass for:
     \item \textbf{Transformer}: managing complex operations like attention.
 \end{itemize}
 
-\#TODO : parlare delle direttive HLS
-/*
-HLS INLINE
-forza l'inserimento completo del corpo di una funzione o di un ciclo direttamente nel punto in cui è chiamato, eliminando l'overhead associato alla chiamata di funzione o all'allocazione di risorse hardware separate.
-Riduce la latenza perché elimina il ritardo di chiamata della funzione. Può aumentare l'area hardware utilizzata, perché la logica della funzione viene replicata ovunque venga chiamata.
-Tipicamente per funzioni semplici o molto usate, per ridurre la latenza.
+To optimize the C implementation for hardware synthesis, specific \textbf{HLS directives} were applied to critical portions of the code. These directives guide the High-Level Synthesis (HLS) tool to produce more efficient hardware designs by controlling resource allocation, loop unrolling, and pipeline creation. The two main directives used in this project are:
 
-HLS PIPELINE
-La direttiva HLS PIPELINE suddivide un ciclo o una funzione in più fasi (pipeline), permettendo l'esecuzione di più iterazioni o operazioni simultaneamente, aumentando il throughput del design.
-Permette l'elaborazione di nuove iterazioni a ogni ciclo di clock (o a intervalli specificati, chiamati Initiation Interval - II).
-Aumenta la velocità del sistema a scapito del consumo di risorse hardware.
-Opzioni:
-II=N (specifica l'intervallo di avvio delle iterazioni, ad esempio, 1 ciclo di clock tra una e l'altra).
-rewind (riavvia automaticamente il ciclo alla fine).
-Uso tipico
-Nei loop che processano grandi quantità di dati.
-Per aumentare il throughput in operazioni ripetitive.
-*/
+\begin{itemize}
+    \item \textbf{\texttt{HLS INLINE}}: This directive forces the complete insertion of the body of a function or loop directly at the point where it is called, eliminating the overhead associated with function calls or separate hardware resource allocation. By doing so, it reduces latency by eliminating function call delays. However, it may increase hardware area usage since the logic is replicated wherever the function is called. It is typically used for simple or frequently invoked functions to reduce latency.
+    
+    \item \textbf{\texttt{HLS PIPELINE}}: This directive breaks a loop or function into multiple stages (pipeline), allowing multiple iterations or operations to execute simultaneously, thereby increasing the design's throughput. It enables processing of new iterations in every clock cycle (or at specific intervals called \textit{Initiation Interval (II)}). The options for this directive include \texttt{II=N} (to specify the interval between iterations, such as 1 clock cycle) and \texttt{rewind} (to automatically restart the loop after completion). It is typically used in loops that process large amounts of data to maximize throughput in repetitive operations.
+\end{itemize}
 
-The network parameters (weights and biases) were directly integrated into the code in a hardcoded manner.
+These directives were applied strategically to balance trade-offs between latency, resource utilization, and overall performance. For example, \texttt{HLS INLINE} was used in frequently called small functions to minimize latency, while \texttt{HLS PIPELINE} was applied to loops processing neural network layers to maximize parallelism and throughput. The appropriate use of these directives is crucial for achieving efficient FPGA-based implementations.\\\\
+It is important to note that the directives discussed in this section represent only a subset of the directives executed by the HLS compiler during the synthesis process. These directives were explicitly added to address specific warnings and improve the design's performance. They were carefully placed at the exact lines of code where they were required to resolve issues or optimize critical sections of the implementation.\\\\
+
+\newpage
+\textbf{Hardcoding Network Parameters}
+
+The network parameters (weights and biases) exported from the trained PyTorch model were directly integrated into the \textit{C} implementation in a hardcoded manner. This process ensures that the FPGA hardware has direct access to pre-trained values during the forward pass, avoiding the need for external memory accesses and thereby reducing latency.
+
+The specific details of how the weights and biases were exported, including the Python code used to save them into a text file, can be found in Section 4.2.3 TODO(check the correct section number). These parameters were then structured in the \texttt{C} code as arrays within the MLP structure, as defined in Section 4.3.1 TODO(check the correct section number). This approach, while limiting the flexibility of re-training or updating the model without recompilation, was chosen to optimize execution time and reduce complexity in hardware synthesis.
+
 
 \section{Code Architecture}
 \subsection{C File Structure}
@@ -389,7 +391,23 @@ The testbench is used to test that everything is working correctly and to evalua
 We always obtained an accuracy of 98\% with it, consistent with the results obtained with \textit{PyTorch}.
 
 \subsection{Results}
-The results obtained using the Vitis Unified IDE confirm the successful synthesis and implementation of the MLP forward pass on the FPGA. The development process in Vitis offers several stages where detailed reports are generated, providing valuable insights into the design's functionality and performance. The used device for this section was from the Product family \textbf{zynq}, and the Target device used was the \textbf{xc7z007s-clg225-2}.
+The results obtained using the Vitis Unified IDE confirm the successful synthesis and implementation of the MLP forward pass on the FPGA. The development process in Vitis offers several stages where detailed reports are generated, providing valuable insights into the design's functionality and performance. The used device for this section was from the Product family \textbf{zynq}, and the Target device used was the \textbf{xc7z007s-clg225-2}.\\\\
+The selected target device belongs to the Zynq-7000 family and is designed to integrate ARM processing systems with programmable logic. It features the following key specifications:
+\begin{itemize}
+    \item \textbf{Logic Resources}: The device provides 14,400 Look-Up Tables (LUTs) for implementing combinatorial logic.
+    \item \textbf{Flip-Flops (FFs)}: A total of 28,800 flip-flops are available, offering robust sequential logic capabilities.
+    \item \textbf{DSP Blocks}: The device includes 66 DSP slices, making it suitable for high-performance signal processing tasks.
+    \item \textbf{Block RAM (BRAM)}: 50 BRAMs are available, ensuring ample on-chip memory for intermediate data storage.
+\end{itemize}
+This combination of resources makes the \texttt{xc7z007s-clg225-2} well-suited for applications requiring both computation and flexibility, such as neural network inference on FPGA hardware.\\
+
+The selected device has a \textbf{speed grade of \texttt{-2}}, which represents a medium performance level within the Zynq-7000 family. Speed grades for this family typically range from \texttt{-1} (lowest performance) to \texttt{-3} (highest performance). The \texttt{-2} speed grade offers a balance between performance and power efficiency, providing sufficient timing capabilities for the neural network inference tasks targeted in this design. Lower speed grade numbers correspond to higher achievable clock frequencies and reduced propagation delays, making the \texttt{-2} grade an optimal choice for this application.
+
+
+For this implementation, we used the \textbf{default clock setting} provided by Vitis, which is configured to a period of \textit{10 ns}. This corresponds to a clock frequency of \textit{100 MHz}, ensuring compatibility with the Zynq-7000 device and facilitating synthesis and implementation with minimal adjustments. Using the default clock setting allowed us to focus on optimizing other aspects of the design, such as resource utilization and latency, while maintaining a reliable and stable timing configuration.
+
+The following results will demonstrate how this default clock period fits well with our solution. Notably, we achieved efficient performance without the need to modify the default clock setting, highlighting the suitability of the 10 ns period for our design goals and hardware constraints.
+
 
 \subsubsection{Stages of Development}
 These stages include:
@@ -418,7 +436,7 @@ Here, we could mainly observe the correctness of the code (given by the expected
 
 
 \paragraph{C-Synthesis}
-Here, we can see the results of the synthesis of the MLP forward pass on the FPGA. The table below shows the \textit{Estmated Quality of results}, which is the first metric presented in the report:
+Here, we can see the results of the synthesis of the MLP forward pass on the FPGA. The table below shows the \textit{Estimated Quality of results}, which is the first metric presented in the report:
 
 \begin{table}[H]
     \centering
@@ -442,10 +460,19 @@ As we can see from the table, the estimated latency is 6.329 ns, with an uncerta
     \label{fig:c-synthesis-performance-resources}
 \end{figure}
 
-TODO : questa parte qui va controllata meglio
-\\\\From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 216 cycles, corresponding to an execution time of $2,160\ \mathrm{\mu s}$ under the target clock conditions. The report highlights that the main module was not fully pipelined, with an \textit{interval} of 217 cycles. This indicates that the module optimization could benefit from increased parallelization, especially within the internal loops.
-Examining the subsections of the \texttt{forward} module, we notice that several internal loops (\texttt{forward\_Pipeline\_VITIS\_LOOP}) were optimized using \textit{auto unrolling} and \textit{pipelining} techniques, with latencies ranging from 5 ns to 690 ns. However, the main loop of the module shows a relatively high latency (690 ns), indicating a potential bottleneck. Additionally, no usage of \texttt{URAM} is reported, while the DSP resources utilized amount to 50, with a significant number of Flip-Flops (\texttt{FF}) and Look-Up Tables (\texttt{LUT}) employed, totaling 7417 and 9689, respectively.
-These results suggest that there is room for improvement through increased parallelization and better utilization of available hardware resources, particularly by leveraging internal memory (\texttt{URAM}) and reducing the execution interval (\textit{interval}) for critical loops.
+From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 216 cycles, corresponding to an execution time of 2,160 ns under the target clock frequency of 100 MHz (10 ns per cycle). The initiation interval (II) for the main module is reported as 217 cycles, which indicates that the design could benefit from further pipelining to optimize parallel execution and reduce the interval.
+
+Examining the resource utilization, the design employs:
+\begin{itemize}
+    \item \textbf{9,689 Look-Up Tables (LUTs)}, which corresponds to approximately 67.3\% of the total 14,400 LUTs available on the \texttt{xc7z007s-clg225-2}.
+    \item \textbf{7,417 Flip-Flops (FFs)}, utilizing 25.7\% of the total 28,800 FFs available.
+    \item \textbf{50 DSP slices}, accounting for 75.8\% of the total 66 available DSPs.
+    \item \textbf{No BRAM or URAM}, which indicates that the design relies solely on external or internal registers for data storage.
+\end{itemize}
+
+The internal loops of the \texttt{forward} pass module demonstrate varied latencies, with some loops optimized using \texttt{\#pragma HLS UNROLL} and \texttt{\#pragma HLS PIPELINE}. Latencies range from 5 ns to 690 ns, with the primary loop exhibiting the highest latency (690 ns). This latency suggests potential bottlenecks in data dependencies or resource contention, which could be addressed by restructuring loops or leveraging more efficient parallelization strategies.
+
+To further enhance performance, improvements such as increasing the use of internal memory resources (e.g., BRAM/URAM) and reducing loop dependencies are recommended. These adjustments would help lower the initiation interval and improve overall throughput, making the design more efficient for hardware acceleration.
 \\\\We can also check from the report that, as expected the hardware interface corresponds to the input and output of the forward pass function, and that the utilized pragma syntax is correct and corresponds to the one we used in the code.
 
 \begin{figure}[H]
@@ -483,7 +510,6 @@ C-RTL cosimulation is a verification process that ensures the functional equival
     \item \textbf{Reports}: Any mismatches or timing violations are reported for debugging purposes.
 \end{enumerate}
 
-\subparagraph{Analysis of Results}
 
 \begin{figure}[H]
     \centering
@@ -493,42 +519,40 @@ C-RTL cosimulation is a verification process that ensures the functional equival
 \end{figure}
 
 
-TODO : anche questa parte va rivista
-\\\\From the above table:
+\subsubsection{Analysis of Results}
 
-\subparagraph{Initiation Interval (II)}
-\begin{itemize}
-    \item The initiation interval (II) across all loops is constant at \textbf{205 cycles}, which suggests that the pipeline performance for each loop is uniform and constrained by a similar bottleneck.
-\end{itemize}
+The analysis of the results from the C/RTL co-simulation and synthesis reports highlights several key observations and metrics:
 
-\subparagraph{Latencies}
 \begin{itemize}
-    \item \textbf{Average Latency}: Varies for individual loops. For instance:
+    \item \textbf{Initiation Interval (II):} The initiation interval across all loops in the design remains constant at \textbf{205 cycles}. This uniform II suggests a consistent level of pipelining efficiency across the design. However, it also indicates that certain dependencies or resource constraints may limit further reduction of the II.
+
+    \item \textbf{Loop Latencies:} The latencies for individual loops vary significantly:
     \begin{itemize}
-        \item The \texttt{forward\_Pipeline\_VITIS\_LOOP\_73\_2} has an average latency of \textbf{37 cycles}.
-        \item Other loops like \texttt{forward\_Pipeline\_VITIS\_LOOP\_84\_44} achieve a minimal latency of \textbf{3 cycles}, indicating higher efficiency for certain tasks.
+        \item The loop labeled \texttt{forward\_Pipeline\_VITIS\_LOOP\_73\_2} exhibits an average latency of \textbf{37 cycles}, which aligns with expectations for its complexity.
+        \item Other loops, such as \texttt{forward\_Pipeline\_VITIS\_LOOP\_84\_44}, achieve minimal latencies of just \textbf{3 cycles}, indicating highly efficient implementation.
     \end{itemize}
-    \item The overall latency for the main \texttt{forward} module is \textbf{204 cycles}, which aligns with the high-level design expectations.
+    The overall latency of the forward pass main module is \textbf{204 cycles}, which matches the expected values from the high-level design.
+
+    \item \textbf{Total Execution Time:} The total execution time for the forward pass is reported as 30,749 ns. This result reflects the aggregated runtime of all components and their interactions.
+
+    \item \textbf{Pipeline Observations:} While the loops in the forward pass are pipelined, the relatively high initiation interval (205 cycles) suggests potential bottlenecks. These could stem from data dependencies or limited resource availability, particularly in critical paths of the design.
+
+    \item \textbf{Resource Utilization:} 
+    \begin{itemize}
+        \item The design effectively utilizes available DSPs, LUTs, and Flip-Flops, as previously described.
+        \item However, no usage of BRAM or URAM is reported. Leveraging these resources could reduce dependency on external memory and improve performance in memory-intensive operations.
+    \end{itemize}
 \end{itemize}
 
-\subparagraph{Total Execution Time}
-\begin{itemize}
-    \item The total execution time for the main \texttt{forward} module is reported as \textbf{30749 ns}, reflecting the aggregated runtime for the design.
-\end{itemize}
+\paragraph{Observations and Suggestions}
+The results confirm that the design is functional and performs as expected. However, several areas for improvement are identified:
+\begin{enumerate}
+    \item \textbf{Reducing II:} Efforts should be directed towards decreasing the initiation interval by addressing resource contention and loop dependencies. Techniques such as loop unrolling or splitting could be beneficial.
+    \item \textbf{Memory Utilization:} Introducing BRAM or URAM for intermediate data storage can minimize external memory accesses and improve throughput.
+    \item \textbf{Optimization of Critical Loops:} High-latency loops should be reviewed and restructured to enhance parallelism, potentially improving the overall execution time.
+\end{enumerate}
 
-\subparagraph{Pipeline Observations}
-\begin{itemize}
-    \item While the loops have been pipelined (as evidenced by consistent II values), the relatively high initiation interval of \textbf{205} could indicate that further optimization is needed to reduce dependencies or resource contention.
-\end{itemize}
-
-\subparagraph{Observations and Suggestions}
-
-\begin{itemize}
-    \item \textbf{Performance}: The latency and total execution time suggest that the design is functional, but there may be room for improvement in pipelining efficiency. Reducing the II could significantly enhance performance.
-    \item \textbf{Resource Utilization}: Resource contention or dependencies among operations might be causing the high II. Reviewing data paths and loop unrolling strategies could help alleviate bottlenecks.
-    \item \textbf{C-RTL Cosimulation Validation}: Assuming the results match between the C-level and RTL-level simulations, this confirms the functional correctness of the design and prepares it for downstream FPGA implementation.
-\end{itemize}
-
+By implementing these optimizations, the design could achieve higher efficiency and better alignment with the hardware capabilities of the target FPGA device.
 
 \paragraph{Packaging}
 Regarding the \textit{Package} section, there is  not much to be said, since the Vitis IDE doesn't provide a report for this stage. However, we can still infer that the packaging process was successful, as the design was ready for the final implementation stage.
@@ -541,12 +565,18 @@ Regarding the \textit{RTL synthesis}, the report provides insights into the reso
 
 \begin{itemize}
     \item \textbf{Resource Utilization:} The design consumes a total of 4,438 LUTs, 5,332 FFs, 50 DSP blocks, 11 BRAMs, and 104 SRLs. Notably, no URAM, latches, or slices are utilized. This indicates an efficient use of FPGA resources without exceeding critical limits.
-    \item \textbf{Timing Constraints:} The required clock period is set to 10.000 ns. Post-synthesis, the achieved clock period is 6.872 ns, which satisfies the requirement and demonstrates that the design meets its performance constraints. However, the post-implementation clock period is marked as \textit{N/A}, suggesting that the design has not yet undergone the complete implementation flow. This requires further steps to validate whether the timing remains consistent after placement and routing.
+    \item \textbf{Timing Constraints:}
+    The required clock period for the design is set to 10.000 ns, corresponding to a target clock frequency of 100 MHz. During the synthesis phase, the achieved clock period is reported as 6.872 ns, which exceeds the performance requirements and indicates that the synthesized design meets the desired constraints. However, after implementation, the achieved clock period is reported as 7.860 ns. While this is slightly higher than the synthesized value, it still satisfies the required 10.000 ns clock period. 
+    
+    The increase in the clock period from synthesis to implementation can be attributed to additional routing delays and resource constraints introduced during placement and routing. These results confirm that the design meets the required timing constraints post-implementation while providing a buffer for further optimizations if needed.
+    
 \end{itemize}
 
 \subsubsection{Fail Fast Analysis}
 
-The \textit{Fail Fast} section serves as an automated verification step to ensure compliance with basic design guidelines before proceeding with computationally intensive stages of the design flow. The following columns are analyzed:
+The Fail Fast analysis is a preliminary verification step designed to ensure that the design adheres to fundamental guidelines before proceeding to computationally intensive stages such as placement and routing. This stage evaluates key aspects of the design, including resource utilization and timing constraints, to identify potential bottlenecks early in the development process.
+
+The following columns are analyzed:
 
 \begin{itemize}
     \item \textbf{Criteria:} Key aspects of the design, such as LUT usage, FD (Flip-Flop Density), and DFP (Dynamic Floating-Point operations), are monitored to ensure they fall within acceptable thresholds.
@@ -560,12 +590,39 @@ The \textit{Fail Fast} section serves as an automated verification step to ensur
     \end{itemize}
 \end{itemize}
 
-In this case, all criteria in the \textit{Fail Fast} analysis are marked as \textbf{OK}. This indicates that:
+\paragraph{Criteria Evaluated:}
 \begin{itemize}
-    \item The design complies with all fundamental guidelines, including resource usage and timing constraints.
-    \item No critical issues were detected that could block or degrade the implementation flow.
-    \item The design is ready for subsequent stages, such as post-implementation and hardware validation, with a high degree of confidence.
+    \item \textbf{LUT Usage:} Monitors the utilization of Look-Up Tables, ensuring that logic mapping remains within device capacity.
+    \item \textbf{Flip-Flop Density:} Assesses the distribution of flip-flops to avoid routing congestion.
+    \item \textbf{DSP Allocation:} Evaluates the usage of DSP slices for arithmetic operations, critical for neural network implementations.
+    \item \textbf{Timing Constraints:} Verifies whether the design meets the required clock period and ensures no timing violations.
 \end{itemize}
+
+\paragraph{Results:}
+The analysis revealed that all criteria were marked as \texttt{OK}, indicating that the design complies with resource and timing guidelines. A summary of the key metrics is shown in Table~\ref{tab:failfast-results}.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Criteria} & \textbf{Threshold} & \textbf{Actual} & \textbf{Status} \\
+        \hline
+        LUT Usage         & 14,400             & 3,738           & OK \\
+        Flip-Flop Usage   & 28,800             & 5,364           & OK \\
+        DSP Allocation    & 66                 & 50              & OK \\
+        BRAM Usage        & 50                 & 11              & OK \\
+        \hline
+    \end{tabular}
+    \caption{Fail Fast Analysis Results}
+    \label{tab:failfast-results}
+\end{table}
+
+\paragraph{Observations and Recommendations:}
+\begin{enumerate}
+    \item \textbf{Resource Utilization:} While all resources are within acceptable thresholds, DSP allocation is relatively high at 75.8\%. Future optimizations could focus on reducing DSP dependency by leveraging LUTs for simpler arithmetic operations.
+    \item \textbf{Timing Constraints:} The achieved clock period of 7.860 ns provides sufficient margin against the required 10.000 ns, demonstrating robust timing compliance.
+    \item \textbf{Critical Loops:} If further optimizations are required, consider reviewing high-latency loops to improve pipeline efficiency and reduce initiation intervals.
+\end{enumerate}
 
 The combination of the \textit{Implementation Report} and \textit{Fail Fast} analysis highlights the robustness of the design, ensuring efficient resource utilization and adherence to timing requirements while avoiding potential pitfalls early in the development process.
 
@@ -589,10 +646,454 @@ The combination of the \textit{Implementation Report} and \textit{Fail Fast} ana
     \label{fig:fail-fast}
 \end{figure}
 
+\newpage
 
 
-\section{Convolutional Neural Network (ConvNet)}
-The ConvNet forward pass was implemented in a similar manner to the MLP, with the main difference being the convolution and pooling operations. The ConvNet was trained on the famous \textit{MNIST} dataset, which contains 70.000 32x32 black and white images in 10 classes (representing hand-written digits).
+\section{Convolutional Neural Network (CNN)}
+Convolutional Neural Networks (CNNs) are a class of deep learning models specifically designed to process grid-like data, such as images. Their ability to automatically learn spatial hierarchies of features makes them highly effective for image classification tasks. In this implementation, a simple yet efficient CNN is designed and trained to classify handwritten digits from the famuos MNIST dataset, with the aim of achieving high accuracy while remaining compatible with hardware synthesis constraints. So the ConvNet forward pass was implemented in a similar manner to the MLP, with the main difference being the convolution and pooling operations.
+
+
+\subsection{Dataset}
+The CNN was trained on the MNIST dataset, a widely used benchmark for handwritten digit classification tasks. The dataset consists of 70,000 grayscale images of digits (0,1,2,3,4,5,6,7,8,9), each with a resolution of $28 \times 28$ pixels. The dataset was split into two subsets, with 70\% used as the training set and 30\% as the validation set, resulting in the following distribution:
+
+\begin{itemize}
+    \item Training set: 42,000 samples.
+    \item Validation set: 18,000 samples.
+    \item Test set: 10,000 samples for evaluating the model's performance.
+\end{itemize}
+
+The dataset was preprocessed using normalization to scale pixel values to the range $[-1, 1]$, this normalization centers the pixel values around 0 and scales them to have a standard deviation of 1, which can often help with model training and convergence.
+
+
+\subsection{PyTorch Model}
+
+\subsubsection{Model Architecture}
+The ConvNet is designed to be as simple as possible, ensuring efficiency and compatibility with hardware synthesis using Vitis HLS. The structure includes the following layers:
+\begin{itemize}
+    \item \textbf{Convolutional Layer:} A single convolutional layer with 3 filters, each of size $3 \times 3$, stride $1$, and padding $1$. This layer increases feature representation by extracting local patterns from the input images.
+    \item \textbf{ReLU Activation:} Applied after the convolutional layer to introduce non-linearity into the model.
+    \item \textbf{Pooling Layer:} A max-pooling layer with a kernel size of $2 \times 2$ and a stride of $2$, reducing the spatial dimensions of the feature map by half.
+    \item \textbf{Fully Connected Layer:} It takes as input the flattened feature map from the convolutional and pooling layers. As output 10 neurons representing the 10 digit classes (0–9). This layer does not apply an activation function, as it is followed by the softmax during training or inference.
+\end{itemize}
+
+The forward pass through the network is as follows:
+\begin{enumerate}
+    \item Apply the convolutional layer to the input image, followed by the ReLU activation function.
+    \item Perform max-pooling on the resulting feature map.
+    \item Flatten the feature map into a one-dimensional vector.
+    \item Pass the flattened vector through the fully connected layer to produce class probabilities.
+\end{enumerate}
+
+The simplicity of this architecture ensures compatibility with hardware synthesis while maintaining high accuracy for digit classification tasks.\\
+
+The model was defined as follows, using the \textit{PyTorch} library:
+
+\begin{lstlisting}[language=Python]
+# Define the CNN model
+class ConvNet(nn.Module):
+    def __init__(self):
+        super(ConvNet, self).__init__()
+        # Input: x = [1, 28, 28]
+        self.conv1 = nn.Conv2d(1, 3, kernel_size=3, stride=1, padding=1)  
+        # Convolutional Layer: Output: x = [3, 28, 28]
+        # Formula: (W - F + 2P) / S + 1
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)  
+        # Pooling Layer: Output: x = [3, 14, 14]
+        # Formula: (W - F) / S + 1
+        self.fc1 = nn.Linear(3 * 14 * 14, 10)  
+        # Fully Connected Layer: Flatten the output to match 10 classes
+
+    def forward(self, x):
+        x = torch.relu(self.conv1(x))  # Apply ReLU after convolution
+        x = self.pool(x)              # Apply max pooling
+        x = x.view(x.size(0), -1)     # Flatten the tensor
+        x = self.fc1(x)               # Fully connected layer
+        return x
+\end{lstlisting}
+
+
+
+\subsubsection{Model Training}
+The training process for the Convolutional Neural Network (CNN) was performed using the \textit{PyTorch} library. The objective was to minimize the cross-entropy loss, a suitable loss function for multi-class classification problems. The training configuration was as follows:
+\begin{itemize}
+    \item \textbf{Loss Function:} CrossEntropyLoss.
+    \item \textbf{Optimizer:} Adam optimizer with a learning rate of 0.001.
+    \item \textbf{Batch Size:} 64.
+    \item \textbf{Epochs:} 100.
+\end{itemize}
+
+\begin{lstlisting}[language=Python]
+# initialize network, loss function and optimizer
+model = ConvNet().to(device)
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+\end{lstlisting}
+
+The training procedure involved the following steps:
+\begin{enumerate}
+    \item The input images were passed through the CNN in a forward pass to compute the predicted class probabilities.
+    \item The CrossEntropyLoss function was used to calculate the loss between the predicted and actual class labels.
+    \item Backpropagation was performed to compute the gradients of the loss with respect to the model parameters.
+    \item The Adam optimizer was used to update the parameters using the calculated gradients.
+\end{enumerate}
+
+After each epoch, the model was evaluated on the validation set to monitor its performance. The accuracy and loss for both training and validation sets were recorded for further analysis.
+
+\clearpage
+\begin{table}[htbp]
+    \centering
+    \caption{Training and Validation Results at Selected Epochs}
+    \label{tab:training-results}
+    \renewcommand{\arraystretch}{1.2} % Increase row spacing
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    \textbf{Epoch} & \textbf{Train Loss} & \textbf{Train Accuracy (\%)} & \textbf{Val Loss} & \textbf{Val Accuracy (\%)} \\ \hline
+    10             & 0.1194             & 96.49                        & 0.1360            & 96.03                       \\ \hline
+    20             & 0.0907             & 97.30                        & 0.1232            & 96.38                       \\ \hline
+    30             & 0.0735             & 97.74                        & 0.1130            & 96.77                       \\ \hline
+    40             & 0.0636             & 98.03                        & 0.1122            & 96.79                       \\ \hline
+    50             & 0.0571             & 98.27                        & 0.1147            & 96.75                       \\ \hline
+    60             & 0.0521             & 98.34                        & 0.1147            & 96.88                       \\ \hline
+    70             & 0.0491             & 98.39                        & 0.1259            & 96.73                       \\ \hline
+    80             & 0.0459             & 98.53                        & 0.1285            & 96.69                       \\ \hline
+    90             & 0.0439             & 98.55                        & 0.1342            & 96.61                       \\ \hline
+    100            & 0.0411             & 98.71                        & 0.1325            & 96.76                       \\ \hline
+    \end{tabular}
+\end{table}
+    
+
+The final test performance was as follows:
+\begin{itemize}
+    \item \textbf{Test Loss:} 0.1260
+    \item \textbf{Test Accuracy:} 97.06\%
+\end{itemize}
+
+
+The following Python code snippet shows the main training loop:
+\begin{lstlisting}[language=Python]
+# Training loop
+for epoch in range(NUM_EPOCHS):
+    model.train()
+    train_loss = 0.0
+    train_correct = 0
+    train_total = 0
+
+    for images, labels in train_loader:
+        images, labels = images.to(device), labels.to(device)
+
+        optimizer.zero_grad()
+        outputs = model(images)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+
+        train_loss += loss.item()
+        _, predicted = outputs.max(1)
+        train_total += labels.size(0)
+        train_correct += predicted.eq(labels).sum().item()
+
+    train_accuracy = 100. * train_correct / train_total
+
+    # Validation phase
+    model.eval()
+    val_loss = 0.0
+    val_correct = 0
+    val_total = 0
+
+    with torch.no_grad():  # Disable gradient calculations
+        for images, labels in val_loader:
+            images, labels = images.to(device), labels.to(device)
+
+            outputs = model(images)
+            loss = criterion(outputs, labels)
+
+            val_loss += loss.item()
+            _, predicted = outputs.max(1)
+            val_total += labels.size(0)
+            val_correct += predicted.eq(labels).sum().item()
+
+    val_accuracy = 100. * val_correct / val_total
+
+    if (epoch + 1) % 10 == 0:
+        print(f"Epoch [{epoch + 1}/{NUM_EPOCHS}], "
+              f"Train Loss: {train_loss / len(train_loader):.4f}, Train Acc: {train_accuracy:.2f}%, "
+              f"Val Loss: {val_loss / len(val_loader):.4f}, Val Acc: {val_accuracy:.2f}%")
+\end{lstlisting}
+
+
+
+\subsubsection{Exporting Parameters}
+To facilitate hardware implementation, the trained parameters (weights and biases) of the CNN model were exported to a structured format. This process allows the model to be reimplemented in a different environment, such as a C-based hardware description.
+
+The following Python code was used to extract and store the parameters:
+
+\begin{lstlisting}[language=Python]
+weights = {}
+total_params = 0
+for name, param in model.to("cpu").named_parameters():
+    weights[name] = param.detach().numpy()
+    layer_params = param.numel()
+    total_params += layer_params
+    print(f"{name}: {param.shape}, Total Parameters: {layer_params}")
+
+print(f"Total Parameters in the model: {total_params}")
+\end{lstlisting}
+
+This process ensures the trained model can be effectively utilized in hardware environments, preserving its performance and structure.
+
+
+\subsection{C Implementation}
+The implementation of the Convolutional Neural Network (CNN) model in C is divided into three main files:
+
+\begin{itemize}
+    \item \texttt{ConvNet.h}: This header file defines the data structures and constants used in the implementation, including the convolutional and fully connected layers, and the overall network structure.
+    \item \texttt{ConvNet.c}: This file contains the implementation of the CNN's functionality, including the forward pass and activation functions, along with predefined weights and biases.
+    \item \texttt{testbench.c}: This file serves as a testbench to verify the network's functionality. It includes functions for reading input data, executing the forward pass, and evaluating the model's output against the expected results.
+\end{itemize}
+
+This modular approach ensures clarity and separation of concerns, allowing for easy modification and testing of individual components. The details of each file are described in the following subsections.
+
+
+\subsubsection{CNN Structure}
+The Convolutional Neural Network (CNN) structure is implemented in C to match the architecture defined in the PyTorch model. It consists of the following components:
+
+\begin{itemize}
+    \item \textbf{Convolutional Layer:} This layer performs the convolution operation by sliding a set of filters (or kernels) over the input image to extract spatial features. The implementation uses nested loops to apply the filters, taking into account padding and stride.
+    \item \textbf{ReLU Activation:} The Rectified Linear Unit (ReLU) activation function is applied after the convolutional operation to introduce non-linearity. The ReLU function replaces negative values in the feature map with zeros.
+    \item \textbf{Pooling Layer:} A max-pooling operation reduces the spatial dimensions of the feature map by selecting the maximum value within a kernel-sized region. This layer helps to downsample the feature map and make the model more robust to small spatial variations.
+    \item \textbf{Fully Connected Layer:} The fully connected layer takes the flattened output from the pooling layer as input and maps it to the output classes. This is achieved by performing a linear transformation using the preloaded weights and biases.
+\end{itemize}
+
+The CNN structure is defined in the header file \texttt{ConvNet.h}, which outlines the data structures and constants used for the network. The file also declares the \texttt{forward} function responsible for executing the network. Here the ConvNet structure:
+
+\begin{lstlisting}[language=C]
+// Structure to represent a convolutional layer
+typedef struct {
+    float weights[CONV1_OUTPUT_CHANNELS][INPUT_CHANNELS][3][3]; // Filters of the convolutional layer 
+    float biases[CONV1_OUTPUT_CHANNELS];                        // Biases for the filters
+} ConvLayer;
+
+// Structure to represent a fully connected layer
+typedef struct {
+    float weights[NUM_CLASSES][FC1_INPUT_SIZE]; // Weights of the fully connected layer
+    float biases[NUM_CLASSES];                 // Biases of the fully connected layer
+} FullyConnectedLayer;
+
+// General structure of the network
+typedef struct {
+    ConvLayer conv1;               // First convolutional layer
+    FullyConnectedLayer fc1;       // Fully connected layer
+} ConvNet;
+\end{lstlisting}
+
+\subsubsection{Forward Pass}
+The forward pass function propagates an input image through the Convolutional Neural Network (CNN) to generate the class probabilities as output. This involves executing the convolution, activation, pooling, and fully connected layers sequentially.
+
+The following C code implements the forward pass:
+
+\begin{lstlisting}[language=C]
+// Forward pass function
+int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output[NUM_CLASSES]) {
+
+    // Convolutional layer output buffer
+    float conv_output[CONV1_OUTPUT_CHANNELS][INPUT_HEIGHT][INPUT_WIDTH];
+    #pragma HLS ARRAY_PARTITION variable=conv_output complete dim=1
+
+    // Convolutional layer operation
+    for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) {
+        for (int h = 0; h < INPUT_HEIGHT; h++) {
+            for (int w = 0; w < INPUT_WIDTH; w++) {
+                float sum = convnet.conv1.biases[oc];
+                for (int ic = 0; ic < INPUT_CHANNELS; ic++) {
+                    for (int kh = 0; kh < 3; kh++) {
+                        for (int kw = 0; kw < 3; kw++) {
+                            int ih = h + kh - 1;
+                            int iw = w + kw - 1;
+                            if (ih >= 0 && iw >= 0 && ih < INPUT_HEIGHT && iw < INPUT_WIDTH) {
+                                sum += input[ih][iw][ic] * convnet.conv1.weights[oc][ic][kh][kw];
+                            }
+                        }
+                    }
+                }
+                conv_output[oc][h][w] = reLu(sum);
+            }
+        }
+    }
+
+    // MaxPooling layer output buffer
+    float pool_output[CONV1_OUTPUT_CHANNELS][INPUT_HEIGHT / POOL_SIZE][INPUT_WIDTH / POOL_SIZE];
+    #pragma HLS ARRAY_PARTITION variable=pool_output complete dim=1
+
+    // MaxPooling operation
+    for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) {
+        for (int h = 0; h < INPUT_HEIGHT / POOL_SIZE; h++) {
+            for (int w = 0; w < INPUT_WIDTH / POOL_SIZE; w++) {
+                float max_val = -1e9;
+                for (int ph = 0; ph < POOL_SIZE; ph++) {
+                    for (int pw = 0; pw < POOL_SIZE; pw++) {
+                        int ih = h * POOL_SIZE + ph;
+                        int iw = w * POOL_SIZE + pw;
+                        if (ih < INPUT_HEIGHT && iw < INPUT_WIDTH) {
+                            max_val = fmaxf(max_val, conv_output[oc][ih][iw]);
+                        }
+                    }
+                }
+                pool_output[oc][h][w] = max_val;
+            }
+        }
+    }
+
+    // Fully connected layer input buffer
+    float fc_input[FC1_INPUT_SIZE];
+    #pragma HLS ARRAY_PARTITION variable=fc_input complete
+
+    // Flatten pooling output into 1D array
+    int idx = 0;
+    for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) {
+        for (int h = 0; h < INPUT_HEIGHT / POOL_SIZE; h++) {
+            for (int w = 0; w < INPUT_WIDTH / POOL_SIZE; w++) {
+                fc_input[idx++] = pool_output[oc][h][w];
+            }
+        }
+    }
+
+    // Fully connected layer computation
+    for (int o = 0; o < NUM_CLASSES; o++) {
+        float sum = convnet.fc1.biases[o];
+        for (int i = 0; i < FC1_INPUT_SIZE; i++) {
+            sum += fc_input[i] * convnet.fc1.weights[o][i];
+        }
+        output[o] = sum;
+    }
+
+    return 0; // Success
+}
+\end{lstlisting}
+
+This implementation uses \texttt{\#pragma HLS ARRAY\_PARTITION} to optimize memory access patterns, enabling efficient synthesis for hardware acceleration.
+As with the MLP implementation, all weights and biases in the CNN are hardcoded and directly integrated into the \texttt{ConvNet.c} file. This approach ensures that the trained parameters from the PyTorch model are seamlessly incorporated into the C-based implementation for efficient execution.
+
+
+\subsubsection{Testbench}
+The testbench is a critical component for validating the correctness of the CNN implementation in C. It reads input data from a file, processes it through the CNN using the \texttt{forward} function, and verifies the output against the expected label. This ensures that the implementation behaves as expected and aligns with the PyTorch model.
+
+The testbench performs the following key tasks:
+\begin{itemize}
+    \item \textbf{Input Loading}: Reads the input image and its corresponding label from a text file (\texttt{input\_image.txt}).
+    \item \textbf{Forward Pass Execution}: Propagates the input through the CNN to compute class probabilities.
+    \item \textbf{Result Validation}: Compares the predicted label with the true label and outputs the result.
+\end{itemize}
+
+The following code demonstrates the implementation of the testbench:
+
+\begin{lstlisting}[language=C]
+#include <stdio.h>
+#include <stdlib.h>
+#include "ConvNet.h"
+
+#define INPUT_FILE_PATH "./input_image.txt"
+#define IMAGE_SIZE (INPUT_HEIGHT * INPUT_WIDTH) // Size of the input image
+
+void read_input_image(const char *file_path, float input[INPUT_HEIGHT][INPUT_WIDTH][1], int *label) {
+    FILE *file = fopen(file_path, "r");
+    if (file == NULL) {
+        perror("Failed to open input file");
+        exit(EXIT_FAILURE);
+    }
+
+    // Read the label
+    if (fscanf(file, "Label: %d\n", label) != 1) {
+        perror("Failed to read label");
+        fclose(file);
+        exit(EXIT_FAILURE);
+    }
+
+    // Read the image values
+    for (int h = 0; h < INPUT_HEIGHT; h++) {
+        char c;
+        while ((c = fgetc(file)) != EOF && (c == ' ' || c == '\n')); // Skip spaces and newlines
+        if (c != '{') {
+            perror("Failed to read opening brace");
+            fclose(file);
+            exit(EXIT_FAILURE);
+        }
+
+        for (int w = 0; w < INPUT_WIDTH; w++) {
+            if (fscanf(file, "%f", &input[h][w][0]) != 1) {
+                printf("Failed to read image value at (%d, %d)\n", h, w);
+                fclose(file);
+                exit(EXIT_FAILURE);
+            }
+
+            if (w < INPUT_WIDTH - 1) {
+                if (fscanf(file, ",") != 0) {
+                    perror("Failed to read comma between values");
+                    fclose(file);
+                    exit(EXIT_FAILURE);
+                }
+            }
+        }
+
+        while ((c = fgetc(file)) != EOF && (c == ' ' || c == '\n' || c == ',')); // Skip spaces and commas
+        if (c != '}') {
+            perror("Failed to read closing brace");
+            fclose(file);
+            exit(EXIT_FAILURE);
+        }
+
+        if (h < INPUT_HEIGHT - 1) {
+            if (fscanf(file, ",") != 0) {
+                perror("Failed to read comma between rows");
+                fclose(file);
+                exit(EXIT_FAILURE);
+            }
+        }
+    }
+
+    fclose(file);
+}
+
+int main() {
+    float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS];
+    float output[NUM_CLASSES];
+    int label;
+
+    read_input_image(INPUT_FILE_PATH, input, &label);
+
+    int results = forward(input, output);
+
+    if (results != 0) {
+        printf("Error during forward pass\n");
+        return 1;
+    }
+
+    printf("Predicted output:\n");
+    for (int i = 0; i < NUM_CLASSES; i++) {
+        printf("Class %d: %f\n", i, output[i]);
+    }
+
+    float max_prob = output[0];
+    int predicted_label = 0;
+
+    for (int i = 1; i < NUM_CLASSES; i++) {
+        if (output[i] > max_prob) {
+            max_prob = output[i];
+            predicted_label = i;
+        }
+    }
+    printf("Predicted label: %d\n", predicted_label);
+    printf("True label: %d\n", label);
+
+    return 0;
+}
+\end{lstlisting}
+
+The testbench reads a structured text file containing the input image and its label. It processes the input through the CNN, identifies the predicted label, and compares it with the true label to validate the implementation's correctness.
+
+
+\subsection{Results}
+Text text text
+
 
 \end{document}
 
