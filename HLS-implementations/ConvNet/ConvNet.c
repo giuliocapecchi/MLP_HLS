@@ -42,24 +42,48 @@ ConvNet convnet = {
 
 // Forward pass function
 int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output[NUM_CLASSES]) {
-
+   
     // Convolutional layer output buffer
     float conv_output[CONV1_OUTPUT_CHANNELS][INPUT_HEIGHT][INPUT_WIDTH];
+    
+    // Array partitioning pragmas
+    #pragma HLS ARRAY_PARTITION variable=input complete dim=3
+    #pragma HLS ARRAY_PARTITION variable=convnet.conv1.weights complete dim=1
     #pragma HLS ARRAY_PARTITION variable=conv_output complete dim=1
 
     // Convolutional layer operation
     for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) {
         for (int h = 0; h < INPUT_HEIGHT; h++) {
+            // create a temporary buffer to store the input data
+            float temp_input[5][INPUT_WIDTH+2][INPUT_CHANNELS];  // +2 for padding
+            #pragma HLS ARRAY_PARTITION variable=temp_input complete dim=3
+            
+            // first phase: load the input data into the buffer
+            for (int i = 0; i < 5; i++) {
+                int curr_h = h + i - 2;  // -2 to center the kernel
+                for (int w = 0; w < INPUT_WIDTH+2; w++) {
+                    #pragma HLS PIPELINE II=1
+                    for (int c = 0; c < INPUT_CHANNELS; c++) {
+                        // manage padding uniformly
+                        if (curr_h >= 0 && curr_h < INPUT_HEIGHT && w-1 >= 0 && w-1 < INPUT_WIDTH) {
+                            temp_input[i][w][c] = input[curr_h][w-1][c];
+                        } else {
+                            temp_input[i][w][c] = 0.0f;
+                        }
+                    }
+                }
+            }
+            
+            // second phase: compute the convolution
             for (int w = 0; w < INPUT_WIDTH; w++) {
+                #pragma HLS PIPELINE II=1
                 float sum = convnet.conv1.biases[oc];
+                
+                // compute convolotion using the temp buffer
                 for (int ic = 0; ic < INPUT_CHANNELS; ic++) {
                     for (int kh = 0; kh < 3; kh++) {
                         for (int kw = 0; kw < 3; kw++) {
-                            int ih = h + kh - 1;
-                            int iw = w + kw - 1;
-                            if (ih >= 0 && iw >= 0 && ih < INPUT_HEIGHT && iw < INPUT_WIDTH) {
-                                sum += input[ih][iw][ic] * convnet.conv1.weights[oc][ic][kh][kw];
-                            }
+                            sum += temp_input[kh+1][w+kw][ic] * convnet.conv1.weights[oc][ic][kh][kw];
                         }
                     }
                 }
@@ -70,7 +94,6 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
 
     // MaxPooling layer output buffer
     float pool_output[CONV1_OUTPUT_CHANNELS][INPUT_HEIGHT / POOL_SIZE][INPUT_WIDTH / POOL_SIZE];
-    #pragma HLS ARRAY_PARTITION variable=pool_output complete dim=1
 
     // MaxPooling operation
     for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) {
@@ -82,7 +105,9 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
                         int ih = h * POOL_SIZE + ph;
                         int iw = w * POOL_SIZE + pw;
                         if (ih < INPUT_HEIGHT && iw < INPUT_WIDTH) {
-                            max_val = fmaxf(max_val, conv_output[oc][ih][iw]);
+                            if (conv_output[oc][ih][iw] > max_val) {
+                                max_val = conv_output[oc][ih][iw];
+                            }
                         }
                     }
                 }
@@ -93,7 +118,6 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
 
     // Fully connected layer input buffer
     float fc_input[FC1_INPUT_SIZE];
-    #pragma HLS ARRAY_PARTITION variable=fc_input complete
 
     // Flatten pooling output into 1D array
     int idx = 0;
@@ -108,11 +132,11 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
     // Fully connected layer computation
     for (int o = 0; o < NUM_CLASSES; o++) {
         float sum = convnet.fc1.biases[o];
+        #pragma HLS PIPELINE II=1
         for (int i = 0; i < FC1_INPUT_SIZE; i++) {
             sum += fc_input[i] * convnet.fc1.weights[o][i];
         }
         output[o] = sum;
     }
-
     return 0; // Success
 }
