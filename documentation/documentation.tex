@@ -58,7 +58,7 @@ This project focuses on the synthesis of the forward pass for three types of neu
     \label{fig:vitis_hls}
 \end{figure}
 
-\textbf{Vitis Unified Software Platform} is a comprehensive suite designed to accelerate the development of applications on FPGAs, Adaptive SoCs, and ACAPs (Adaptive Compute Acceleration Platforms). By combining high-level software programming techniques with hardware-optimized implementations, Vitis enables developers to write applications in \textit{C}, \textit{C++}, or \textit{OpenCL} while leveraging hardware-specific optimizations for enhanced performance. In this project, Vitis was used to synthesize neural network architectures - MLP, ConvNet, and Transformer - onto an FPGA. Its \textbf{High-Level Synthesis (HLS)} tools allow for rapid prototyping and optimization of the \textit{C} code, ensuring efficient resource utilization, parallelism, and low-latency execution. The platform's ability to integrate high-level design, simulation, and hardware synthesis simplifies the workflow, bridging the gap between software and hardware development.
+\textbf{Vitis Unified Software Platform} is a comprehensive suite designed to accelerate the development of applications on FPGAs, Adaptive SoCs, and ACAPs (Adaptive Compute Acceleration Platforms). By combining high-level software programming techniques with hardware-optimized implementations, Vitis enables developers to write applications in \textit{C}, \textit{C++}, or \textit{OpenCL} while leveraging hardware-specific optimizations for enhanced performance. In this project, Vitis was used to synthesize neural network architectures - MLP, ConvNet, and Transformer - onto an FPGA. Its \textbf{High-Level Synthesis (HLS)} tools allow for rapid prototyping and optimization of the \textit{C} code, ensuring efficient resource utilization, parallelism and low-latency execution. The platform's ability to integrate high-level design, simulation, and hardware synthesis simplifies the workflow, bridging the gap between software and hardware development.
 
 
 \section{Project Description}
@@ -66,9 +66,9 @@ This project focuses on the synthesis of the forward pass for three types of neu
 The project follows a structured workflow. For each neural network architecture, a Jupyter Notebook is provided in the \texttt{PyTorch} folder. As the name of the folder suggests, these were constructed and trained using the \textit{PyTorch} library. Once trained, the weights and biases were exported to be hardcoded into the corresponding \texttt{C} implementation. The \texttt{C} code was designed to be compatible with FPGA synthesis tools, such as Vitis HLS/Vivado, and can be found inside the \texttt{HLS-Implementation} folder.
 
 \subsection{Jupyter Notebooks}
-For each network architecture, a Jupyter Notebook was created to train the model and export the parameters. These notebooks are similar to each other, since they contain almost the same steps for each neural network. Their main sections are:
+For each network architecture, a Jupyter Notebook was created to train the model and export the parameters. These notebooks are similar to each other since they contain almost the same steps for each neural network. Their main sections are:
 \begin{itemize}
-    \item \textbf{Dataset Preparation}: Loading the chosen dataset for training the model.
+    \item \textbf{Dataset Preparation}: Loading the chosen dataset to train the model.
     \item \textbf{Model Definition}: Defining the neural network architecture.
     \item \textbf{Model Training}: Training the model on the dataset, ensuring that it converges to a satisfactory accuracy.
     \item \textbf{Exporting Parameters}: Extracting the weights and biases for the forward pass to a text file.
@@ -87,22 +87,22 @@ For each network architecture, a Jupyter Notebook was created to train the model
 As for the Jupyter Notebooks, the \texttt{C} code is structured in a similar way for each architecture. There are always \textit{three files} provided:
 \begin{itemize}
     \item \texttt{architecture.c}: contains the forward pass function and the definition of the architecture.
-    \item \texttt{architecture.h}: contains the definition of the architecture and the forward pass function prototype.
+    \item \texttt{architecture.h}: contains the definition of the architecture and the prototype of the forward pass function.
     \item \texttt{testbench.c}: reads the dataset and contains the main function to test the forward pass function.
 \end{itemize}
 
 To optimize the C implementation for hardware synthesis, specific \textbf{HLS directives} were applied to critical portions of the code. These directives guide the High-Level Synthesis (HLS) tool to produce more efficient hardware designs by controlling resource allocation, loop unrolling, and pipeline creation. The two main directives used in this project are:
 
 \begin{itemize}
-    \item \textbf{\texttt{HLS INLINE}}: This directive forces the complete insertion of the body of a function or loop directly at the point where it is called, eliminating the overhead associated with function calls or separate hardware resource allocation. By doing so, it reduces latency by eliminating function call delays. However, it may increase hardware area usage since the logic is replicated wherever the function is called. It is typically used for simple or frequently invoked functions to reduce latency.
+    \item \textbf{\texttt{HLS INLINE}}: This directive forces the complete insertion of the body of a function or loop directly at the point where it is called, eliminating the overhead associated with function calls or separate hardware resource allocation. By doing so, it reduces latency by eliminating function call delays. However, it may increase the usage of the hardware area, as the logic is replicated wherever the function is called. It is typically used for simple or frequently invoked functions to reduce latency.
     
-    \item \textbf{\texttt{HLS PIPELINE}}: This directive breaks a loop or function into multiple stages (pipeline), allowing multiple iterations or operations to execute simultaneously, thereby increasing the design's throughput. It enables processing of new iterations in every clock cycle (or at specific intervals called \textit{Initiation Interval (II)}). The options for this directive include \texttt{II=N} (to specify the interval between iterations, such as 1 clock cycle) and \texttt{rewind} (to automatically restart the loop after completion). It is typically used in loops that process large amounts of data to maximize throughput in repetitive operations.
+    \item \textbf{\texttt{HLS PIPELINE}}: This directive breaks a loop or function into multiple stages (pipeline), allowing multiple iterations or operations to execute simultaneously, thereby increasing the design's throughput. It enables the processing of new iterations in every clock cycle (or at specific intervals called \textit{ initiation interval (II)}). The options for this directive include \texttt{II=N} (to specify the interval between iterations, such as 1 clock cycle) and \texttt{rewind} (to automatically restart the loop after completion). It is typically used in loops that process large amounts of data to maximize throughput in repetitive operations.
 
     \item \textbf{\texttt{More to be added (if used)}}
 
 \end{itemize}
 
-It is important to note that the directives discussed in this section represent only a subset of the directives executed by the HLS compiler during the synthesis process. These directives were explicitly added to address specific warnings and improve the design's performance. They were placed at the exact lines of code where they were required to resolve issues or optimize critical sections of the implementation.
+It is important to note that the directives discussed in this section represent only a subset of the directives executed by the HLS compiler during the synthesis process. These directives were explicitly added to address specific warnings and improve the design's performance. They were placed on the exact lines of code where they were required to resolve issues or optimize critical sections of the implementation.
 
 
 \paragraph{Hardcoding Network Parameters}
@@ -136,15 +136,14 @@ The project was loaded into the Vitis Unified IDE to synthesize the \texttt{C} c
 
 
 \section{Multi-Layer Perceptron}
-Let's analyze the implementation of the forward pass for a Multi-Layer Perceptron. The forward pass for an MLP consists of propagating the input through a series of dense layers, each followed by an activation function.
+Let's analyze the implementation of the forward pass for a Multi-Layer Perceptron. The forward pass for an MLP consists of propagating the input through a series of layers, each followed by an activation function.
 The code for it can be found inside the \texttt{PyTorch} folder, that contains the notebooks used to train the models and export their parameters.
 
 \subsection{Dataset}
 The MLP was trained using the well-known \textit{Iris} dataset, which contains 150 samples of iris flowers, each with four features and a class label (the last value of each row).
 There is a total of three classes: \textit{setosa}, \textit{versicolor}, and \textit{virginica}.
 The dataset was split into training and test sets, with 80\% of the samples used for training and 20\% for testing.
-
-An example of the dataset is shown below:
+\\\\An example of the dataset is shown below:
 
 \begin{tcolorbox}[colback=gray!5, colframe=black, rounded corners, boxrule=0.1mm]
 \textbf{\textcolor{blue}{sepal\_length,sepal\_width,petal\_length,petal\_width,species}} \\
@@ -154,21 +153,22 @@ An example of the dataset is shown below:
 ...
 \end{tcolorbox}
 
-The dataset's labels were encoded as integers using the Scikit-learn \texttt{LabelEncoder} class, which maps each class to a unique integer value.
-To facilitate its further usage inside the \texttt{C} implementation, this encoded version of the dataset was saved to a txt file, \textit{iris\_dataset\_encoded.txt}.
+The dataset's labels were encoded as integers using the Scikit-learn \texttt{LabelEncoder} class, which maps each class to a unique integer value. To facilitate its further usage inside the \texttt{C} implementation, this encoded version of the dataset was saved to a txt file, \textit{iris\_dataset\_encoded.txt}.
 
 \subsection{PyTorch Model}
 \subsubsection{Model Architecture}
-The architecture of the MLP model consists of three fully connected (dense) layers.
-The input layer has 4 neurons corresponding to the 4 features of the Iris dataset. 
-The first and second hidden layers each have 10 neurons, and the output layer has 3 neurons corresponding to the 3 classes of the Iris dataset.
-The chosen activation function is the ReLU function, which is applied after each dense layer except the output layer.
-The forward pass of the model involves applying the ReLU activation function after the first and second layers.
-\\ReLU is defined as:
+The architecture of the MLP model consists of three fully connected layers.  
+The input layer has 4 neurons, corresponding to the 4 features of the Iris dataset. 
+The first and second hidden layers each have 10 neurons, while the output layer has 3 neurons, corresponding to the 3 classes of the Iris dataset.  
+The ReLU activation function is applied after each dense layer, except for the output layer.  
+\\\\The ReLU function is defined as:  
 \begin{center}
 $\operatorname{ReLU}(x) = \max(0, x)$
 \end{center}
-The model was defined as follows, using the \textit{PyTorch} library:
+
+The forward pass of the model applies the ReLU activation function after the first and second layers.  
+\\\\\\The model was implemented using the \textit{PyTorch} library as follows, by defining a custom class \texttt{MLP} that inherits from \texttt{nn.Module}:
+
 \begin{lstlisting}[language=Python]
 # Define the MLP model
 class MLP(nn.Module):
@@ -179,9 +179,9 @@ class MLP(nn.Module):
         self.fc3 = nn.Linear(10, 3)
     
     def forward(self, x):
-        x = torch.relu(self.fc1(x))
-        x = torch.relu(self.fc2(x))
-        x = self.fc3(x)
+        x = torch.relu(self.fc1(x))  # Apply ReLU after first layer
+        x = torch.relu(self.fc2(x))  # Apply ReLU after second layer
+        x = self.fc3(x)  # Output layer (no activation)
         return x
 \end{lstlisting}
 
@@ -279,10 +279,16 @@ for name, param in model.named_parameters():
 for name, weight in weights.items():
     print(f"{name}: {weight.shape}")
 
+import numpy as np
+
 with open('./mlp_weights.txt', 'w') as f:
-for name, weight in weights.items():
-    f.write(f"{name}\n")
-    np.savetxt(f, weight, fmt='%f')
+    for name, weight in weights.items():
+        f.write(f"// {name}, shape: {weight.shape}\n")
+        if weight.ndim == 2:  # Fully connected layer weights
+            for row in weight:
+                f.write("{" + ", ".join(map(str, row)) + "},\n")
+        elif weight.ndim == 1:  # Biases or 1D weights
+            f.write("{" + ", ".join(map(str, weight)) + "},\n")
 \end{lstlisting}
 
 \subsection{C Implementation}
@@ -295,7 +301,6 @@ The implementation for Vitis HLS of the MLP was produced with three files:
 \end{itemize}
 \subsubsection{MLP Structure}
 \label{sec:mlp-structure}
-\subsubsection{MLP Structure}
 The MLP structure was defined as follows (inside \texttt{mlp.h}):
 \begin{lstlisting}
 typedef struct {
@@ -358,8 +363,8 @@ int forward(float input0, float input1, float input2, float input3) {
 }
 \end{lstlisting}
 
-In this implementation, all weights and biases are hardcoded and directly integrated into the MLP definition at the top of \texttt{mlp.c}. These values are exported from the PyTorch model and inserted manually during the setup phase.
-\\A notable feature of this implementation is the use of the \texttt{\#pragma HLS UNROLL} directive. This instructs the High-Level Synthesis (HLS) tool to unroll loops, which replicates the loop body multiple times. This mechanism significantly enhances the throughput of the design by enabling parallel execution of loop iterations: as a result, the forward pass should achieve higher performances, making it suitable for FPGA-based acceleration.
+As already explained, all weights and biases are hardcoded and directly integrated into the MLP definition at the top of \texttt{mlp.c}. These values are exported from the PyTorch model and were inserted manually into the code.
+\\\\A notable feature of this implementation is the use of the \texttt{\#pragma HLS UNROLL} directive. This directive was necessary to address specific warnings related to loop dependencies and to enhance the throughput of the design by enabling parallel execution of loop iterations. Without this directive, the synthesis tool generated warnings indicating potential performance bottlenecks. By unrolling the loops, the forward pass achieves higher performance, making it suitable for FPGA-based acceleration.
 
 \subsubsection{Testbench}
 The testbench function reads the encoded Iris dataset file and applies the forward pass function to each sample.
@@ -416,11 +421,11 @@ printf("Accuracy: %.2f%%\n", accuracy);
 \end{lstlisting}
 
 The testbench is used to test that everything is working correctly and to evaluate the accuracy of the model on the dataset. The accuracy obtained should be similar to the one achieved during the training phase in \textit{PyTorch}, confirming that the forward pass function is correctly implemented in \texttt{C}.
-We always obtained an accuracy of 98\% with it, consistent with the results obtained with \textit{PyTorch}.
+\\\\We always obtained an accuracy of 98\% with it, consistent with the results obtained with \textit{PyTorch}.
 
 \subsection{Results}
 The results obtained using the Vitis Unified IDE confirm the successful synthesis and implementation of the MLP forward pass on the FPGA. The development process in Vitis offers several stages where detailed reports are generated, providing valuable insights into the design's functionality and performance. The used device for this section was from the Product family \textbf{zynq}, and the Target device used was the \textbf{xc7z007s-clg225-2}.\\\\
-The selected target device belongs to the Zynq-7000 family and is designed to integrate ARM processing systems with programmable logic. It features the following key specifications:
+The selected target device belongs to the Zynq-7000 family and is designed to integrate ARM processing systems with programmable logic. It features the following specifications:
 \begin{itemize}
     \item \textbf{Logic Resources}: The device provides 14,400 Look-Up Tables (LUTs) for implementing combinatorial logic.
     \item \textbf{Flip-Flops (FFs)}: A total of 28,800 flip-flops are available, offering robust sequential logic capabilities.
@@ -430,22 +435,18 @@ The selected target device belongs to the Zynq-7000 family and is designed to in
 This combination of resources makes the \texttt{xc7z007s-clg225-2} well-suited for applications requiring both computation and flexibility, such as neural network inference on FPGA hardware.\\
 
 The selected device has a \textbf{speed grade of \texttt{-2}}, which represents a medium performance level within the Zynq-7000 family. Speed grades for this family typically range from \texttt{-1} (lowest performance) to \texttt{-3} (highest performance). The \texttt{-2} speed grade offers a balance between performance and power efficiency, providing sufficient timing capabilities for the neural network inference tasks targeted in this design. Lower speed grade numbers correspond to higher achievable clock frequencies and reduced propagation delays, making the \texttt{-2} grade an optimal choice for this application.
+\\\\For this implementation, we used the \textbf{default clock setting} provided by Vitis, which is configured to a period of \textit{10 ns}. This corresponds to a clock frequency of \textit{100 MHz}. The following results will demonstrate how this default clock period fits well with our solution, as we achieved efficient performance without the need to modify this default value.
 
 
-For this implementation, we used the \textbf{default clock setting} provided by Vitis, which is configured to a period of \textit{10 ns}. This corresponds to a clock frequency of \textit{100 MHz}, ensuring compatibility with the Zynq-7000 device and facilitating synthesis and implementation with minimal adjustments. Using the default clock setting allowed us to focus on optimizing other aspects of the design, such as resource utilization and latency, while maintaining a reliable and stable timing configuration.
-
-The following results will demonstrate how this default clock period fits well with our solution. Notably, we achieved efficient performance without the need to modify the default clock setting, highlighting the suitability of the 10 ns period for our design goals and hardware constraints.
-
-
-\subsubsection{Stages of Development}
+\subsubsection{Stages of Development in the Vitis Unified IDE}
 These stages include:
 
 \begin{itemize}
     \item \textbf{C Simulation:} This initial step ensures the functional correctness of the high-level C implementation. During this phase, the input data is processed entirely in software, and the generated reports confirm that the output matches the expected results, validating the logic before hardware synthesis.
 
-    \item \textbf{C Synthesis:} In this phase, the high-level C code is converted into a hardware description optimized for the target FPGA. The synthesis report provides crucial details, such as estimated resource utilization (LUTs, DSPs, BRAMs), latency, and initiation intervals. These metrics help identify potential bottlenecks and guide optimization efforts.
+    \item \textbf{C Synthesis:} In this phase, the high-level C code is converted into a hardware description optimized for the target FPGA. The synthesis report provides important details, such as estimated resource utilization (LUTs, DSPs, BRAMs), latency, and initiation intervals. These metrics help identify potential bottlenecks and guide optimization efforts.
 
-    \item \textbf{C/RTL Simulation:} This step bridges the gap between high-level and low-level design by validating the synthesized hardware description against the functional requirements. This stage is particularly important as it ensures consistency between the high-level model and the Register Transfer Level (RTL) implementation. The reports include timing diagrams, functional waveforms, and a comparison of C simulation outputs with RTL simulation outputs to confirm correctness.
+    \item \textbf{C/RTL Cosimulation:} This step bridges the gap between high-level and low-level design by validating the synthesized hardware description against the functional requirements. This stage is particularly important as it ensures consistency between the high-level model and the Register Transfer Level (RTL) implementation. The reports include timing diagrams, functional waveforms, and a comparison of C simulation outputs with RTL simulation outputs to confirm correctness.
 
     \item \textbf{Packaging:} After verifying the synthesized hardware, the design is packaged into an IP (Intellectual Property) core. The packaging reports detail the generated IP core's properties, ensuring that it adheres to the FPGA's integration requirements and is ready for system-level implementation.
 
@@ -453,10 +454,10 @@ These stages include:
 
 \end{itemize}
 By consulting these reports, the development process is highly transparent: each step ensures the correctness, performance, and compliance with the FPGA's requirements, resulting in an efficient and reliable implementation of the top-function, in this case the forward pass.
-\\\\These steps are valid also for the further architectures, so we will not repeat them in the following sections, but just present them.
+\\\\These steps are valid also for the other architectures aside of the MLP, so we will not repeat them in the following sections, but just present them.
 
 \subsubsection{Performance Metrics}
-Let's go into detail about the performance metrics obtained during the synthesis of the MLP forward pass on the FPGA.
+Let's go into detail about the performance metrics obtained during the synthesis of the Multilayer-Perceptron forward pass on the FPGA.
 
 \paragraph{C-Simulation}  
 C-simulation provides preliminary performance metrics, focusing on the steady-state execution of the design. These estimates, including the Transaction Interval (TI), highlight potential bottlenecks and optimization areas but may be overly optimistic unless the code is made canonical. This stage serves as an initial evaluation, guiding further refinement and more accurate analysis during synthesis and co-simulation.  
@@ -488,20 +489,16 @@ As we can see from the table, the estimated latency is 6.329 ns, with an uncerta
     \label{fig:c-synthesis-performance-resources}
 \end{figure}
 
-From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 216 cycles, corresponding to an execution time of 2,160 ns under the target clock frequency of 100 MHz (10 ns per cycle). The initiation interval (II) for the main module is reported as 217 cycles, which indicates that the design could benefit from further pipelining to optimize parallel execution and reduce the interval.
-
-Examining the resource utilization, the design employs:
+From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 216 cycles, corresponding to an execution time of 2,160 ns under the target clock frequency of 100 MHz (10 ns per cycle). The initiation interval (II) for the main module is reported as 217 cycles, which indicates that the design could benefit from further pipelining to optimize parallel execution and reduce the interval. Examining the resource utilization, the design employs:
 \begin{itemize}
     \item \textbf{9,689 Look-Up Tables (LUTs)}, which corresponds to approximately 67.3\% of the total 14,400 LUTs available on the \texttt{xc7z007s-clg225-2}.
     \item \textbf{7,417 Flip-Flops (FFs)}, utilizing 25.7\% of the total 28,800 FFs available.
     \item \textbf{50 DSP slices}, accounting for 75.8\% of the total 66 available DSPs.
-    \item \textbf{No BRAM or URAM}, which indicates that the design relies solely on external or internal registers for data storage.
+    \item \textbf{No BRAM (BlockRam) or URAM(UltraRam)}, which indicates that the design relies solely on external or internal registers for storage.
 \end{itemize}
 
 The internal loops of the \texttt{forward} pass module demonstrate varied latencies, with some loops optimized using \texttt{\#pragma HLS UNROLL} and \texttt{\#pragma HLS PIPELINE}. Latencies range from 5 ns to 690 ns, with the primary loop exhibiting the highest latency (690 ns). This latency suggests potential bottlenecks in data dependencies or resource contention, which could be addressed by restructuring loops or leveraging more efficient parallelization strategies.
-
-To further enhance performance, improvements such as increasing the use of internal memory resources (e.g., BRAM/URAM) and reducing loop dependencies are recommended. These adjustments would help lower the initiation interval and improve overall throughput, making the design more efficient for hardware acceleration.
-\\\\We can also check from the report that, as expected the hardware interface corresponds to the input and output of the forward pass function, and that the utilized pragma syntax is correct and corresponds to the one we used in the code.
+\\\\We can also check from the report that, as expected, the hardware interface corresponds to the input and output of the forward pass function, and that the utilized pragma syntax is correct and corresponds to the one we used in the code.
 
 \begin{figure}[H]
     \centering
@@ -547,9 +544,7 @@ C-RTL cosimulation is a verification process that ensures the functional equival
 \end{figure}
 
 
-\subsubsection{Analysis of Results}
-
-The analysis of the results from the C/RTL co-simulation and synthesis reports highlights several key observations and metrics:
+From an analysis of the results from the C/RTL co-simulation and synthesis, we can highlights several key observations and metrics:
 
 \begin{itemize}
     \item \textbf{Initiation Interval (II):} The initiation interval across all loops in the design remains constant at \textbf{205 cycles}. This uniform II suggests a consistent level of pipelining efficiency across the design. However, it also indicates that certain dependencies or resource constraints may limit further reduction of the II.
@@ -583,7 +578,7 @@ The results confirm that the design is functional and performs as expected. Howe
 By implementing these optimizations, the design could achieve higher efficiency and better alignment with the hardware capabilities of the target FPGA device.
 
 \paragraph{Packaging}
-Regarding the \textit{Package} section, there is  not much to be said, since the Vitis IDE doesn't provide a report for this stage. However, we can still infer that the packaging process was successful, as the design was ready for the final implementation stage.
+Regarding the \textit{Package} section, there is  not much to be said, since the Vitis IDE doesn't provide a report for this stage. However, we can still infer that the packaging process was successful.
 
 \paragraph{Implementation}
 
