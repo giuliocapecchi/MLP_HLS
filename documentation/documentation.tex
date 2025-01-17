@@ -48,8 +48,7 @@
 \newpage
 
 \section{Introduction}
-This project focuses on the synthesis of the forward pass for three types of neural network architectures: a \textbf{Multilayer Perceptron (MLP)}, a \textbf{Convolutional Neural Network (ConvNet)}, and a \textbf{Transformer}, implemented on an FPGA (Field Programmable Gate Array).  
-To achieve this, the network parameters were first obtained using Python and the \textit{PyTorch} library. These parameters were subsequently hardcoded into \texttt{C} code, enabling the hardware synthesis process.
+This project focuses on the synthesis of the forward pass for three types of neural network architectures: a \textbf{Multilayer Perceptron (MLP)}, a \textbf{Convolutional Neural Network (ConvNet)}, and a \textbf{Transformer}, implemented on an FPGA (Field Programmable Gate Array).  To achieve this, the network parameters were first obtained using Python and the \textit{PyTorch} library; these were subsequently hardcoded into \texttt{C} code, enabling the hardware synthesis process.
 
 
 \begin{figure}[H]
@@ -59,22 +58,37 @@ To achieve this, the network parameters were first obtained using Python and the
     \label{fig:vitis_hls}
 \end{figure}
 
-\textbf{Vitis Unified Software Platform} is a comprehensive suite designed to accelerate the development of applications on FPGAs, Adaptive SoCs, and ACAPs (Adaptive Compute Acceleration Platforms). By combining high-level software programming techniques with hardware-optimized implementations, Vitis enables developers to write applications in \textit{C}, \textit{C++}, or \textit{OpenCL} while leveraging hardware-specific optimizations for enhanced performance.  
-
-In this project, Vitis plays a pivotal role in synthesizing the neural network architectures—MLP, ConvNet, and Transformer—onto the FPGA. Its \textbf{High-Level Synthesis (HLS)} tools allow for rapid prototyping and optimization of the \textit{C} code, ensuring efficient resource utilization, parallelism, and low-latency execution. The platform's ability to integrate high-level design, simulation, and hardware synthesis streamlines the workflow, bridging the gap between software and hardware development.
+\textbf{Vitis Unified Software Platform} is a comprehensive suite designed to accelerate the development of applications on FPGAs, Adaptive SoCs, and ACAPs (Adaptive Compute Acceleration Platforms). By combining high-level software programming techniques with hardware-optimized implementations, Vitis enables developers to write applications in \textit{C}, \textit{C++}, or \textit{OpenCL} while leveraging hardware-specific optimizations for enhanced performance. In this project, Vitis was used to synthesize neural network architectures - MLP, ConvNet, and Transformer - onto an FPGA. Its \textbf{High-Level Synthesis (HLS)} tools allow for rapid prototyping and optimization of the \textit{C} code, ensuring efficient resource utilization, parallelism, and low-latency execution. The platform's ability to integrate high-level design, simulation, and hardware synthesis simplifies the workflow, bridging the gap between software and hardware development.
 
 
 \section{Project Description}
 \subsection{Workflow Overview}
-The neural networks were constructed and trained using the \textit{PyTorch} library. Once trained, the weights and biases were exported to be hardcoded into the corresponding \texttt{C} implementation. The \texttt{C} code was specifically designed to be compatible with FPGA synthesis tools, such as Vitis HLS, ensuring efficient hardware synthesis.
+The project follows a structured workflow. For each neural network architecture, a Jupyter Notebook is provided in the \texttt{PyTorch} folder. As the name of the folder suggests, these were constructed and trained using the \textit{PyTorch} library. Once trained, the weights and biases were exported to be hardcoded into the corresponding \texttt{C} implementation. The \texttt{C} code was designed to be compatible with FPGA synthesis tools, such as Vitis HLS/Vivado, and can be found inside the \texttt{HLS-Implementation} folder.
+
+\subsection{Jupyter Notebooks}
+For each network architecture, a Jupyter Notebook was created to train the model and export the parameters. These notebooks are similar to each other, since they contain almost the same steps for each neural network. Their main sections are:
+\begin{itemize}
+    \item \textbf{Dataset Preparation}: Loading the chosen dataset for training the model.
+    \item \textbf{Model Definition}: Defining the neural network architecture.
+    \item \textbf{Model Training}: Training the model on the dataset, ensuring that it converges to a satisfactory accuracy.
+    \item \textbf{Exporting Parameters}: Extracting the weights and biases for the forward pass to a text file.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\textwidth]{./assets/jupyter-notebooks.png}
+    \caption{Jupyter Notebooks logo}
+    \label{fig:jupyter-notebooks}
+\end{figure}
+
 
 
 \subsection{C Implementation}
-The \texttt{C} code developed includes the forward pass for:
+As for the Jupyter Notebooks, the \texttt{C} code is structured in a similar way for each architecture. There are always \textit{three files} provided:
 \begin{itemize}
-    \item \textbf{MLP}: implementation of propagation through dense layers.
-    \item \textbf{ConvNet}: handling of convolution and pooling operations.
-    \item \textbf{Transformer}: managing complex operations like attention.
+    \item \texttt{architecture.c}: contains the forward pass function and the definition of the architecture.
+    \item \texttt{architecture.h}: contains the definition of the architecture and the forward pass function prototype.
+    \item \texttt{testbench.c}: reads the dataset and contains the main function to test the forward pass function.
 \end{itemize}
 
 To optimize the C implementation for hardware synthesis, specific \textbf{HLS directives} were applied to critical portions of the code. These directives guide the High-Level Synthesis (HLS) tool to produce more efficient hardware designs by controlling resource allocation, loop unrolling, and pipeline creation. The two main directives used in this project are:
@@ -83,31 +97,43 @@ To optimize the C implementation for hardware synthesis, specific \textbf{HLS di
     \item \textbf{\texttt{HLS INLINE}}: This directive forces the complete insertion of the body of a function or loop directly at the point where it is called, eliminating the overhead associated with function calls or separate hardware resource allocation. By doing so, it reduces latency by eliminating function call delays. However, it may increase hardware area usage since the logic is replicated wherever the function is called. It is typically used for simple or frequently invoked functions to reduce latency.
     
     \item \textbf{\texttt{HLS PIPELINE}}: This directive breaks a loop or function into multiple stages (pipeline), allowing multiple iterations or operations to execute simultaneously, thereby increasing the design's throughput. It enables processing of new iterations in every clock cycle (or at specific intervals called \textit{Initiation Interval (II)}). The options for this directive include \texttt{II=N} (to specify the interval between iterations, such as 1 clock cycle) and \texttt{rewind} (to automatically restart the loop after completion). It is typically used in loops that process large amounts of data to maximize throughput in repetitive operations.
+
+    \item \textbf{\texttt{More to be added (if used)}}
+
 \end{itemize}
 
-These directives were applied strategically to balance trade-offs between latency, resource utilization, and overall performance. For example, \texttt{HLS INLINE} was used in frequently called small functions to minimize latency, while \texttt{HLS PIPELINE} was applied to loops processing neural network layers to maximize parallelism and throughput. The appropriate use of these directives is crucial for achieving efficient FPGA-based implementations.\\\\
-It is important to note that the directives discussed in this section represent only a subset of the directives executed by the HLS compiler during the synthesis process. These directives were explicitly added to address specific warnings and improve the design's performance. They were carefully placed at the exact lines of code where they were required to resolve issues or optimize critical sections of the implementation.\\\\
-
-\newpage
-\textbf{Hardcoding Network Parameters}
-
-The network parameters (weights and biases) exported from the trained PyTorch model were directly integrated into the \textit{C} implementation in a hardcoded manner. This process ensures that the FPGA hardware has direct access to pre-trained values during the forward pass, avoiding the need for external memory accesses and thereby reducing latency.
-
-The specific details of how the weights and biases were exported, including the Python code used to save them into a text file, can be found in Section 4.2.3 TODO(check the correct section number). These parameters were then structured in the \texttt{C} code as arrays within the MLP structure, as defined in Section 4.3.1 TODO(check the correct section number). This approach, while limiting the flexibility of re-training or updating the model without recompilation, was chosen to optimize execution time and reduce complexity in hardware synthesis.
+It is important to note that the directives discussed in this section represent only a subset of the directives executed by the HLS compiler during the synthesis process. These directives were explicitly added to address specific warnings and improve the design's performance. They were placed at the exact lines of code where they were required to resolve issues or optimize critical sections of the implementation.
 
 
-\section{Code Architecture}
-\subsection{C File Structure}
-The forward pass is implemented using a sequence of functions for each layer type:
-\begin{itemize}
-    \item Activation functions (\texttt{relu}, \texttt{softmax}, etc.).
-    \item Functions for convolution and pooling operations.
-    \item Functions for attention mechanisms in Transformers.
-\end{itemize}
+\paragraph{Hardcoding Network Parameters}
+The network's weights and biases, extracted from the trained PyTorch model, were directly integrated into the \textit{C} implementation as hardcoded values. This allows the FPGA hardware to access the pre-trained parameters directly during the forward pass, avoiding external memory accesses. The process of exporting these parameters is detailed in \ref{sec:exporting-parameters}. After extraction, the parameters were organized in the \texttt{C} code as arrays within dedicated data structures. These structures and their integration will be explained in detail later on for each architecture.
 
+\subsection{Loading the project into the Vitis Unified IDE}
+The project was loaded into the Vitis Unified IDE to synthesize the \texttt{C} code and generate the corresponding hardware description. The IDE provides a comprehensive environment for developing, debugging, and deploying applications on Xilinx devices. The following steps has to be followed to load the project into the Vitis Unified IDE:
+\begin{enumerate}
+    \item Open the Vitis Unified IDE and under \texttt{HLS Development} select \texttt{Create component...}.
+    \item Click on \texttt{Create Empty HLS Component}. A new window should appear, where you can specify the component name and location.
+    \item You will then be asked about the configuration file : you can either provide one or click on \textit{next} and let the IDE create one for you.
+    \item In the following page, specify in the \texttt{Top Function} field the name of the function that you want to synthesize: this should be the one that you want to test on the FPGA. In our case, it is the forward pass function (the name is \texttt{forward} for all the networks we worked on).
+    \item  Click on next and select a device: it should have enough resources to contain the design.
+    \item Click on \texttt{next} until you reach the \texttt{finish} button. Click on it to create the project.
+\end{enumerate}
 
-\subsection{Hardware Synthesis}
-The code was designed to be compatible with tools such as Vitis HLS, leveraging specific pragmas to optimize the implementation.
+\begin{figure}[H]
+    \begin{minipage}{0.4\textwidth}
+        \raggedright
+        Once done, you should see on the left a structure similar to the one provided in the image. Inside \texttt{Settings} you can find the configuration file for the project, but the simpler way to add the necessary files to the project is to right-click on \texttt{Sources} and then add the \texttt{C} and {header} files. Do the same for the \texttt{testbench}, where you should add the \texttt{txt} file containing the dataset and the \texttt{testbench.c} file, specific for the current component.
+        \\To "run" the project, you can then use the buttons on the bottom of this section (\texttt{Run, C Synthesis, C/RTL Cosimulation, Package, Implemenattion}). Their usage will be explained later on.
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.4\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{assets/IDE-structure.png}
+        \caption{IDE Structure}
+        \label{fig:ide_structure}
+    \end{minipage}
+\end{figure}
+
 
 \section{Multi-Layer Perceptron}
 Let's analyze the implementation of the forward pass for a Multi-Layer Perceptron. The forward pass for an MLP consists of propagating the input through a series of dense layers, each followed by an activation function.
@@ -240,6 +266,7 @@ The training process shows that the model is able to achieve a high level of acc
 Given the relatively small dataset and the fact that the model achieves near-perfect accuracy on the test set, we can conclude that the model is generalizing well.
 
 \subsubsection{Exporting Parameters}
+\label{sec:exporting-parameters}
 The trained model's parameters were exported to be hardcoded into the \texttt{C} implementation. The weights and biases of each layer were extracted and saved in a txt file, \textit{mlp\_weights.txt}, as shown below:
 \begin{lstlisting}[language=Python]
 import numpy as np
@@ -266,7 +293,8 @@ The implementation for Vitis HLS of the MLP was produced with three files:
     \item \texttt{mlp.h}, which contains the definition of the MLP structure and the forward pass function prototype.
     \item \texttt{testbench.c}, which reads the \textit{iris\_dataset\_encoded.txt}  and contains the main function to test the forward pass function.
 \end{itemize}
-
+\subsubsection{MLP Structure}
+\label{sec:mlp-structure}
 \subsubsection{MLP Structure}
 The MLP structure was defined as follows (inside \texttt{mlp.h}):
 \begin{lstlisting}
