@@ -691,18 +691,18 @@ The dataset was preprocessed using normalization to scale pixel values to the ra
 \subsection{PyTorch Model}
 
 \subsubsection{Model Architecture}
-The ConvNet is designed to be as simple as possible, ensuring efficiency and compatibility with hardware synthesis using Vitis HLS. The structure includes the following layers:
+The ConvNet is designed to be as simple as possible. The structure includes the following layers:
 \begin{itemize}
     \item \textbf{Convolutional Layer:} A single convolutional layer with 3 filters, each of size $3 \times 3$, stride $1$, and padding $1$. This layer increases feature representation by extracting local patterns from the input images.
     \item \textbf{ReLU Activation:} Applied after the convolutional layer to introduce non-linearity into the model.
     \item \textbf{Pooling Layer:} A max-pooling layer with a kernel size of $2 \times 2$ and a stride of $2$, reducing the spatial dimensions of the feature map by half.
-    \item \textbf{Fully Connected Layer:} It takes as input the flattened feature map from the convolutional and pooling layers. As output 10 neurons representing the 10 digit classes (0–9). This layer does not apply an activation function, as it is followed by the softmax during training or inference.
+    \item \textbf{Fully Connected Layer:} It takes as input the flattened feature map from the convolutional and pooling layers. As output 10 neurons representing the 10 digit classes (0–9). This layer does not apply an activation function, it will be simply followed by \texttt{\textit{max(1)}} to obtain the predicted class.
 \end{itemize}
 
-The forward pass through the network is as follows:
+The total number of parameters in this configuration is \textbf{5880}, which is relatively low compared to more complex CNN architectures. The forward pass through the network is done as follows:
 \begin{enumerate}
     \item Apply the convolutional layer to the input image, followed by the ReLU activation function.
-    \item Perform max-pooling on the resulting feature map.
+    \item Perform max-pooling on the resulting feature map to reduce spatial dimensions.
     \item Flatten the feature map into a one-dimensional vector.
     \item Pass the flattened vector through the fully connected layer to produce class probabilities.
 \end{enumerate}
@@ -735,7 +735,6 @@ class ConvNet(nn.Module):
 \end{lstlisting}
 
 
-
 \subsubsection{Model Training}
 The training process for the Convolutional Neural Network (CNN) was performed using the \textit{PyTorch} library. The objective was to minimize the cross-entropy loss, a suitable loss function for multi-class classification problems. The training configuration was as follows:
 \begin{itemize}
@@ -752,20 +751,10 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 \end{lstlisting}
 
-The training procedure involved the following steps:
-\begin{enumerate}
-    \item The input images were passed through the CNN in a forward pass to compute the predicted class probabilities.
-    \item The CrossEntropyLoss function was used to calculate the loss between the predicted and actual class labels.
-    \item Backpropagation was performed to compute the gradients of the loss with respect to the model parameters.
-    \item The Adam optimizer was used to update the parameters using the calculated gradients.
-\end{enumerate}
+After each epoch, the model was evaluated on the validation set to monitor the training progress and prevent overfitting. The training and validation results at selected epochs are shown in the table below:
 
-After each epoch, the model was evaluated on the validation set to monitor its performance. The accuracy and loss for both training and validation sets were recorded for further analysis.
-
-\clearpage
 \begin{table}[htbp]
     \centering
-    \caption{Training and Validation Results at Selected Epochs}
     \label{tab:training-results}
     \renewcommand{\arraystretch}{1.2} % Increase row spacing
     \begin{tabular}{|c|c|c|c|c|}
@@ -782,6 +771,7 @@ After each epoch, the model was evaluated on the validation set to monitor its p
     90             & 0.0439             & 98.55                        & 0.1342            & 96.61                       \\ \hline
     100            & 0.0411             & 98.71                        & 0.1325            & 96.76                       \\ \hline
     \end{tabular}
+    \caption{Training and Validation Results at Selected Epochs}
 \end{table}
     
 
@@ -791,8 +781,10 @@ The final test performance was as follows:
     \item \textbf{Test Accuracy:} 97.06\%
 \end{itemize}
 
+Which can be considered good results, showing that the model was able to generalize well to unseen data even with only a "few" parameters and EPOCHs of training.\\
 
 The following Python code snippet shows the main training loop:
+
 \begin{lstlisting}[language=Python]
 # Training loop
 for epoch in range(NUM_EPOCHS):
@@ -846,24 +838,32 @@ for epoch in range(NUM_EPOCHS):
 
 
 \subsubsection{Exporting Parameters}
-To facilitate hardware implementation, the trained parameters (weights and biases) of the CNN model were exported to a structured format. This process allows the model to be reimplemented in a different environment, such as a C-based hardware description.
-
+To proceed with hardware implementation, the trained parameters (weights and biases) of the CNN model were exported to a structured format so that it could be easily loaded into the C implementation.
 The following Python code was used to extract and store the parameters:
 
 \begin{lstlisting}[language=Python]
-weights = {}
-total_params = 0
-for name, param in model.to("cpu").named_parameters():
-    weights[name] = param.detach().numpy()
-    layer_params = param.numel()
-    total_params += layer_params
-    print(f"{name}: {param.shape}, Total Parameters: {layer_params}")
-
-print(f"Total Parameters in the model: {total_params}")
+with open('./convnet_weights.txt', 'w') as f:
+    for name, weight in weights.items():
+        f.write(f"// {name}, shape: {weight.shape}\n")
+        
+        if weight.ndim == 4:  # Convolutional weights: [out_channels, in_channels, kernel_height, kernel_width]
+            for oc, w_slice in enumerate(weight):  # Iterate over output channels
+                f.write(f"{{ // Output Channel {oc}\n")
+                for row in w_slice:  # Iterate over rows (flattened kernels)
+                    f.write("  {" + ", ".join(map(str, row.flatten())) + "},\n")
+                f.write("},\n")
+        
+        elif weight.ndim == 2:  # Fully connected layer weights
+            for row in weight:
+                f.write("{" + ", ".join(map(str, row)) + "},\n")
+        
+        elif weight.ndim == 1:  # Biases or 1D weights
+            f.write("{")
+            f.write(", ".join(map(str, weight)) + "},\n")
+    
 \end{lstlisting}
 
-This process ensures the trained model can be effectively utilized in hardware environments, preserving its performance and structure.
-
+This code snippet exports the weights and biases of the ConvNet model to the \texttt{convnet\_weights.txt} file. From it, the weights and biases for each layer can be simply copy-pasted inside the \texttt{ConvNet} structure in the C implementation. 
 
 \subsection{C Implementation}
 The implementation of the Convolutional Neural Network (CNN) model in C is divided into three main files:
@@ -874,67 +874,90 @@ The implementation of the Convolutional Neural Network (CNN) model in C is divid
     \item \texttt{testbench.c}: This file serves as a testbench to verify the network's functionality. It includes functions for reading input data, executing the forward pass, and evaluating the model's output against the expected results.
 \end{itemize}
 
-This modular approach ensures clarity and separation of concerns, allowing for easy modification and testing of individual components. The details of each file are described in the following subsections.
-
+The details of each file are described in the following subsections.
 
 \subsubsection{CNN Structure}
-The Convolutional Neural Network (CNN) structure is implemented in C to match the architecture defined in the PyTorch model. It consists of the following components:
+The Convolutional Neural Network (CNN) structure is implemented in C to match the architecture defined in the PyTorch model. Going into the details, the CNN consists of the following layers and operations:
 
 \begin{itemize}
-    \item \textbf{Convolutional Layer:} This layer performs the convolution operation by sliding a set of filters (or kernels) over the input image to extract spatial features. The implementation uses nested loops to apply the filters, taking into account padding and stride.
-    \item \textbf{ReLU Activation:} The Rectified Linear Unit (ReLU) activation function is applied after the convolutional operation to introduce non-linearity. The ReLU function replaces negative values in the feature map with zeros.
+    \item \textbf{Convolutional Layer:} This layer performs the convolution operation by \textit{sliding} a set of filters (or \textbf{kernels}) over the input image to extract spatial features. The implementation uses nested loops to apply the filters, taking into account padding and stride.
+    \item \textbf{ReLU Activation:} The Rectified Linear Unit (ReLU) activation function is applied after the convolutional operation to introduce non-linearity. The ReLU function replaces negative values in the feature map with zeros, its formulas was already provided in the MLP section.
     \item \textbf{Pooling Layer:} A max-pooling operation reduces the spatial dimensions of the feature map by selecting the maximum value within a kernel-sized region. This layer helps to downsample the feature map and make the model more robust to small spatial variations.
     \item \textbf{Fully Connected Layer:} The fully connected layer takes the flattened output from the pooling layer as input and maps it to the output classes. This is achieved by performing a linear transformation using the preloaded weights and biases.
 \end{itemize}
 
-The CNN structure is defined in the header file \texttt{ConvNet.h}, which outlines the data structures and constants used for the network. The file also declares the \texttt{forward} function responsible for executing the network. Here the ConvNet structure:
+The CNN structure is defined in the header file \texttt{ConvNet.h}, which outlines the data structures and constants used for the network. Here the ConvNet structure:
 
 \begin{lstlisting}[language=C]
 // Structure to represent a convolutional layer
 typedef struct {
     float weights[CONV1_OUTPUT_CHANNELS][INPUT_CHANNELS][3][3]; // Filters of the convolutional layer 
-    float biases[CONV1_OUTPUT_CHANNELS];                        // Biases for the filters
+    float biases[CONV1_OUTPUT_CHANNELS]; // Biases for the filters
 } ConvLayer;
 
 // Structure to represent a fully connected layer
 typedef struct {
     float weights[NUM_CLASSES][FC1_INPUT_SIZE]; // Weights of the fully connected layer
-    float biases[NUM_CLASSES];                 // Biases of the fully connected layer
+    float biases[NUM_CLASSES]; // Biases of the fully connected layer
 } FullyConnectedLayer;
 
 // General structure of the network
 typedef struct {
-    ConvLayer conv1;               // First convolutional layer
-    FullyConnectedLayer fc1;       // Fully connected layer
+    ConvLayer conv1; // First convolutional layer
+    FullyConnectedLayer fc1; // Fully connected layer
 } ConvNet;
 \end{lstlisting}
 
-\subsubsection{Forward Pass}
-The forward pass function propagates an input image through the Convolutional Neural Network (CNN) to generate the class probabilities as output. This involves executing the convolution, activation, pooling, and fully connected layers sequentially.
+As for the MLP implementation, all weights and biases in the CNN are hardcoded and directly integrated into the \texttt{ConvNet.c} file, where they can be found at the top.
 
-The following C code implements the forward pass:
+\subsubsection{Forward Pass}
+The forward pass function propagates an input image through the Convolutional Neural Network (CNN) to generate class probabilities as the output. It sequentially applies operations such as convolution, activation, pooling, and fully connected layers.
+\\\\The following C code implements the forward pass:
 
 \begin{lstlisting}[language=C]
-// Forward pass function
 int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output[NUM_CLASSES]) {
-
+    
     // Convolutional layer output buffer
     float conv_output[CONV1_OUTPUT_CHANNELS][INPUT_HEIGHT][INPUT_WIDTH];
+    
+    // Array partitioning pragmas
+    #pragma HLS ARRAY_PARTITION variable=input complete dim=3
+    #pragma HLS ARRAY_PARTITION variable=convnet.conv1.weights complete dim=1
     #pragma HLS ARRAY_PARTITION variable=conv_output complete dim=1
 
     // Convolutional layer operation
     for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) {
         for (int h = 0; h < INPUT_HEIGHT; h++) {
+            // create a temporary buffer to store the input data
+            float temp_input[5][INPUT_WIDTH+2][INPUT_CHANNELS];  // +2 for padding
+            #pragma HLS ARRAY_PARTITION variable=temp_input complete dim=3
+            
+            // first phase: load the input data into the buffer
+            for (int i = 0; i < 5; i++) {
+                int curr_h = h + i - 2;  // -2 to center the kernel
+                for (int w = 0; w < INPUT_WIDTH+2; w++) {
+                    #pragma HLS PIPELINE II=1
+                    for (int c = 0; c < INPUT_CHANNELS; c++) {
+                        // manage padding uniformly
+                        if (curr_h >= 0 && curr_h < INPUT_HEIGHT && w-1 >= 0 && w-1 < INPUT_WIDTH) {
+                            temp_input[i][w][c] = input[curr_h][w-1][c];
+                        } else {
+                            temp_input[i][w][c] = 0.0f;
+                        }
+                    }
+                }
+            }
+            
+            // second phase: compute the convolution
             for (int w = 0; w < INPUT_WIDTH; w++) {
+                #pragma HLS PIPELINE II=1
                 float sum = convnet.conv1.biases[oc];
+                
+                // compute convolotion using the temp buffer
                 for (int ic = 0; ic < INPUT_CHANNELS; ic++) {
                     for (int kh = 0; kh < 3; kh++) {
                         for (int kw = 0; kw < 3; kw++) {
-                            int ih = h + kh - 1;
-                            int iw = w + kw - 1;
-                            if (ih >= 0 && iw >= 0 && ih < INPUT_HEIGHT && iw < INPUT_WIDTH) {
-                                sum += input[ih][iw][ic] * convnet.conv1.weights[oc][ic][kh][kw];
-                            }
+                            sum += temp_input[kh+1][w+kw][ic] * convnet.conv1.weights[oc][ic][kh][kw];
                         }
                     }
                 }
@@ -945,7 +968,6 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
 
     // MaxPooling layer output buffer
     float pool_output[CONV1_OUTPUT_CHANNELS][INPUT_HEIGHT / POOL_SIZE][INPUT_WIDTH / POOL_SIZE];
-    #pragma HLS ARRAY_PARTITION variable=pool_output complete dim=1
 
     // MaxPooling operation
     for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) {
@@ -957,7 +979,9 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
                         int ih = h * POOL_SIZE + ph;
                         int iw = w * POOL_SIZE + pw;
                         if (ih < INPUT_HEIGHT && iw < INPUT_WIDTH) {
-                            max_val = fmaxf(max_val, conv_output[oc][ih][iw]);
+                            if (conv_output[oc][ih][iw] > max_val) {
+                                max_val = conv_output[oc][ih][iw];
+                            }
                         }
                     }
                 }
@@ -968,7 +992,6 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
 
     // Fully connected layer input buffer
     float fc_input[FC1_INPUT_SIZE];
-    #pragma HLS ARRAY_PARTITION variable=fc_input complete
 
     // Flatten pooling output into 1D array
     int idx = 0;
@@ -983,110 +1006,46 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
     // Fully connected layer computation
     for (int o = 0; o < NUM_CLASSES; o++) {
         float sum = convnet.fc1.biases[o];
+        #pragma HLS PIPELINE II=1
         for (int i = 0; i < FC1_INPUT_SIZE; i++) {
             sum += fc_input[i] * convnet.fc1.weights[o][i];
         }
         output[o] = sum;
     }
-
     return 0; // Success
-}
+}    
 \end{lstlisting}
 
-This implementation uses \texttt{\#pragma HLS ARRAY\_PARTITION} to optimize memory access patterns, enabling efficient synthesis for hardware acceleration.
-As with the MLP implementation, all weights and biases in the CNN are hardcoded and directly integrated into the \texttt{ConvNet.c} file. This approach ensures that the trained parameters from the PyTorch model are seamlessly incorporated into the C-based implementation for efficient execution.\\
+\subsubsection{Considerations on Pragmas and Forward-pass Code}
 
-\textbf{Notes on the Forward Pass C Implementation:}\\
-The forward pass implementation introduces several design features tailored for hardware synthesis and performance optimization. In particular:
+\begin{enumerate}
+    \item \textbf{Array Partitioning (\texttt{\#pragma HLS ARRAY\_PARTITION})}:  
+    The use of the \texttt{ARRAY\_PARTITION} pragma is important for improving parallelism, especially in operations that require concurrent access to multiple data elements. Partitioning arrays into independent variables, as in the case of the input array, convolution weights, and convolution output, allows the design to access different data in parallel without conflicts, improving efficiency. Completing the partition for each dimension of the array means that each element of the array is mapped to a separate hardware resource, enabling simultaneous access to the data.
 
-\begin{itemize}
-    \item The use of a temporary buffer, \texttt{temp\_input}, to manage input data and handle padding. This design centralizes boundary condition management, simplifying the convolution operation by offloading padding logic to the data-loading phase.
-    \item TODO(remove it or update the code above) To perform an HLS-specific optimization, the \texttt{\#pragma HLS PIPELINE II=1} directive is introduced to maximize throughput. Pipelining ensures that new computations can be initiated every clock cycle, reducing latency and enhancing overall performance. These directives are applied at multiple stages, including input loading, convolution, and fully connected computations, to achieve optimal hardware synthesis.
-\end{itemize}
+    \item \textbf{Pipeline (\texttt{\#pragma HLS PIPELINE})}:  
+    The \texttt{PIPELINE} pragma is used to insert pipelining commands, which means operations can begin executing in parallel. The directive \texttt{II=1} reduces the initiation interval to 1 clock cycle, speeding up loop execution and reducing latency.
 
-The forward pass balances modularity and performance through clear separation of computations for each layer and strategic optimizations. Temporary buffers and intermediate storage enhance clarity, while HLS pragmas optimize memory usage and processing speed. These choices ensure that the forward function aligns with the trained PyTorch model while delivering high performance on FPGA hardware.
+    This is particularly useful in loops where the operations are independent, such as in the convolution and max-pooling calculations.
 
+    \item \textbf{Efficiency of Convolution and Max-Pooling Operations}:  
+    Convolution and pooling operations are performed in separate, parallelized loops, utilizing temporary buffers like \texttt{temp\_input} to manage padding and data access. This approach reduces latency and enhances the overall throughput of the design.
 
+    \item \textbf{Memory Efficiency and Buffer Management}:  
+    The use of temporary buffers to store intermediate results, such as \texttt{temp\_input} and \texttt{conv\_output}, is a common strategy to improve the efficiency of operations. However, it's essential to properly manage the buffer sizes to avoid memory conflicts and resource overloads.
+\end{enumerate}
 
 \subsubsection{Testbench}
-The testbench is a critical component for validating the correctness of the CNN implementation in C. It reads input data from a file, processes it through the CNN using the \texttt{forward} function, and verifies the output against the expected label. This ensures that the implementation behaves as expected and aligns with the PyTorch model.
+The testbench reads input data from a file, processes it through the CNN using the \texttt{forward} function, and verifies the output against the expected label. This ensures that the implementation behaves as expected and aligns with the PyTorch model. The testbench performs the following tasks:
 
-The testbench performs the following key tasks:
 \begin{itemize}
-    \item \textbf{Input Loading}: Reads the input image and its corresponding label from a text file (\texttt{input\_image.txt}).
+    \item \textbf{Input Loading}: Reads the input image and its corresponding label from a text file (\texttt{input\_image.txt}), produced by the Jupyter Notebook. This has to be loaded inside the \textit{testbench} section of the Vitis IDE.
     \item \textbf{Forward Pass Execution}: Propagates the input through the CNN to compute class probabilities.
     \item \textbf{Result Validation}: Compares the predicted label with the true label and outputs the result.
 \end{itemize}
 
-The following code demonstrates the implementation of the testbench:
+The following code showcases the implementation of the testbench:
 
 \begin{lstlisting}[language=C]
-#include <stdio.h>
-#include <stdlib.h>
-#include "ConvNet.h"
-
-#define INPUT_FILE_PATH "./input_image.txt"
-#define IMAGE_SIZE (INPUT_HEIGHT * INPUT_WIDTH) // Size of the input image
-
-void read_input_image(const char *file_path, float input[INPUT_HEIGHT][INPUT_WIDTH][1], int *label) {
-    FILE *file = fopen(file_path, "r");
-    if (file == NULL) {
-        perror("Failed to open input file");
-        exit(EXIT_FAILURE);
-    }
-
-    // Read the label
-    if (fscanf(file, "Label: %d\n", label) != 1) {
-        perror("Failed to read label");
-        fclose(file);
-        exit(EXIT_FAILURE);
-    }
-
-    // Read the image values
-    for (int h = 0; h < INPUT_HEIGHT; h++) {
-        char c;
-        while ((c = fgetc(file)) != EOF && (c == ' ' || c == '\n')); // Skip spaces and newlines
-        if (c != '{') {
-            perror("Failed to read opening brace");
-            fclose(file);
-            exit(EXIT_FAILURE);
-        }
-
-        for (int w = 0; w < INPUT_WIDTH; w++) {
-            if (fscanf(file, "%f", &input[h][w][0]) != 1) {
-                printf("Failed to read image value at (%d, %d)\n", h, w);
-                fclose(file);
-                exit(EXIT_FAILURE);
-            }
-
-            if (w < INPUT_WIDTH - 1) {
-                if (fscanf(file, ",") != 0) {
-                    perror("Failed to read comma between values");
-                    fclose(file);
-                    exit(EXIT_FAILURE);
-                }
-            }
-        }
-
-        while ((c = fgetc(file)) != EOF && (c == ' ' || c == '\n' || c == ',')); // Skip spaces and commas
-        if (c != '}') {
-            perror("Failed to read closing brace");
-            fclose(file);
-            exit(EXIT_FAILURE);
-        }
-
-        if (h < INPUT_HEIGHT - 1) {
-            if (fscanf(file, ",") != 0) {
-                perror("Failed to read comma between rows");
-                fclose(file);
-                exit(EXIT_FAILURE);
-            }
-        }
-    }
-
-    fclose(file);
-}
-
 int main() {
     float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS];
     float output[NUM_CLASSES];
@@ -1122,13 +1081,29 @@ int main() {
 }
 \end{lstlisting}
 
-The testbench reads a structured text file containing the input image and its label. It processes the input through the CNN, identifies the predicted label, and compares it with the true label to validate the implementation's correctness.
+Apart from the \texttt{read\_input\_image} (not reported here for brevity) we can see that the code follows the workflow explained above: reads an input image, passes it to the forward function, and then compares the predicted label with the true label. With PyTorch, the model prediction was the following:
 
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{assets/ConvNet/torch-prediction.png}
+        \caption{PyTorch Model Prediction}
+        \label{fig:convnet-torch-prediction}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{assets/ConvNet/vitis-model-prediction.jpg}
+        \caption{Prediction inside Vitis IDE}
+        \label{fig:convnet-vitis-prediction}
+    \end{minipage}
+\end{figure}
+
+As we can see, results are equal to the third decimal digit, which is a good sign that the C implementation is working as expected.
 
 \subsection{Results}
-Text text text
 
+////To be implemented after further clarifications by professor
 
 \end{document}
-
-
