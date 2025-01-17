@@ -14,25 +14,25 @@ void read_input_image(const char *file_path, float input[INPUT_HEIGHT][INPUT_WID
         exit(EXIT_FAILURE);
     }
 
-    // Leggi la label
+    // read label
     if (fscanf(file, "Label: %d\n", label) != 1) {
         perror("Failed to read label");
         fclose(file);
         exit(EXIT_FAILURE);
     }
 
-    // Leggi i valori dell'immagine
+    // read image values
     for (int h = 0; h < INPUT_HEIGHT; h++) {
-        // Leggi la parentesi graffa di apertura
+        // read opening curly brace
         char c;
-        while ((c = fgetc(file)) != EOF && (c == ' ' || c == '\n')); // Salta spazi e newline
+        while ((c = fgetc(file)) != EOF && (c == ' ' || c == '\n')); // skip spaces and newlines
         if (c != '{') {
             perror("Failed to read opening brace");
             fclose(file);
             exit(EXIT_FAILURE);
         }
 
-        // Leggi i valori della riga
+        // read image values
         for (int w = 0; w < INPUT_WIDTH; w++) {
             if (fscanf(file, "%f", &input[h][w][0]) != 1) {
                 printf("Failed to read image value at (%d, %d)\n", h, w);
@@ -40,7 +40,7 @@ void read_input_image(const char *file_path, float input[INPUT_HEIGHT][INPUT_WID
                 exit(EXIT_FAILURE);
             }
 
-            // Leggi la virgola se non è l'ultimo valore
+            // read the comma if it's not the last value
             if (w < INPUT_WIDTH - 1) {
                 if (fscanf(file, ",") != 0) {
                     perror("Failed to read comma between values");
@@ -50,15 +50,15 @@ void read_input_image(const char *file_path, float input[INPUT_HEIGHT][INPUT_WID
             }
         }
 
-        // Leggi la parentesi graffa di chiusura
-        while ((c = fgetc(file)) != EOF && (c == ' ' || c == '\n' || c == ',')); // Salta spazi, newline e virgola
+        // read final curly brace
+        while ((c = fgetc(file)) != EOF && (c == ' ' || c == '\n' || c == ',')); // skip spaces, newlines and commas
         if (c != '}') {
             perror("Failed to read closing brace");
             fclose(file);
             exit(EXIT_FAILURE);
         }
 
-        // Leggi la virgola dopo la parentesi graffa se non è l'ultima riga
+        // read the comma after the curly braces (if it's not the last row)
         if (h < INPUT_HEIGHT - 1) {
             if (fscanf(file, ",") != 0) {
                 perror("Failed to read comma between rows");
@@ -67,7 +67,6 @@ void read_input_image(const char *file_path, float input[INPUT_HEIGHT][INPUT_WID
             }
         }
     }
-
     fclose(file);
 }
 
@@ -90,7 +89,6 @@ int main() {
     //     printf("\n");
     // }
 
-    // TODO : la rete poi ritornerà solo il max. Per ora lo lascio così per debug
     int results = forward(input, output);
 
     if (results != 0) {
@@ -103,7 +101,7 @@ int main() {
         printf("Class %d: %f\n", i, output[i]);
     }
 
-     // Find the class with the highest probability
+     // find the output class
     float max_prob = output[0];
     int predicted_label = 0;
     
