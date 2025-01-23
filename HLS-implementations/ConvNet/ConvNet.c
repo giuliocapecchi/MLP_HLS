@@ -48,21 +48,15 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
     // Convolutional layer output buffer
     float conv_output[CONV1_OUTPUT_CHANNELS][INPUT_HEIGHT][INPUT_WIDTH];
     
-    // Array partitioning pragmas for optimization in hardware (HLS-specific)
-    #pragma HLS ARRAY_PARTITION variable=input complete dim=3
-    #pragma HLS ARRAY_PARTITION variable=convnet.conv1.weights complete dim=1
-    #pragma HLS ARRAY_PARTITION variable=conv_output complete dim=1
-
     // Convolutional layer operation
     // Loop over output channels
-    for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) {
+    convolutional_layer: for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) {
         // Loop over input height
         for (int h = 0; h < INPUT_HEIGHT; h++) {        
 
             // Temporary buffer for input data (with padding)
             // Kernel size is 3x3, so a 5-row buffer is needed
             float temp_input[5][INPUT_WIDTH+2][INPUT_CHANNELS]; 
-            #pragma HLS ARRAY_PARTITION variable=temp_input complete dim=3
             
             // Load the input data into the buffer with padding
             // Load 5 rows of input data
@@ -71,7 +65,6 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
                 int curr_h = h + i - 2;  
                 // Input width with padding
                 for (int w = 0; w < INPUT_WIDTH + 2; w++) { 
-                    #pragma HLS PIPELINE II=1
                     // Loop over input channels
                     for (int c = 0; c < INPUT_CHANNELS; c++) {
                         // Apply zero-padding for boundary conditions
@@ -86,7 +79,6 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
             
             // Perform convolution for the current row of the output
             for (int w = 0; w < INPUT_WIDTH; w++) {
-                #pragma HLS PIPELINE II=1
                 // Initialize with bias value
                 float sum = convnet.conv1.biases[oc]; 
                 
@@ -144,12 +136,13 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
 
     // Fully connected layer input buffer
     float fc_input[FC1_INPUT_SIZE];
+    #pragma HLS ARRAY_PARTITION variable=fc_input complete
 
     // Flatten pooling output into a 1D array
     // Index for flattened array
     int idx = 0; 
     // Loop over output channels
-    for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) { 
+    flatten: for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) { 
         // Loop over pooled height
         for (int h = 0; h < INPUT_HEIGHT / POOL_SIZE; h++) { 
             // Loop over pooled width
@@ -161,7 +154,7 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
 
     // Fully connected layer computation
     // Loop over output classes
-    for (int o = 0; o < NUM_CLASSES; o++) { 
+    fully_connected_loop: for (int o = 0; o < NUM_CLASSES; o++) { 
         // Initialize with bias value
         float sum = convnet.fc1.biases[o]; 
         #pragma HLS PIPELINE II=1
