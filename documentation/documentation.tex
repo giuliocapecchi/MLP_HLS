@@ -98,7 +98,7 @@ To optimize the C implementation for hardware synthesis, specific \textbf{HLS di
     
     \item \textbf{\texttt{HLS PIPELINE}}: This directive breaks a loop or function into multiple stages (pipeline), allowing multiple iterations or operations to execute simultaneously, thereby increasing the design's throughput. It enables the processing of new iterations in every clock cycle (or at specific intervals called \textit{ initiation interval (II)}). The options for this directive include \texttt{II=N} (to specify the interval between iterations, such as 1 clock cycle) and \texttt{rewind} (to automatically restart the loop after completion). It is typically used in loops that process large amounts of data to maximize throughput in repetitive operations.
 
-    \item \textbf{\texttt{More to be added (if used)}}
+    \item \textbf{\texttt{Other Directives Used:}} Several other HLS directives are employed in the implementation to further optimize performance and resource utilization. They will be explained in detail at the points where they appear in the code.
 
 \end{itemize}
 
@@ -920,25 +920,33 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
     // Convolutional layer output buffer
     float conv_output[CONV1_OUTPUT_CHANNELS][INPUT_HEIGHT][INPUT_WIDTH];
     
-    // Array partitioning pragmas
+    // Array partitioning pragmas for optimization in hardware (HLS-specific)
     #pragma HLS ARRAY_PARTITION variable=input complete dim=3
     #pragma HLS ARRAY_PARTITION variable=convnet.conv1.weights complete dim=1
     #pragma HLS ARRAY_PARTITION variable=conv_output complete dim=1
 
     // Convolutional layer operation
+    // Loop over output channels
     for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) {
-        for (int h = 0; h < INPUT_HEIGHT; h++) {
-            // create a temporary buffer to store the input data
-            float temp_input[5][INPUT_WIDTH+2][INPUT_CHANNELS];  // +2 for padding
+        // Loop over input height
+        for (int h = 0; h < INPUT_HEIGHT; h++) {        
+
+            // Temporary buffer for input data (with padding)
+            // Kernel size is 3x3, so a 5-row buffer is needed
+            float temp_input[5][INPUT_WIDTH+2][INPUT_CHANNELS]; 
             #pragma HLS ARRAY_PARTITION variable=temp_input complete dim=3
             
-            // first phase: load the input data into the buffer
-            for (int i = 0; i < 5; i++) {
-                int curr_h = h + i - 2;  // -2 to center the kernel
-                for (int w = 0; w < INPUT_WIDTH+2; w++) {
+            // Load the input data into the buffer with padding
+            // Load 5 rows of input data
+            for (int i = 0; i < 5; i++) { 
+                // Adjust row index for kernel centering (-2 for padding)
+                int curr_h = h + i - 2;  
+                // Input width with padding
+                for (int w = 0; w < INPUT_WIDTH + 2; w++) { 
                     #pragma HLS PIPELINE II=1
+                    // Loop over input channels
                     for (int c = 0; c < INPUT_CHANNELS; c++) {
-                        // manage padding uniformly
+                        // Apply zero-padding for boundary conditions
                         if (curr_h >= 0 && curr_h < INPUT_HEIGHT && w-1 >= 0 && w-1 < INPUT_WIDTH) {
                             temp_input[i][w][c] = input[curr_h][w-1][c];
                         } else {
@@ -948,20 +956,25 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
                 }
             }
             
-            // second phase: compute the convolution
+            // Perform convolution for the current row of the output
             for (int w = 0; w < INPUT_WIDTH; w++) {
                 #pragma HLS PIPELINE II=1
-                float sum = convnet.conv1.biases[oc];
+                // Initialize with bias value
+                float sum = convnet.conv1.biases[oc]; 
                 
-                // compute convolotion using the temp buffer
-                for (int ic = 0; ic < INPUT_CHANNELS; ic++) {
-                    for (int kh = 0; kh < 3; kh++) {
-                        for (int kw = 0; kw < 3; kw++) {
-                            sum += temp_input[kh+1][w+kw][ic] * convnet.conv1.weights[oc][ic][kh][kw];
+                // Convolve the kernel with the input buffer
+                // Loop over input channels
+                for (int ic = 0; ic < INPUT_CHANNELS; ic++) { 
+                    // Kernel height
+                    for (int kh = 0; kh < 3; kh++) {      
+                        // Kernel width    
+                        for (int kw = 0; kw < 3; kw++) {      
+                            sum += temp_input[kh + 1][w + kw][ic] * convnet.conv1.weights[oc][ic][kh][kw];
                         }
                     }
                 }
-                conv_output[oc][h][w] = reLu(sum);
+                // Apply ReLU activation function
+                conv_output[oc][h][w] = reLu(sum); 
             }
         }
     }
@@ -970,22 +983,33 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
     float pool_output[CONV1_OUTPUT_CHANNELS][INPUT_HEIGHT / POOL_SIZE][INPUT_WIDTH / POOL_SIZE];
 
     // MaxPooling operation
-    for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) {
-        for (int h = 0; h < INPUT_HEIGHT / POOL_SIZE; h++) {
-            for (int w = 0; w < INPUT_WIDTH / POOL_SIZE; w++) {
-                float max_val = -1e9;
-                for (int ph = 0; ph < POOL_SIZE; ph++) {
-                    for (int pw = 0; pw < POOL_SIZE; pw++) {
-                        int ih = h * POOL_SIZE + ph;
-                        int iw = w * POOL_SIZE + pw;
-                        if (ih < INPUT_HEIGHT && iw < INPUT_WIDTH) {
-                            if (conv_output[oc][ih][iw] > max_val) {
+    // Loop over output channels
+    for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) { 
+        // Loop over pooled height
+        for (int h = 0; h < INPUT_HEIGHT / POOL_SIZE; h++) { 
+            // Loop over pooled width
+            for (int w = 0; w < INPUT_WIDTH / POOL_SIZE; w++) { 
+                // Initialize with a very small value
+                float max_val = -1e9; 
+                // Pooling window height
+                for (int ph = 0; ph < POOL_SIZE; ph++) { 
+                    // Pooling window width
+                    for (int pw = 0; pw < POOL_SIZE; pw++) { 
+                        // Calculate input height index
+                        int ih = h * POOL_SIZE + ph; 
+                        // Calculate input width index
+                        int iw = w * POOL_SIZE + pw; 
+                        // Ensure within bounds
+                        if (ih < INPUT_HEIGHT && iw < INPUT_WIDTH) { 
+                            // Find max value in window
+                            if (conv_output[oc][ih][iw] > max_val) { 
                                 max_val = conv_output[oc][ih][iw];
                             }
                         }
                     }
                 }
-                pool_output[oc][h][w] = max_val;
+                // Store max value in pooled output
+                pool_output[oc][h][w] = max_val; 
             }
         }
     }
@@ -993,27 +1017,37 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
     // Fully connected layer input buffer
     float fc_input[FC1_INPUT_SIZE];
 
-    // Flatten pooling output into 1D array
-    int idx = 0;
-    for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) {
-        for (int h = 0; h < INPUT_HEIGHT / POOL_SIZE; h++) {
-            for (int w = 0; w < INPUT_WIDTH / POOL_SIZE; w++) {
+    // Flatten pooling output into a 1D array
+    // Index for flattened array
+    int idx = 0; 
+    // Loop over output channels
+    for (int oc = 0; oc < CONV1_OUTPUT_CHANNELS; oc++) { 
+        // Loop over pooled height
+        for (int h = 0; h < INPUT_HEIGHT / POOL_SIZE; h++) { 
+            // Loop over pooled width
+            for (int w = 0; w < INPUT_WIDTH / POOL_SIZE; w++) { 
                 fc_input[idx++] = pool_output[oc][h][w];
             }
         }
     }
 
     // Fully connected layer computation
-    for (int o = 0; o < NUM_CLASSES; o++) {
-        float sum = convnet.fc1.biases[o];
+    // Loop over output classes
+    for (int o = 0; o < NUM_CLASSES; o++) { 
+        // Initialize with bias value
+        float sum = convnet.fc1.biases[o]; 
         #pragma HLS PIPELINE II=1
-        for (int i = 0; i < FC1_INPUT_SIZE; i++) {
-            sum += fc_input[i] * convnet.fc1.weights[o][i];
+        // Loop over flattened input
+        for (int i = 0; i < FC1_INPUT_SIZE; i++) { 
+            // Weighted sum of inputs
+            sum += fc_input[i] * convnet.fc1.weights[o][i]; 
         }
-        output[o] = sum;
+        // Store the computed class score
+        output[o] = sum; 
     }
     return 0; // Success
-}    
+}
+       
 \end{lstlisting}
 
 \subsubsection{Considerations on Pragmas and Forward-pass Code}
