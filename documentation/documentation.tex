@@ -874,7 +874,15 @@ The implementation of the Convolutional Neural Network (CNN) model in C is divid
     \item \texttt{testbench.c}: This file serves as a testbench to verify the network's functionality. It includes functions for reading input data, executing the forward pass, and evaluating the model's output against the expected results.
 \end{itemize}
 
-The details of each file are described in the following subsections.
+The details of each file are described in the following subsections. The device used in this case was the \texttt{xczu15eg-ffvc900-3-e}, from the \textit{Zynq UltraScale+} family.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{./assets/ConvNet/device-used.png}
+    \caption{Perfomance and Resource Estimates in the C-Synthesis Report}
+    \label{fig:convent-device}
+\end{figure}
+
 
 \subsubsection{CNN Structure}
 The Convolutional Neural Network (CNN) structure is implemented in C to match the architecture defined in the PyTorch model. Going into the details, the CNN consists of the following layers and operations:
@@ -1169,7 +1177,7 @@ The estimated clock period is 7.103 ns, which is below the target of 10.00 ns, a
     \label{fig:convnet-c-synthesis-performance-resources}
 \end{figure}
 
-From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 23,221 cycles, corresponding to an execution time of approximately 232,210 ns under the target clock frequency of 100 MHz (10 ns per cycle). The initiation interval (II) for the \texttt{forward\_Pipeline\_fully\_connected\_loop} is reported as 11 cycles, indicating a moderate level of pipelining. The fully connected layer within this module shows a latency of 2,366 cycles, with substantial usage of DSPs (2,895), flip-flops (266,776), and LUTs (208,584). Similarly, the convolutional layer demonstrates a high latency of 19,665 cycles.
+From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 23,221 cycles, corresponding to an execution time of approximately 232,210 ns under the target clock frequency of 100 MHz (10 ns per cycle). The initiation interval (II) for the \texttt{forward\_Pipeline\_fully\_connected\_loop} is reported as 11 cycles, indicating a moderate level of pipelining. The fully connected layer within this module shows a latency of 2,366 cycles, with usage of DSPs (2,895), flip-flops (266,776), and LUTs (208,584). Similarly, the convolutional layer demonstrates a latency of 19,665 cycles.
 
 
 \begin{figure}[H]
