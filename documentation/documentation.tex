@@ -489,7 +489,7 @@ As we can see from the table, the estimated latency is 6.329 ns, with an uncerta
     \label{fig:c-synthesis-performance-resources}
 \end{figure}
 
-From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 216 cycles, corresponding to an execution time of 2,160 ns under the target clock frequency of 100 MHz (10 ns per cycle). The initiation interval (II) for the main module is reported as 217 cycles, which indicates that the design could benefit from further pipelining to optimize parallel execution and reduce the interval. Examining the resource utilization, the design employs:
+From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 216 cycles, corresponding to an execution time of (TODO: riguarda) 2,160 ns under the target clock frequency of 100 MHz (10 ns per cycle). The initiation interval (II) for the main module is reported as 217 cycles, which indicates that the design could benefit from further pipelining to optimize parallel execution and reduce the interval. Examining the resource utilization, the design employs:
 \begin{itemize}
     \item \textbf{9,689 Look-Up Tables (LUTs)}, which corresponds to approximately 67.3\% of the total 14,400 LUTs available on the \texttt{xc7z007s-clg225-2}.
     \item \textbf{7,417 Flip-Flops (FFs)}, utilizing 25.7\% of the total 28,800 FFs available.
@@ -1169,6 +1169,42 @@ The estimated clock period is 7.103 ns, which is below the target of 10.00 ns, a
     \label{fig:convnet-c-synthesis-performance-resources}
 \end{figure}
 
+From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 23,221 cycles, corresponding to an execution time of approximately 232,210 ns under the target clock frequency of 100 MHz (10 ns per cycle). The initiation interval (II) for the \texttt{forward\_Pipeline\_fully\_connected\_loop} is reported as 11 cycles, indicating a moderate level of pipelining. The fully connected layer within this module shows a latency of 2,366 cycles, with substantial usage of DSPs (2,895), flip-flops (266,776), and LUTs (208,584). Similarly, the convolutional layer demonstrates a high latency of 19,665 cycles.
+
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{./assets/ConvNet/c-synthesis-HWinterfaces.png}
+        \caption{Hardware interfaces}
+        \label{fig:convnet-c-synthesis-hw-interfaces}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{./assets/ConvNet/c-synthesis-validpragmasyntax.png}
+        \caption{Pragma syntax}
+        \label{fig:convnet-c-synthesis-pragma-syntax}
+    \end{minipage}
+\end{figure}
+
+
+\paragraph{C/RTL Simulation}
+
+\paragraph{Observations and Suggestions}
+
+\paragraph{Packaging}
+
+\paragraph{Implementation}
+
+\subsubsection{Fail Fast Analysis}
+
+\paragraph{Criteria Evaluated:}
+
+\paragraph{Results:}
+
+\paragraph{Observations and Recommendations:}
 
 
 \end{document}
