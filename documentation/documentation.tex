@@ -482,12 +482,6 @@ Here, we can see the results of the synthesis of the MLP forward pass on the FPG
 
 As we can see from the table, the estimated latency is 6.329 ns, with an uncertainty of 2.70 ns. This metric provides an initial indication of the design's performance, with lower values indicating faster execution. The uncertainty value represents the range within which the actual latency is expected to fall, providing a margin of error for the estimation. This falls within the expected range for the MLP forward pass, indicating that the design should be good for efficient execution.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\textwidth]{./assets/MLP/c-synthesis-performanceandresourceestimaes.png}
-    \caption{Perfomance and Resource Estimates in the C-Synthesis Report}
-    \label{fig:c-synthesis-performance-resources}
-\end{figure}
 
 From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 216 cycles, corresponding to an execution time of (TODO: riguarda) 2,160 ns under the target clock frequency of 100 MHz (10 ns per cycle). The initiation interval (II) for the main module is reported as 217 cycles, which indicates that the design could benefit from further pipelining to optimize parallel execution and reduce the interval. Examining the resource utilization, the design employs:
 \begin{itemize}
@@ -1177,8 +1171,8 @@ The estimated clock period is 7.103 ns, which is below the target of 10.00 ns, a
     \label{fig:convnet-c-synthesis-performance-resources}
 \end{figure}
 
-From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 23,221 cycles, corresponding to an execution time of approximately 232,210 ns under the target clock frequency of 100 MHz (10 ns per cycle). The initiation interval (II) for the \texttt{forward\_Pipeline\_fully\_connected\_loop} is reported as 11 cycles, indicating a moderate level of pipelining. The fully connected layer within this module shows a latency of 2,366 cycles, with usage of DSPs (2,895), flip-flops (266,776), and LUTs (208,584). Similarly, the convolutional layer demonstrates a latency of 19,665 cycles.
-
+From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 23,221 cycles, corresponding to an execution time of approximately 232,210 ns under the target clock frequency of 100 MHz (10 ns per cycle). The initiation interval (II) for the \texttt{forward\_Pipeline\_fully\_connected\_loop} is reported as 11 cycles, indicating a moderate level of pipelining. This means that tge loop can start a new iteration every 11 cycles. The fully connected layer within this module shows a latency of 2,366 cycles, with usage of DSPs (2,895), flip-flops (266,776), and LUTs (208,584). Similarly, the convolutional layer demonstrates a latency of 19,665 cycles.
+\\\\As we did for the MLP, let's also check from the report that the hardware interface corresponds to the input and output of the forward pass function, and that the utilized pragma syntax is correct.
 
 \begin{figure}[H]
     \centering
@@ -1192,7 +1186,7 @@ From the above image, we observe that the \texttt{forward} module exhibits an ov
     \begin{minipage}{0.49\textwidth}
         \centering
         \includegraphics[width=1\textwidth]{./assets/ConvNet/c-synthesis-validpragmasyntax.png}
-        \caption{Pragma syntax}
+        \caption{Valid Pragma Softwareyntax}
         \label{fig:convnet-c-synthesis-pragma-syntax}
     \end{minipage}
 \end{figure}
