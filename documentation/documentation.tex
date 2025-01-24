@@ -1193,12 +1193,164 @@ From the above image, we observe that the \texttt{forward} module exhibits an ov
 
 
 \paragraph{C/RTL Simulation}
+The C/RTL simulation was performed to evaluate the performance and resource usage of the ConvNet design implemented for FPGA acceleration. This analysis focuses on key metrics, such as initiation interval (II), latency, and total execution time, to optimize the design's efficiency while maintaining correctness.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{./assets/ConvNet/c-rtl-cosimulation.png}
+    \caption{C/RTL Cosimulation Report - Performance and resource estimates}
+    \label{fig:C-RTL-cosimulation}
+\end{figure}
+
+The image above summarizes the breakdown of the simulation's key loops and modules. Each hierarchical level of the design is analyzed for critical factors affecting the throughput and latency:
+
+\begin{itemize}
+    \item The \texttt{forward} function is the top-level module, with a latency of 22,879 clock cycles and a consistent initiation interval (II) of 1, indicating efficient pipeline execution.
+    \item Submodules within the \texttt{forward} function, such as \texttt{Pipeline\_flatten} and \texttt{Pipeline\_fully\_connected\_loop}, achieve low latency values (592 and 2,364 cycles, respectively) due to effective loop unrolling and partitioning strategies.
+    \item The \texttt{convolutional\_layer} function exhibits a latency of 19,330 cycles, with an II of 1 for its critical loop. This highlights the successful application of optimization techniques, such as array partitioning, ensuring maximum utilization of processing resources.
+    \item The \texttt{VITIS\_LOOP\_55\_1} loop, part of the convolutional layer, demonstrates a significant latency of 6,443 cycles, as it handles the critical computations of the kernel convolution. This indicates room for further optimization in kernel execution.
+\end{itemize}
+
 
 \paragraph{Observations and Suggestions}
+TODO
 
 \paragraph{Packaging}
+Regarding the Packaging section, there is not much to report, as the Vitis IDE does not generate a detailed report for this stage. However, it can be inferred that the packaging process was completed successfully, ensuring that the ConvNet design is ready for integration into larger FPGA-based systems.
 
 \paragraph{Implementation}
+In this section, we analyze the Place and Route stage of the ConvNet design implementation. This stage provides a detailed report on the physical implementation of the design on the FPGA. 
+
+During the implementation phase of the ConvNet design for FPGA acceleration, two important reports were generated:
+
+\begin{itemize}
+    \item \textbf{Vivado RTL Synthesis Report} (\texttt{hls\_impl\_syn.rpt})
+    \item \textbf{Vivado Place \& Route Report} (\texttt{hls\_impl\_pnr.rpt})
+\end{itemize}
+
+These reports correspond to two critical steps in the FPGA design process: 
+
+\subsection{Vivado RTL Synthesis}
+The synthesis step translates the high-level design into a register-transfer level (RTL) description. This involves:
+\begin{itemize}
+    \item Generating the hardware description in Verilog or VHDL.
+    \item Estimating the resource utilization (LUTs, FFs, DSPs, BRAMs, etc.).
+    \item Providing an initial assessment of the timing performance against the target clock period.
+\end{itemize}
+
+The results of the synthesis step are summarized in the tables below:
+
+\begin{table}[H]
+    \label{tab:resource-utilization-guideline}
+    \begin{tabular}{|l|c|c|c|}
+    \hline
+    \textbf{Criteria}                                                  & \textbf{Guideline} & \textbf{Actual (\%)} & \textbf{Status} \\ \hline
+    LUT                                                               & 70\%               & 52.71\%              & OK              \\ \hline
+    FD                                                                & 50\%               & 36.51\%              & OK              \\ \hline
+    LUTRAM+SRL                                                        & 25\%               & 1.95\%               & OK              \\ \hline
+    CARRY8                                                            & 25\%               & 16.69\%              & OK              \\ \hline
+    MUXF7                                                             & 15\%               & 0.00\%               & OK              \\ \hline
+    LUT Combining                                                     & 20\%               & 27.81\%              & REVIEW          \\ \hline
+    DSP                                                               & 80\%               & 83.33\%              & REVIEW          \\ \hline
+    RAMB/FIFO                                                         & 80\%               & 1.75\%               & OK              \\ \hline
+    URAM                                                              & 80\%               & 0.00\%               & OK              \\ \hline
+    DSP+RAMB+URAM (Avg)                                               & 70\%               & 42.54\%              & OK              \\ \hline
+    BUFGCE* + BUFGCTRL                                                & 24                 & 0                    & OK              \\ \hline
+    DONT\_TOUCH (cells/nets)                                          & 0                  & 0                    & OK              \\ \hline
+    MARK\_DEBUG (nets)                                                & 0                  & 0                    & OK              \\ \hline
+    Control Sets                                                      & 6399               & 3124                 & OK              \\ \hline
+    Average Fanout for modules \textgreater 100k cells               & 4                  & 1.19                 & OK              \\ \hline
+    Max Average Fanout for modules \textgreater 100k cells           & 4                  & 1.19                 & OK              \\ \hline
+    Non-FD high fanout nets \textgreater 10k loads                   & 0                  & 0                    & OK              \\ \hline
+    TIMING-6 (No common primary clock between related clocks)         & 0                  & 0                    & OK              \\ \hline
+    TIMING-7 (No common node between related clocks)                  & 0                  & 0                    & OK              \\ \hline
+    TIMING-8 (No common period between related clocks)                & 0                  & 0                    & OK              \\ \hline
+    TIMING-14 (LUT on the clock tree)                                 & 0                  & 0                    & OK              \\ \hline
+    TIMING-35 (No common node in paths with the same clock)           & 0                  & 0                    & OK              \\ \hline
+    Number of paths above max LUT budgeting (0.250ns)                 & 0                  & 0                    & OK              \\ \hline
+    Number of paths above max Net budgeting (0.177ns)                 & 0                  & 0                    & OK              \\ \hline
+    \end{tabular}
+    \caption{Resource Utilization: RTL Synthesis Fail Fast}
+\end{table}
+
+    
+
+\begin{table}[H]
+    \centering
+    \label{tab:rtl-synthesis-results}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Resource} & \textbf{Utilization} \\
+        \hline
+        LUT & 179,894 \\
+        FF & 249,181 \\
+        DSP & 2,940 \\
+        BRAM & 26 \\
+        URAM & 0 \\
+        SRL & 3,306 \\
+        \hline
+    \end{tabular}
+
+    \vspace{5mm}
+
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Timing Metric} & \textbf{Value} \\
+        \hline
+        Target Clock Period & 10.000 ns \\
+        Post-Synthesis Clock Period & 3.232 ns \\
+        \hline
+    \end{tabular}
+
+    \caption{Vivado RTL Synthesis Resource Summary and Timing}
+\end{table}
+
+The synthesis results indicate that the design fits comfortably within the available resources of the target FPGA. The DSP utilization is relatively high (83.33\%), which might require attention during optimization. The achieved clock period (3.232 ns) is well below the target period (10.000 ns), ensuring sufficient timing slack at this stage.
+
+\subsection{Vivado Place \& Route}
+The place-and-route step maps the synthesized RTL onto the physical resources of the FPGA. This step provides:
+\begin{itemize}
+    \item The final resource utilization after physical implementation.
+    \item The timing analysis considering routing delays.
+    \item A pass/fail evaluation of key design metrics.
+\end{itemize}
+
+The results of the place-and-route step are summarized in Table~\ref{tab:place-route-results}:
+
+\begin{table}[H]
+    \centering
+    \caption{Vivado Place \& Route Resource Summary and Timing}
+    \label{tab:place-route-results}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Resource} & \textbf{Utilization} \\
+        \hline
+        LUT & 150,621 (44.13\%) \\
+        FF & 247,414 (36.25\%) \\
+        DSP & 2,940 (83.33\%) \ [\textbf{Review}]\\
+        BRAM & 26 (1.75\%) \\
+        URAM & 0 (0.00\%) \\
+        SRL & 3,242 (1.84\%) \\
+        \hline
+    \end{tabular}
+
+    \vspace{5mm}
+
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Timing Metric} & \textbf{Value} \\
+        \hline
+        Target Clock Period & 10.000 ns \\
+        Post-Route Clock Period & 9.354 ns \\
+        \hline
+    \end{tabular}
+\end{table}
+
+\textbf{Analysis:} The resource utilization remains within acceptable limits after place-and-route, with slight changes compared to the synthesis stage. The timing was successfully met, with a post-route clock period of 9.354 ns, which is below the target clock period. This indicates that the design is capable of operating at the desired frequency after routing delays are considered.
+
+\textbf{Conclusion:} The implementation phase results confirm that the design fits within the available resources and meets timing requirements. The high DSP utilization (83.33\%) across both stages suggests potential optimization opportunities in future iterations.
+
+
 
 \subsubsection{Fail Fast Analysis}
 
