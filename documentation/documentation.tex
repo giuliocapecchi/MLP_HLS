@@ -135,7 +135,7 @@ The project was loaded into the Vitis Unified IDE to synthesize the \texttt{C} c
 \end{figure}
 
 
-\section{Multi-Layer Perceptron}
+\section{Multi-Layer Perceptron (MLP)}
 Let's analyze the implementation of the forward pass for a Multi-Layer Perceptron. The forward pass for an MLP consists of propagating the input through a series of layers, each followed by an activation function.
 The code for it can be found inside the \texttt{PyTorch} folder, that contains the notebooks used to train the models and export their parameters.
 
@@ -578,18 +578,9 @@ Regarding the \textit{Package} section, there is  not much to be said, since the
 
 Here in this section we can mainly analyze the \textit{RTL synthesis} and the \textit{Place and Route} stages: the first provides a detailed report on the synthesis of the design into Register-Transfer Level (RTL) code, while the latter focuses on the physical implementation of the design on the FPGA.
 Regarding the \textit{RTL synthesis}, the report provides insights into the resource utilization, timing constraints, and design hierarchy. The metrics include the number of Look-Up Tables (LUTs), Flip-Flops (FFs), and Digital Signal Processors (DSPs) used, as well as the critical path delay and maximum frequency. These metrics are crucial for assessing the design's efficiency and performance, guiding further optimization efforts.
-\\\\ From the \textit{Implementation Report} results, the following observations can be made:
+\\\\ 
 
-\begin{itemize}
-    \item \textbf{Resource Utilization:} The design consumes a total of 4,438 LUTs, 5,332 FFs, 50 DSP blocks, 11 BRAMs, and 104 SRLs. Notably, no URAM, latches, or slices are utilized. This indicates an efficient use of FPGA resources without exceeding critical limits.
-    \item \textbf{Timing Constraints:}
-    The required clock period for the design is set to 10.000 ns, corresponding to a target clock frequency of 100 MHz. During the synthesis phase, the achieved clock period is reported as 6.872 ns, which exceeds the performance requirements and indicates that the synthesized design meets the desired constraints. However, after implementation, the achieved clock period is reported as 7.860 ns. While this is slightly higher than the synthesized value, it still satisfies the required 10.000 ns clock period. 
-    
-    The increase in the clock period from synthesis to implementation can be attributed to additional routing delays and resource constraints introduced during placement and routing. These results confirm that the design meets the required timing constraints post-implementation while providing a buffer for further optimizations if needed.
-    
-\end{itemize}
-
-\subsubsection{Fail Fast Analysis}
+\paragraph{Fail Fast Analysis Overview:}
 
 The Fail Fast analysis is a preliminary verification step designed to ensure that the design adheres to fundamental guidelines before proceeding to computationally intensive stages such as placement and routing. This stage evaluates key aspects of the design, including resource utilization and timing constraints, to identify potential bottlenecks early in the development process.
 
@@ -615,53 +606,160 @@ The following columns are analyzed:
     \item \textbf{Timing Constraints:} Verifies whether the design meets the required clock period and ensures no timing violations.
 \end{itemize}
 
-\paragraph{Results:}
-The analysis revealed that all criteria were marked as \texttt{OK}, indicating that the design complies with resource and timing guidelines. A summary of the key metrics is shown in Table~\ref{tab:failfast-results}.
+TODO HERE START
 
-\begin{table}[h]
+\subsubsection{RTL Synthesis and Fail Fast Analysis}
+
+
+\begin{table}[H]
     \centering
-    \begin{tabular}{|c|c|c|c|}
-        \hline
-        \textbf{Criteria} & \textbf{Threshold} & \textbf{Actual} & \textbf{Status} \\
-        \hline
-        LUT Usage         & 14,400             & 3,738           & OK \\
-        Flip-Flop Usage   & 28,800             & 5,364           & OK \\
-        DSP Allocation    & 66                 & 50              & OK \\
-        BRAM Usage        & 50                 & 11              & OK \\
-        \hline
+    \begin{tabular}{|l|c|c|c|}
+    \hline
+    \textbf{Criteria} & \textbf{Guideline (\%)} & \textbf{Actual (\%)} & \textbf{Status} \\ \hline
+    LUT               & 70                      & 30.82               & OK              \\ \hline
+    FD                & 50                      & 18.51               & OK              \\ \hline
+    LUTRAM+SRL        & 25                      & 1.73                & OK              \\ \hline
+    MUXF7             & 15                      & 0.03                & OK              \\ \hline
+    DSP               & 80                      & 75.76               & OK              \\ \hline
+    RAMB/FIFO         & 80                      & 11.00               & OK              \\ \hline
+    DSP+RAMB+URAM (Avg) & 70                    & 43.38               & OK              \\ \hline
+    BUFGCE* + BUFGCTRL & 24                     & 0                   & OK              \\ \hline
+    DONT\_TOUCH (cells/nets) & 0               & 0                   & OK              \\ \hline
+    MARK\_DEBUG (nets) & 0                     & 0                   & OK              \\ \hline
+    Control Sets      & 270                     & 86                  & OK              \\ \hline
+    Average Fanout for modules $>$ 100k cells & 4 & 2.31            & OK              \\ \hline
+    Max Average Fanout for modules $>$ 100k cells & 4 & 0            & OK              \\ \hline
+    Non-FD high fanout nets $>$ 10k loads & 0    & 0                   & OK              \\ \hline
+    TIMING-6 (No common primary clock between related clocks)          & 0                  & 0               & OK              \\ \hline
+    TIMING-7 (No common node between related clocks)                   & 0                  & 0               & OK              \\ \hline
+    TIMING-8 (No common period between related clocks)                 & 0                  & 0               & OK              \\ \hline
+    TIMING-14 (LUT on the clock tree)                                  & 0                  & 0               & OK              \\ \hline
+    TIMING-35 (No common node in paths with the same clock)            & 0                  & 0               & OK              \\ \hline
+    Number of paths above max LUT budgeting (0.250ns)                 & 0                  & 0               & OK              \\ \hline
+    Number of paths above max Net budgeting (0.177ns)                 & 0                  & 0               & OK              \\ \hline
     \end{tabular}
-    \caption{Fail Fast Analysis Results}
-    \label{tab:failfast-results}
+    \caption{\centering Resource Utilization: RTL Synthesis Fail Fast}
+    \label{tab:mlp-failfast-summary}
 \end{table}
 
-\paragraph{Observations and Recommendations:}
-\begin{enumerate}
-    \item \textbf{Resource Utilization:} While all resources are within acceptable thresholds, DSP allocation is relatively high at 75.8\%. Future optimizations could focus on reducing DSP dependency by leveraging LUTs for simpler arithmetic operations.
-    \item \textbf{Timing Constraints:} The achieved clock period of 7.860 ns provides sufficient margin against the required 10.000 ns, demonstrating robust timing compliance.
-    \item \textbf{Critical Loops:} If further optimizations are required, consider reviewing high-latency loops to improve pipeline efficiency and reduce initiation intervals.
-\end{enumerate}
-
-The combination of the \textit{Implementation Report} and \textit{Fail Fast} analysis highlights the robustness of the design, ensuring efficient resource utilization and adherence to timing requirements while avoiding potential pitfalls early in the development process.
-
-
-
-
-\begin{figure}[H]
+\begin{table}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{./assets/MLP/implementation-resourceusagefinaltiming.png}
-    \caption{Resource Usage and Final Timing Report in the RTL Synthesis}
-    \label{fig:rtl-synthesis}
-\end{figure}
+    \label{tab:mlp-resource-timing-results}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Resource} & \textbf{Utilization} \\
+        \hline
+        SLICE & 0 \\
+        LUT & 4,337 \\
+        FF & 5,404 \\
+        DSP & 50 \\
+        BRAM & 11 \\
+        URAM & 0 \\
+        LATCH & 0 \\
+        SRL & 104 \\
+        CLB & 0 \\
+        \hline
+    \end{tabular}
+
+    \vspace{5mm}
+
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Timing Metric} & \textbf{Value} \\
+        \hline
+        Target Clock Period & 10.000 ns \\
+        Post-Synthesis Clock Period & 6.872 ns \\
+        Post-Implementation Clock Period & N/A \\
+        \hline
+    \end{tabular}
+
+    \caption{Vivado RTL Synthesis Resource Summary and Timing}
+    \label{tab:mlp-resource-timing-results}
+\end{table}
+
+\paragraph{Resource Utilization and Timing Analysis:}
+The resource utilization for the RTL synthesis of the MLP forward pass implementation remains well within the acceptable limits, as shown in the provided tables. The LUT, FF, and DSP utilization values demonstrate efficient use of FPGA resources while maintaining a balanced design. The timing analysis confirms that the post-synthesis clock period of 6.872 ns is comfortably below the target clock period of 10.000 ns, ensuring the design's ability to meet performance constraints. However, the post-implementation clock period is not available, which indicates that further analysis during the place-and-route phase is necessary to verify final timing metrics.
+
+\paragraph{Fail Fast Results Analysis:}
+The fail fast analysis for the RTL synthesis phase indicates that all criteria have been met, with no violations reported. Resource utilization such as LUTs, FFs, and DSPs falls below the specified guidelines, ensuring that the design is both efficient and scalable. Additionally, there are no high fanout nets or other timing-related issues, confirming that the design is well-optimized at this stage. The results suggest that the design is ready for the subsequent place-and-route phase with no significant concerns, enabling seamless progression in the FPGA implementation process.
 
 
 
 
-\begin{figure}[H]
+\subsubsection{Place \& Route and Fail Fast Analysis}
+
+\begin{table}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{./assets/MLP/implementation-failfast.png}
-    \caption{Fail Fast Report in the RTL Synthesis}
-    \label{fig:fail-fast}
-\end{figure}
+    \begin{tabular}{|l|c|c|c|}
+    \hline
+    \textbf{Criteria} & \textbf{Guideline (\%)} & \textbf{Actual (\%)} & \textbf{Status} \\ \hline
+    LUT               & 70                      & 25.96               & OK              \\ \hline
+    FD                & 50                      & 18.63               & OK              \\ \hline
+    LUTRAM+SRL        & 25                      & 1.73                & OK              \\ \hline
+    MUXF7             & 15                      & 0.00                & OK              \\ \hline
+    DSP               & 80                      & 75.76               & OK              \\ \hline
+    RAMB/FIFO         & 80                      & 11.00               & OK              \\ \hline
+    DSP+RAMB+URAM (Avg) & 70                    & 43.38               & OK              \\ \hline
+    BUFGCE* + BUFGCTRL & 24                     & 0                   & OK              \\ \hline
+    DONT\_TOUCH (cells/nets) & 0               & 0                   & OK              \\ \hline
+    MARK\_DEBUG (nets) & 0                     & 0                   & OK              \\ \hline
+    Control Sets      & 270                     & 78                  & OK              \\ \hline
+    Average Fanout for modules $>$ 100k cells & 4 & 2.23            & OK              \\ \hline
+    Max Average Fanout for modules $>$ 100k cells & 4 & 0            & OK              \\ \hline
+    Non-FD high fanout nets $>$ 10k loads & 0    & 0                   & OK              \\ \hline
+    TIMING-6 (No common primary clock between related clocks)          & 0                  & 0               & OK              \\ \hline
+    TIMING-7 (No common node between related clocks)                   & 0                  & 0               & OK              \\ \hline
+    TIMING-8 (No common period between related clocks)                 & 0                  & 0               & OK              \\ \hline
+    TIMING-14 (LUT on the clock tree)                                  & 0                  & 0               & OK              \\ \hline
+    TIMING-35 (No common node in paths with the same clock)            & 0                  & 0               & OK              \\ \hline
+    Number of paths above max LUT budgeting (0.350ns)                 & 0                  & 0               & OK              \\ \hline
+    Number of paths above max Net budgeting (0.177ns)                 & 0                  & 0               & OK              \\ \hline
+    \end{tabular}
+    \caption{Resource Utilization: Place \& Route Fail Fast Summary}
+    \label{tab:place-route-failfast-summary}
+\end{table}
+
+\vspace{5mm}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Resource} & \textbf{Utilization} \\ \hline
+        SLICE & 1,518 \\ \hline
+        LUT & 3,738 \\ \hline
+        FF & 5,364 \\ \hline
+        DSP & 50 \\ \hline
+        BRAM & 11 \\ \hline
+        URAM & 0 \\ \hline
+        LATCH & 0 \\ \hline
+        SRL & 104 \\ \hline
+        CLB & 0 \\ \hline
+    \end{tabular}
+
+    \vspace{5mm}
+
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Timing Metric} & \textbf{Value} \\ \hline
+        Target Clock Period & 10.000 ns \\ \hline
+        Post-Synthesis Clock Period & 6.872 ns \\ \hline
+        Post-Implementation Clock Period & 7.860 ns \\ \hline
+    \end{tabular}
+    \caption{Vivado Place \& Route Resource Summary and Timing}
+    \label{tab:place-route-resource-timing}
+\end{table}
+
+\paragraph{Resource Utilization and Timing Analysis:}
+The Place \& Route phase provides a detailed overview of the final resource usage and timing performance. The design consumes 3,738 LUTs, 5,364 FFs, 50 DSP blocks, 11 BRAMs, and 104 SRLs, while not utilizing any URAM, latches, or CLBs. The resource utilization demonstrates efficient use of the FPGA without exceeding critical limits, confirming the robustness of the implementation. 
+
+For timing constraints, the target clock period is set to 10.000 ns, corresponding to a frequency of 100 MHz. During the synthesis stage, the achieved clock period was reported as 6.872 ns. Post-implementation, the clock period increased to 7.860 ns, accounting for additional routing delays and placement complexities. Despite this increase, the design still meets the required constraints, providing a sufficient margin for stable operation. The results confirm that the design is capable of operating within the specified timing requirements post-routing, reflecting an efficient and reliable implementation.
+
+\paragraph{Fail Fast Results Analysis:}
+The Fail Fast analysis for the Place \& Route phase reveals that all criteria are marked as \texttt{OK}, indicating full compliance with resource and timing guidelines. The resource utilization across LUTs, FFs, DSPs, and BRAMs is well-balanced, and the average fanout and control sets remain within acceptable ranges. The achieved clock period of 7.860 ns confirms timing compliance, demonstrating that routing and placement phases were successfully managed to maintain performance integrity.
+
+Notably, the DSP utilization is at 75.8\%, suggesting an opportunity for optimization in future iterations, such as redistributing computational loads across LUTs or exploring alternative arithmetic implementations. The analysis further highlights the effective balance between resource utilization and timing constraints, ensuring a robust design suitable for FPGA acceleration.
+
 
 \newpage
 
@@ -1120,6 +1218,23 @@ int main() {
 
 Apart from the \texttt{read\_input\_image} (not reported here for brevity) we can see that the code follows the workflow explained above: reads an input image, passes it to the forward function, and then compares the predicted label with the true label.
 
+\newpage
+\subsection{Results}
+
+\paragraph{Target Device}
+The implementation of the Convolutional Neural Network forward pass on the FPGA was carried out on the Zynq UltraScale+ MPSoCs platform. The target device selected for this design was \texttt{xczu15eg-ffvc900-3-e}, which is part of the Zynq UltraScale+ family. The package used is \texttt{ffvc900}, with a speed grade of \texttt{-3}, this indicates that the target FPGA device is optimized for high performance, offering the fastest timing characteristics within its family. This makes it suitable for designs requiring high clock frequencies and low-latency operations, such as the convolutional neural network implementation.\\
+
+The device offers the following key resources:
+\begin{itemize}
+    \item \textbf{LUTs:} 341,280
+    \item \textbf{Flip-Flops (FFs):} 682,560
+    \item \textbf{DSP slices:} 3,528
+    \item \textbf{Block RAMs (BRAMs):} 744
+\end{itemize}
+
+This device was chosen for its high resource availability and support for efficient hardware acceleration, making it suitable for the implementation and optimization of the ConvNet design.
+
+
 \subsubsection{Performance Metrics}
 Let's dive into the results obtained inside the Vitis IDE for the simple convolutional neural network. 
 
@@ -1219,7 +1334,7 @@ TODO
 Regarding the Packaging section, there is not much to report, as the Vitis IDE does not generate a detailed report for this stage. However, it can be inferred that the packaging process was completed successfully, ensuring that the ConvNet design is ready for integration into larger FPGA-based systems.
 
 \paragraph{Implementation}
-In this section, we analyze the Place and Route stage of the ConvNet design implementation. This stage provides a detailed report on the physical implementation of the design on the FPGA. 
+In this section, we analyze the RTL Synthesis and the Place and Route stages of the ConvNet design implementation. These steps generate reports providing insights into the resource utilization, timing performance, and critical paths of the design, enabling further optimization and refinement.
 
 During the implementation phase of the ConvNet design for FPGA acceleration, two important reports were generated:
 
@@ -1230,7 +1345,7 @@ During the implementation phase of the ConvNet design for FPGA acceleration, two
 
 These reports correspond to two critical steps in the FPGA design process: 
 
-\subsection{Vivado RTL Synthesis}
+\subsubsection{RTL Synthesis and Fail Fast Analysis}
 The synthesis step translates the high-level design into a register-transfer level (RTL) description. This involves:
 \begin{itemize}
     \item Generating the hardware description in Verilog or VHDL.
@@ -1242,6 +1357,7 @@ The results of the synthesis step are summarized in the tables below:
 
 \begin{table}[H]
     \label{tab:resource-utilization-guideline}
+
     \begin{tabular}{|l|c|c|c|}
     \hline
     \textbf{Criteria}                                                  & \textbf{Guideline} & \textbf{Actual (\%)} & \textbf{Status} \\ \hline
@@ -1305,9 +1421,18 @@ The results of the synthesis step are summarized in the tables below:
     \caption{Vivado RTL Synthesis Resource Summary and Timing}
 \end{table}
 
-The synthesis results indicate that the design fits comfortably within the available resources of the target FPGA. The DSP utilization is relatively high (83.33\%), which might require attention during optimization. The achieved clock period (3.232 ns) is well below the target period (10.000 ns), ensuring sufficient timing slack at this stage.
+The synthesis results indicate that the design fits comfortably within the available resources of the target FPGA, but with the necessary attention on resources with REVIEW status, commented below.  The achieved clock period (3.232 ns) is well below the target period (10.000 ns), ensuring sufficient timing slack at this stage.
 
-\subsection{Vivado Place \& Route}
+\paragraph{Fail Fast Results Analysis:}
+The REVIEW status in the RTL Synthesis report indicates that specific resource usage metrics, such as DSP utilization (83.33\%) and LUT Combining (27.81\%), exceed their recommended thresholds (80\% and 20\%, respectively). While these values do not cause a failure, they suggest potential bottlenecks or inefficiencies that could impact overall design performance, in particular the DSP utilization is relatively high which might require attention during optimization.
+\begin{itemize}
+    \item \textbf{DSP Utilization}: DSP resources are slightly over the recommended guideline. While acceptable for synthesis, it may limit future scalability or integration with additional components.
+    \item \textbf{LUT Combining}: The value exceeding the guideline indicates potential inefficiencies in logic mapping. We should consider that it is less critical than DSP utilization.
+\end{itemize}
+
+So, to determine whether these values are acceptable, we should consider the subsequent Place \& Route (PnR) Report, which provides post-implementation resource usage and timing analysis. If the PnR report will confirm that timing constraints are met and no routing congestion occurs, the design can be considered acceptable despite the REVIEW statuses in the RTL synthesis phase.
+
+\subsubsection{Place \& Route and Fail Fast Analysis}
 The place-and-route step maps the synthesized RTL onto the physical resources of the FPGA. This step provides:
 \begin{itemize}
     \item The final resource utilization after physical implementation.
@@ -1315,22 +1440,53 @@ The place-and-route step maps the synthesized RTL onto the physical resources of
     \item A pass/fail evaluation of key design metrics.
 \end{itemize}
 
-The results of the place-and-route step are summarized in Table~\ref{tab:place-route-results}:
+The results of the place-and-route step are summarized in the tables below:
+
+\begin{table}[H]
+    \label{tab:resource-utilization-guideline}
+    \begin{tabular}{|l|c|c|c|}
+    \hline
+    \textbf{Criteria}                                                  & \textbf{Guideline} & \textbf{Actual (\%)} & \textbf{Status} \\ \hline
+    LUT                                                               & 70\%               & 44.13\%              & OK              \\ \hline
+    FD                                                                & 50\%               & 36.25\%              & OK              \\ \hline
+    LUTRAM+SRL                                                        & 25\%               & 1.84\%               & OK              \\ \hline
+    CARRY8                                                            & 25\%               & 16.69\%              & OK              \\ \hline
+    MUXF7                                                             & 15\%               & 0.00\%               & OK              \\ \hline
+    DSP                                                               & 80\%               & 83.33\%              & REVIEW          \\ \hline
+    RAMB/FIFO                                                         & 80\%               & 1.75\%               & OK              \\ \hline
+    URAM                                                              & 80\%               & 0.00\%               & OK              \\ \hline
+    DSP+RAMB+URAM (Avg)                                               & 70\%               & 42.54\%              & OK              \\ \hline
+    BUFGCE* + BUFGCTRL                                                & 24                 & 0                    & OK              \\ \hline
+    DONT\_TOUCH (cells/nets)                                          & 0                  & 0                    & OK              \\ \hline
+    MARK\_DEBUG (nets)                                                & 0                  & 0                    & OK              \\ \hline
+    Control Sets                                                      & 6399               & 2546                 & OK              \\ \hline
+    Average Fanout for modules \textgreater 100k cells               & 4                  & 0.99                 & OK              \\ \hline
+    Max Average Fanout for modules \textgreater 100k cells           & 4                  & 0.99                 & OK              \\ \hline
+    Non-FD high fanout nets \textgreater 10k loads                   & 0                  & 0                    & OK              \\ \hline
+    TIMING-6 (No common primary clock between related clocks)         & 0                  & 0                    & OK              \\ \hline
+    TIMING-7 (No common node between related clocks)                  & 0                  & 0                    & OK              \\ \hline
+    TIMING-8 (No common period between related clocks)                & 0                  & 0                    & OK              \\ \hline
+    TIMING-14 (LUT on the clock tree)                                 & 0                  & 0                    & OK              \\ \hline
+    TIMING-35 (No common node in paths with the same clock)           & 0                  & 0                    & OK              \\ \hline
+    Number of paths above max LUT budgeting (0.250ns)                 & 0                  & 0                    & OK              \\ \hline
+    Number of paths above max Net budgeting (0.177ns)                 & 0                  & 0                    & OK              \\ \hline
+    \end{tabular}
+    \caption{Resource Utilization: Place \& Route Fail Fast}
+\end{table}
 
 \begin{table}[H]
     \centering
-    \caption{Vivado Place \& Route Resource Summary and Timing}
     \label{tab:place-route-results}
     \begin{tabular}{|l|c|}
         \hline
         \textbf{Resource} & \textbf{Utilization} \\
         \hline
-        LUT & 150,621 (44.13\%) \\
-        FF & 247,414 (36.25\%) \\
-        DSP & 2,940 (83.33\%) \ [\textbf{Review}]\\
-        BRAM & 26 (1.75\%) \\
-        URAM & 0 (0.00\%) \\
-        SRL & 3,242 (1.84\%) \\
+        LUT & 150,621 \\
+        FF & 247,414 \\
+        DSP & 2,940 \\
+        BRAM & 26 \\
+        URAM & 0 \\
+        SRL & 3,242 \\
         \hline
     \end{tabular}
 
@@ -1344,21 +1500,14 @@ The results of the place-and-route step are summarized in Table~\ref{tab:place-r
         Post-Route Clock Period & 9.354 ns \\
         \hline
     \end{tabular}
+    \caption{Vivado Place \& Route Resource Summary and Timing}
 \end{table}
 
-\textbf{Analysis:} The resource utilization remains within acceptable limits after place-and-route, with slight changes compared to the synthesis stage. The timing was successfully met, with a post-route clock period of 9.354 ns, which is below the target clock period. This indicates that the design is capable of operating at the desired frequency after routing delays are considered.
+The resource utilization remains within acceptable limits after place-and-route, with slight changes compared to the synthesis stage. \paragraph{Timing Analysis:} The timing was successfully met, with a post-route clock period of 9.354 ns, which is below the target clock period. This indicates that the design is capable of operating at the desired frequency after routing delays are considered: the previously reported Post-Synthesis Clock Period of 3.232 ns reflects the timing achievable after synthesis, where the design is represented at a higher level of abstraction without considering physical constraints like placement and routing. In contrast, at this point we obtain a clock period of 9.354 ns that accounts for the additional delays introduced by the placement and routing phases, including wire propagation delays and congestion. Despite these variations, both timing values comfortably meet the Target Clock Period of 10.000 ns, ensuring that the design operates reliably within the specified timing constraints.
 
-\textbf{Conclusion:} The implementation phase results confirm that the design fits within the available resources and meets timing requirements. The high DSP utilization (83.33\%) across both stages suggests potential optimization opportunities in future iterations.
+\paragraph{Fail Fast Results Analysis:}
+The implementation phase results confirm that the design fits within the available resources and meets timing requirements. We have to note that the high DSP utilization (83.33\%) across both stages suggests potential optimization opportunities. However, the design is functional and meets the performance criteria, indicating successful implementation for FPGA acceleration.
 
-
-
-\subsubsection{Fail Fast Analysis}
-
-\paragraph{Criteria Evaluated:}
-
-\paragraph{Results:}
-
-\paragraph{Observations and Recommendations:}
-
+\subsubsection{TODO some conclusions}
 
 \end{document}
