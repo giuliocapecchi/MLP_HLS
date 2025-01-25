@@ -534,7 +534,7 @@ C-RTL cosimulation is a verification process that ensures the functional equival
     \centering
     \includegraphics[width=1\textwidth]{./assets/MLP/c-rtl-cosimulation.png}
     \caption{C/RTL Cosimulation Report - Performance and resource estimates}
-    \label{fig:C-RTL-cosimulation}
+    \label{fig:C-RTL-cosimulation-mlp}
 \end{figure}
 
 
@@ -644,7 +644,6 @@ TODO HERE START
 
 \begin{table}[H]
     \centering
-    \label{tab:mlp-resource-timing-results}
     \begin{tabular}{|l|c|}
         \hline
         \textbf{Resource} & \textbf{Utilization} \\
@@ -674,7 +673,6 @@ TODO HERE START
     \end{tabular}
 
     \caption{Vivado RTL Synthesis Resource Summary and Timing}
-    \label{tab:mlp-resource-timing-results}
 \end{table}
 
 \paragraph{Resource Utilization and Timing Analysis:}
@@ -1314,7 +1312,7 @@ The C/RTL simulation was performed to evaluate the performance and resource usag
     \centering
     \includegraphics[width=1\textwidth]{./assets/ConvNet/c-rtl-cosimulation.png}
     \caption{C/RTL Cosimulation Report - Performance and resource estimates}
-    \label{fig:C-RTL-cosimulation}
+    \label{fig:C-RTL-cosimulation-convnet}
 \end{figure}
 
 The image above summarizes the breakdown of the simulation's key loops and modules. Each hierarchical level of the design is analyzed for critical factors affecting the throughput and latency:
@@ -1356,7 +1354,6 @@ The synthesis step translates the high-level design into a register-transfer lev
 The results of the synthesis step are summarized in the tables below:
 
 \begin{table}[H]
-    \label{tab:resource-utilization-guideline}
 
     \begin{tabular}{|l|c|c|c|}
     \hline
@@ -1443,7 +1440,6 @@ The place-and-route step maps the synthesized RTL onto the physical resources of
 The results of the place-and-route step are summarized in the tables below:
 
 \begin{table}[H]
-    \label{tab:resource-utilization-guideline}
     \begin{tabular}{|l|c|c|c|}
     \hline
     \textbf{Criteria}                                                  & \textbf{Guideline} & \textbf{Actual (\%)} & \textbf{Status} \\ \hline
