@@ -6,6 +6,7 @@
 \usepackage{listings}
 \usepackage{tcolorbox} % Required for creating boxes
 \usepackage{float} % Required for controlling the position of images
+\usepackage{hyperref} % Required for URLs and hyperlinks
 
 
 % Code settings
@@ -605,8 +606,6 @@ The following columns are analyzed:
     \item \textbf{DSP Allocation:} Evaluates the usage of DSP slices for arithmetic operations, critical for neural network implementations.
     \item \textbf{Timing Constraints:} Verifies whether the design meets the required clock period and ensures no timing violations.
 \end{itemize}
-
-TODO HERE START
 
 \subsubsection{RTL Synthesis and Fail Fast Analysis}
 
@@ -1504,6 +1503,21 @@ The resource utilization remains within acceptable limits after place-and-route,
 \paragraph{Fail Fast Results Analysis:}
 The implementation phase results confirm that the design fits within the available resources and meets timing requirements. We have to note that the high DSP utilization (83.33\%) across both stages suggests potential optimization opportunities. However, the design is functional and meets the performance criteria, indicating successful implementation for FPGA acceleration.
 
-\subsubsection{TODO some conclusions}
+\newpage
+\section*{Final Remarks}
+
+The implementation and analysis provided in this document are supported by the source code and additional resources available in the GitHub repository. The repository contains the complete project files, including code, configuration scripts, and detailed documentation.
+
+\noindent You can access the GitHub repository at the following link:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.2\textwidth]{assets/github-logo.png}
+    \label{fig:github}
+\end{figure}
+
+\begin{center}
+\textbf{\url{https://github.com/giuliocapecchi/Vitis-HLS}} 
+\end{center}
 
 \end{document}
