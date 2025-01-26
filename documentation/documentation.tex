@@ -1158,22 +1158,28 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
 }
 \end{lstlisting}
 
-\subsubsection{TODO : riguarda : Considerations on Pragmas and Forward-pass Code}
+\subsubsection{Considerations on Pragmas and Forward-pass Code}
 
 \begin{enumerate}
     \item \textbf{Array Partitioning (\texttt{\#pragma HLS ARRAY\_PARTITION})}:  
-    The use of the \texttt{ARRAY\_PARTITION} pragma is important for improving parallelism, especially in operations that require concurrent access to multiple data elements. Partitioning arrays into independent variables, as in the case of the input array, convolution weights, and convolution output, allows the design to access different data in parallel without conflicts, improving efficiency. Completing the partition for each dimension of the array means that each element of the array is mapped to a separate hardware resource, enabling simultaneous access to the data.
+    The use of the \texttt{ARRAY\_PARTITION} pragma is important for improving parallelism, especially in operations that require concurrent access to multiple data elements. Partitioning arrays into independent variables, as in the case of the input array, convolution weights, and convolution output, allows the design to access different data in parallel without conflicts, improving efficiency. Completing the partition for each dimension of the array means that each element of the array is mapped to a separate hardware resource, enabling simultaneous access to the data. In the code, for example, applying \texttt{\#pragma HLS ARRAY\_PARTITION variable=fc\_input complete} within the forward function
+    allows concurrent access to every element during the fully connected layer’s multiply-accumulate loops, thereby avoiding memory
+    bottlenecks and improving overall throughput.
 
     \item \textbf{Pipeline (\texttt{\#pragma HLS PIPELINE})}:  
     The \texttt{PIPELINE} pragma is used to insert pipelining commands, which means operations can begin executing in parallel. The directive \texttt{II=1} reduces the initiation interval to 1 clock cycle, speeding up loop execution and reducing latency.
 
-    This is particularly useful in loops where the operations are independent, such as in the convolution and max-pooling calculations.
+    This is particularly useful in loops where the operations are independent, such as in the convolution and max-pooling calculations. In the code of convolution loop, for instance, using \texttt{\#pragma HLS PIPELINE II=1} ensures that each new iteration can start
+    processing in the next clock cycle, leading to significantly lower latency and higher throughput.
 
-    \item \textbf{Efficiency of Convolution and Max-Pooling Operations}:  
-    Convolution and pooling operations are performed in separate, parallelized loops, utilizing temporary buffers like \texttt{temp\_input} to manage padding and data access. This approach reduces latency and enhances the overall throughput of the design.
 
-    \item \textbf{Memory Efficiency and Buffer Management}:  
-    The use of temporary buffers to store intermediate results, such as \texttt{temp\_input} and \texttt{conv\_output}, is a common strategy to improve the efficiency of operations. However, it's essential to properly manage the buffer sizes to avoid memory conflicts and resource overloads.
+    \item \textbf{Efficiency of Convolution and Max-Pooling}\\
+    Convolution and pooling are kept in separate, parallelizable loops, leveraging local buffers (such as the 3-row \texttt{temp\_input}) to handle padding and data retrieval. By loading only three rows of the input at a time, the design obtains precisely the rows needed by the $3 \times 3$ kernel at each step, improving memory usage and reducing overhead compared to storing extra unused rows. This targeted buffering approach minimizes the data transferred per output row, leading to better latency and throughput when combined with pipelining and partitioning directives.
+
+
+    \item \textbf{Memory Efficiency and Buffer Management}\\
+    Temporary buffers like the 3-row buffer for convolution and the intermediate arrays for outputs help manage partial computations and boundary conditions efficiently. However, it is important to size these buffers to match the actual kernel requirements, avoiding wasted storage and potential resource conflicts. By adopting a 3-row buffer specifically for a $3 \times 3$ kernel, the design loads only the necessary lines, reducing on-chip memory usage and preventing unnecessary data transfers.
+
 \end{enumerate}
 
 \subsubsection{Testbench}
