@@ -1335,11 +1335,12 @@ The C/RTL simulation was performed to evaluate the performance and resource usag
 The image above summarizes the breakdown of the simulation's key loops and modules. Each hierarchical level of the design is analyzed for critical factors affecting the throughput and latency:
 
 \begin{itemize}
-    \item The \texttt{forward} function is the top-level module, with a latency of 22,879 clock cycles and a consistent initiation interval (II) of 1.
-    \item Submodules within the \texttt{forward} function, such as \texttt{Pipeline\_flatten} and \texttt{Pipeline\_fully\_connected\_loop}, achieve low latency values (592 and 2,364 cycles, respectively) due to effective loop unrolling and partitioning strategies.
-    \item The \texttt{convolutional\_layer} function exhibits a latency of 19,330 cycles, with an II of 1 for its critical loop. This highlights the successful application of optimization techniques, such as array partitioning, ensuring maximum utilization of processing resources.
-    \item The \texttt{VITIS\_LOOP\_55\_1} loop, part of the convolutional layer, demonstrates a significant latency of 6,443 cycles, as it handles the critical computations of the kernel convolution. This indicates room for further optimization in kernel execution.
+    \item The \texttt{forward} function is the top-level module, with a latency of \textbf{17,839 clock cycles}. This reflects the efficient design of the top-level module.
+    \item Submodules within the \texttt{forward} function, such as \texttt{Pipeline\_flatten} and \texttt{Pipeline\_fully\_connected\_loop}, achieve low latency values (\textbf{592 cycles} and \textbf{2,364 cycles}, respectively) due to effective loop unrolling and partitioning strategies.
+    \item The \texttt{convolutional\_layer} function exhibits a latency of \textbf{14,290 cycles}, showcasing its role as the most computationally intensive module in the hierarchy. This highlights the successful application of optimization techniques, such as array partitioning, ensuring maximum utilization of processing resources.
+    \item The \texttt{VITIS\_LOOP\_55\_1} loop, part of the \texttt{convolutional\_layer}, demonstrates a significant latency of \textbf{4,763 cycles}, as it handles the critical computations of the kernel convolution. This indicates room for further optimization in kernel execution.
 \end{itemize}
+
 
 \paragraph{Packaging}
 Regarding the Packaging section, there is not much to report, as the Vitis IDE does not generate a detailed report for this stage. However, it can be inferred that the packaging process was completed successfully, ensuring that the ConvNet design is ready for integration into larger FPGA-based systems.
