@@ -2,7 +2,7 @@
 == Vivado Place & Route Results
 ================================================================
 + General Information:
-    * Date:            Fri Jan 24 04:58:05 +0100 2025
+    * Date:            Sun Jan 26 15:46:45 +0100 2025
     * Version:         2024.1 (Build 5069499 on May 21 2024)
     * Project:         forward
     * Solution:        hls (Vivado IP Flow Target)
@@ -33,8 +33,8 @@
 ================================================================
 == Place & Route Resource Summary
 ================================================================
-LUT:              150621
-FF:               247414
+LUT:              150511
+FF:               247406
 DSP:              2940
 BRAM:             26
 URAM:             0
@@ -50,7 +50,7 @@ SRL:              3242
 +----------------+-------------+
 | Target         | 10.000      |
 | Post-Synthesis | 3.232       |
-| Post-Route     | 9.354       |
+| Post-Route     | 9.539       |
 +----------------+-------------+
 
 
@@ -60,7 +60,7 @@ SRL:              3242
 +-----------------------------------------------------------------------------------------+--------+--------+------+------+------+-----+--------+------+---------+----------+--------+
 | Name                                                                                    | LUT    | FF     | DSP  | BRAM | URAM | SRL | Pragma | Impl | Latency | Variable | Source |
 +-----------------------------------------------------------------------------------------+--------+--------+------+------+------+-----+--------+------+---------+----------+--------+
-| inst                                                                                    | 150621 | 247414 | 2940 | 26   |      |     |        |      |         |          |        |
+| inst                                                                                    | 150511 | 247406 | 2940 | 26   |      |     |        |      |         |          |        |
 |   (inst)                                                                                | 18     | 76     |      |      |      |     |        |      |         |          |        |
 |   conv_output_U                                                                         | 3      |        |      | 24   |      |     |        |      |         |          |        |
 |   convnet_conv1_weights_0_0_0_U                                                         | 2      | 2      |      |      |      |     |        |      |         |          |        |
@@ -111,20 +111,20 @@ SRL:              3242
 |     fcmp_32ns_32ns_1_2_no_dsp_1_U72                                                     | 79     | 63     |      |      |      |     |        |      |         |          |        |
 |     fcmp_32ns_32ns_1_2_no_dsp_1_U73                                                     | 77     | 63     |      |      |      |     |        |      |         |          |        |
 |     flow_control_loop_pipe_sequential_init_U                                            | 85     | 2      |      |      |      |     |        |      |         |          |        |
-|   grp_forward_Pipeline_VITIS_LOOP_63_2_VITIS_LOOP_67_3_fu_3811                          | 100    | 60     |      |      |      |     |        |      |         |          |        |
-|     (grp_forward_Pipeline_VITIS_LOOP_63_2_VITIS_LOOP_67_3_fu_3811)                      | 56     | 45     |      |      |      |     |        |      |         |          |        |
-|     flow_control_loop_pipe_sequential_init_U                                            | 22     | 2      |      |      |      |     |        |      |         |          |        |
+|   grp_forward_Pipeline_VITIS_LOOP_63_2_VITIS_LOOP_67_3_fu_3811                          | 101    | 52     |      |      |      |     |        |      |         |          |        |
+|     (grp_forward_Pipeline_VITIS_LOOP_63_2_VITIS_LOOP_67_3_fu_3811)                      | 59     | 37     |      |      |      |     |        |      |         |          |        |
+|     flow_control_loop_pipe_sequential_init_U                                            | 21     | 2      |      |      |      |     |        |      |         |          |        |
 |     mul_5ns_7ns_11_1_1_U2                                                               | 8      |        |      |      |      |     |        |      |         |          |        |
-|     urem_5ns_3ns_2_9_1_U1                                                               | 14     | 13     |      |      |      |     |        |      |         |          |        |
-|   grp_forward_Pipeline_VITIS_LOOP_81_5_fu_3828                                          | 548    | 409    |      |      |      |     |        |      |         |          |        |
-|     (grp_forward_Pipeline_VITIS_LOOP_81_5_fu_3828)                                      | 498    | 407    |      |      |      |     |        |      |         |          |        |
+|     urem_5ns_3ns_2_9_1_U1                                                               | 13     | 13     |      |      |      |     |        |      |         |          |        |
+|   grp_forward_Pipeline_VITIS_LOOP_81_5_fu_3828                                          | 545    | 409    |      |      |      |     |        |      |         |          |        |
+|     (grp_forward_Pipeline_VITIS_LOOP_81_5_fu_3828)                                      | 495    | 407    |      |      |      |     |        |      |         |          |        |
 |     flow_control_loop_pipe_sequential_init_U                                            | 31     | 2      |      |      |      |     |        |      |         |          |        |
 |     mul_5ns_7ns_11_1_1_U35                                                              |        |        |      |      |      |     |        |      |         |          |        |
-|     mul_5ns_7ns_11_1_1_U36                                                              | 21     |        |      |      |      |     |        |      |         |          |        |
+|     mul_5ns_7ns_11_1_1_U36                                                              | 20     |        |      |      |      |     |        |      |         |          |        |
 |   grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853              | 1040   | 18906  |      |      |      |     |        |      |         |          |        |
 |     (grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853)          | 1034   | 18904  |      |      |      |     |        |      |         |          |        |
 |     flow_control_loop_pipe_sequential_init_U                                            | 6      | 2      |      |      |      |     |        |      |         |          |        |
-|   grp_forward_Pipeline_fully_connected_loop_fu_4446                                     | 146262 | 224673 | 2895 |      |      |     |        |      |         |          |        |
+|   grp_forward_Pipeline_fully_connected_loop_fu_4446                                     | 146155 | 224673 | 2895 |      |      |     |        |      |         |          |        |
 |     (grp_forward_Pipeline_fully_connected_loop_fu_4446)                                 | 3435   | 32435  |      |      |      |     |        |      |         |          |        |
 |     convnet_fc1_biases_U                                                                | 21     | 27     |      |      |      |     |        |      |         |          |        |
 |     convnet_fc1_weights_0_U                                                             | 10     | 24     |      |      |      |     |        |      |         |          |        |
@@ -294,7 +294,7 @@ SRL:              3242
 |     convnet_fc1_weights_248_U                                                           | 14     | 27     |      |      |      |     |        |      |         |          |        |
 |     convnet_fc1_weights_249_U                                                           | 14     | 26     |      |      |      |     |        |      |         |          |        |
 |     convnet_fc1_weights_24_U                                                            | 14     | 27     |      |      |      |     |        |      |         |          |        |
-|     convnet_fc1_weights_250_U                                                           | 14     | 27     |      |      |      |     |        |      |         |          |        |
+|     convnet_fc1_weights_250_U                                                           | 13     | 27     |      |      |      |     |        |      |         |          |        |
 |     convnet_fc1_weights_251_U                                                           | 14     | 28     |      |      |      |     |        |      |         |          |        |
 |     convnet_fc1_weights_252_U                                                           | 13     | 26     |      |      |      |     |        |      |         |          |        |
 |     convnet_fc1_weights_253_U                                                           | 13     | 26     |      |      |      |     |        |      |         |          |        |
@@ -729,29 +729,29 @@ SRL:              3242
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1011                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1012                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1013                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1014                                                | 190    | 199    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1015                                                | 178    | 199    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1016                                                | 200    | 199    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1017                                                | 174    | 231    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1014                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1015                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1016                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1017                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1018                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1019                                                | 179    | 231    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1019                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1020                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1021                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1022                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1023                                                | 175    | 231    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1024                                                | 210    | 231    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1023                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1024                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1025                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1026                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1027                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1028                                                | 180    | 231    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1029                                                | 176    | 199    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1028                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1029                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1030                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1031                                                | 175    | 231    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1031                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1032                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1033                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1034                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1035                                                | 176    | 199    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1036                                                | 174    | 231    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1035                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1036                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1037                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1038                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1039                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
@@ -764,7 +764,7 @@ SRL:              3242
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1046                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1047                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1048                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1049                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1049                                                | 174    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1050                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1051                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1052                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
@@ -799,7 +799,7 @@ SRL:              3242
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1081                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1082                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1083                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1084                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1084                                                | 172    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1085                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1086                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1087                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
@@ -879,14 +879,14 @@ SRL:              3242
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1161                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1162                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1163                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1164                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1164                                                | 172    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1165                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1166                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1167                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1168                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1169                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1170                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U1171                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U1171                                                | 174    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1172                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1173                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1174                                                | 173    | 231    | 2    |      |      |     |        |      |         |          |        |
@@ -970,7 +970,7 @@ SRL:              3242
 |     fadd_32ns_32ns_32_4_full_dsp_1_U1252                                                | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U674                                                 | 173    | 167    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U675                                                 | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
-|     fadd_32ns_32ns_32_4_full_dsp_1_U676                                                 | 172    | 199    | 2    |      |      |     |        |      |         |          |        |
+|     fadd_32ns_32ns_32_4_full_dsp_1_U676                                                 | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U677                                                 | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U678                                                 | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U679                                                 | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
@@ -1294,7 +1294,7 @@ SRL:              3242
 |     fadd_32ns_32ns_32_4_full_dsp_1_U997                                                 | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U998                                                 | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
 |     fadd_32ns_32ns_32_4_full_dsp_1_U999                                                 | 173    | 199    | 2    |      |      |     |        |      |         |          |        |
-|     flow_control_loop_pipe_sequential_init_U                                            | 43     | 2      |      |      |      |     |        |      |         |          |        |
+|     flow_control_loop_pipe_sequential_init_U                                            | 42     | 2      |      |      |      |     |        |      |         |          |        |
 |     fmul_32ns_32ns_32_3_max_dsp_1_U1262                                                 | 57     | 92     | 3    |      |      |     |        |      |         |          |        |
 |     fmul_32ns_32ns_32_3_max_dsp_1_U1263                                                 | 57     | 92     | 3    |      |      |     |        |      |         |          |        |
 |     fmul_32ns_32ns_32_3_max_dsp_1_U1264                                                 | 59     | 91     | 3    |      |      |     |        |      |         |          |        |
@@ -1893,7 +1893,7 @@ SRL:              3242
 +-----------------------------------------------------------+-----------+--------+--------+
 | Criteria                                                  | Guideline | Actual | Status |
 +-----------------------------------------------------------+-----------+--------+--------+
-| LUT                                                       | 70%       | 44.13% | OK     |
+| LUT                                                       | 70%       | 44.10% | OK     |
 | FD                                                        | 50%       | 36.25% | OK     |
 | LUTRAM+SRL                                                | 25%       | 1.84%  | OK     |
 | CARRY8                                                    | 25%       | 16.69% | OK     |
@@ -1905,7 +1905,7 @@ SRL:              3242
 | BUFGCE* + BUFGCTRL                                        | 24        | 0      | OK     |
 | DONT_TOUCH (cells/nets)                                   | 0         | 0      | OK     |
 | MARK_DEBUG (nets)                                         | 0         | 0      | OK     |
-| Control Sets                                              | 6399      | 2546   | OK     |
+| Control Sets                                              | 6399      | 2545   | OK     |
 | Average Fanout for modules > 100k cells                   | 4         | 0.99   | OK     |
 | Max Average Fanout for modules > 100k cells               | 4         | 0.99   | OK     |
 | Non-FD high fanout nets > 10k loads                       | 0         | 0      | OK     |
@@ -1929,86 +1929,86 @@ SRL:              3242
 | Path  | SLACK | STARTPOINT PIN                         | ENDPOINT PIN                                                                                         | LOGIC LEVELS | MAX FANOUT | DATAPATH DELAY | DATAPATH LOGIC | DATAPATH NET |
 |       |       |                                        |                                                                                                      |              |            |                |          DELAY |        DELAY |
 +-------+-------+----------------------------------------+------------------------------------------------------------------------------------------------------+--------------+------------+----------------+----------------+--------------+
-| Path1 | 0.646 | pool_output_U/ram_reg_bram_0/CLKARDCLK | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_507_fu_4424_reg[30]/D |            0 |        588 |          9.292 |          0.748 |        8.544 |
-| Path2 | 0.671 | pool_output_U/ram_reg_bram_0/CLKARDCLK | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_381_fu_3920_reg[30]/D |            0 |        588 |          9.266 |          0.748 |        8.518 |
-| Path3 | 0.683 | pool_output_U/ram_reg_bram_0/CLKARDCLK | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_538_fu_4548_reg[28]/D |            0 |        588 |          9.254 |          0.751 |        8.503 |
-| Path4 | 0.688 | pool_output_U/ram_reg_bram_0/CLKARDCLK | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_377_fu_3904_reg[30]/D |            0 |        588 |          9.249 |          0.748 |        8.501 |
-| Path5 | 0.696 | pool_output_U/ram_reg_bram_0/CLKARDCLK | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_446_fu_4180_reg[25]/D |            0 |        588 |          9.242 |          0.773 |        8.469 |
+| Path1 | 0.461 | pool_output_U/ram_reg_bram_0/CLKARDCLK | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_447_fu_4184_reg[9]/D  |            0 |        588 |          9.477 |          0.788 |        8.689 |
+| Path2 | 0.474 | pool_output_U/ram_reg_bram_0/CLKARDCLK | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_448_fu_4188_reg[9]/D  |            0 |        588 |          9.463 |          0.788 |        8.675 |
+| Path3 | 0.475 | pool_output_U/ram_reg_bram_0/CLKARDCLK | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_210_fu_3236_reg[28]/D |            0 |        588 |          9.462 |          0.751 |        8.711 |
+| Path4 | 0.483 | pool_output_U/ram_reg_bram_0/CLKARDCLK | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_546_fu_4580_reg[9]/D  |            0 |        588 |          9.454 |          0.788 |        8.666 |
+| Path5 | 0.515 | pool_output_U/ram_reg_bram_0/CLKARDCLK | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_263_fu_3448_reg[25]/D |            0 |        588 |          9.423 |          0.773 |        8.650 |
 +-------+-------+----------------------------------------+------------------------------------------------------------------------------------------------------+--------------+------------+----------------+----------------+--------------+
 
     +----------------------------------------------------------------------------------------------------+------------------------+
     | Path1 Cells                                                                                        | Primitive Type         |
     +----------------------------------------------------------------------------------------------------+------------------------+
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_507_fu_4424_reg[30] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_447_fu_4184_reg[9]  | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_381_fu_3920_reg[30] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_448_fu_4188_reg[9]  | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_538_fu_4548_reg[28] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_210_fu_3236_reg[28] | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_377_fu_3904_reg[30] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_546_fu_4580_reg[9]  | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_446_fu_4180_reg[25] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_263_fu_3448_reg[25] | REGISTER.SDR.FDRE      |
     +----------------------------------------------------------------------------------------------------+------------------------+
 
     +----------------------------------------------------------------------------------------------------+------------------------+
     | Path2 Cells                                                                                        | Primitive Type         |
     +----------------------------------------------------------------------------------------------------+------------------------+
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_507_fu_4424_reg[30] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_447_fu_4184_reg[9]  | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_381_fu_3920_reg[30] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_448_fu_4188_reg[9]  | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_538_fu_4548_reg[28] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_210_fu_3236_reg[28] | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_377_fu_3904_reg[30] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_546_fu_4580_reg[9]  | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_446_fu_4180_reg[25] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_263_fu_3448_reg[25] | REGISTER.SDR.FDRE      |
     +----------------------------------------------------------------------------------------------------+------------------------+
 
     +----------------------------------------------------------------------------------------------------+------------------------+
     | Path3 Cells                                                                                        | Primitive Type         |
     +----------------------------------------------------------------------------------------------------+------------------------+
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_507_fu_4424_reg[30] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_447_fu_4184_reg[9]  | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_381_fu_3920_reg[30] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_448_fu_4188_reg[9]  | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_538_fu_4548_reg[28] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_210_fu_3236_reg[28] | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_377_fu_3904_reg[30] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_546_fu_4580_reg[9]  | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_446_fu_4180_reg[25] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_263_fu_3448_reg[25] | REGISTER.SDR.FDRE      |
     +----------------------------------------------------------------------------------------------------+------------------------+
 
     +----------------------------------------------------------------------------------------------------+------------------------+
     | Path4 Cells                                                                                        | Primitive Type         |
     +----------------------------------------------------------------------------------------------------+------------------------+
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_507_fu_4424_reg[30] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_447_fu_4184_reg[9]  | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_381_fu_3920_reg[30] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_448_fu_4188_reg[9]  | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_538_fu_4548_reg[28] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_210_fu_3236_reg[28] | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_377_fu_3904_reg[30] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_546_fu_4580_reg[9]  | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_446_fu_4180_reg[25] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_263_fu_3448_reg[25] | REGISTER.SDR.FDRE      |
     +----------------------------------------------------------------------------------------------------+------------------------+
 
     +----------------------------------------------------------------------------------------------------+------------------------+
     | Path5 Cells                                                                                        | Primitive Type         |
     +----------------------------------------------------------------------------------------------------+------------------------+
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_507_fu_4424_reg[30] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_447_fu_4184_reg[9]  | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_381_fu_3920_reg[30] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_448_fu_4188_reg[9]  | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_538_fu_4548_reg[28] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_210_fu_3236_reg[28] | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_377_fu_3904_reg[30] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_546_fu_4580_reg[9]  | REGISTER.SDR.FDRE      |
     | pool_output_U/ram_reg_bram_0                                                                       | BLOCKRAM.BRAM.RAMB36E2 |
-    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_446_fu_4180_reg[25] | REGISTER.SDR.FDRE      |
+    | grp_forward_Pipeline_flatten_VITIS_LOOP_147_14_VITIS_LOOP_149_15_fu_3853/empty_263_fu_3448_reg[25] | REGISTER.SDR.FDRE      |
     +----------------------------------------------------------------------------------------------------+------------------------+
 
 

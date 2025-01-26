@@ -2,7 +2,7 @@
 == Vivado RTL Synthesis Results
 ================================================================
 + General Information:
-    * Date:            Fri Jan 24 04:58:15 +0100 2025
+    * Date:            Sun Jan 26 15:46:51 +0100 2025
     * Version:         2024.1 (Build 5069499 on May 21 2024)
     * Project:         forward
     * Solution:        hls (Vivado IP Flow Target)
@@ -29,8 +29,8 @@
 ================================================================
 == RTL Synthesis Resource Summary
 ================================================================
-LUT:              179894
-FF:               249181
+LUT:              179893
+FF:               249173
 DSP:              2940
 BRAM:             26
 URAM:             0
@@ -55,7 +55,7 @@ SRL:              3306
 +-----------------------------------------------------------------------------------------+--------+--------+------+------+------+-----+--------+------+---------+----------+--------+
 | Name                                                                                    | LUT    | FF     | DSP  | BRAM | URAM | SRL | Pragma | Impl | Latency | Variable | Source |
 +-----------------------------------------------------------------------------------------+--------+--------+------+------+------+-----+--------+------+---------+----------+--------+
-| inst                                                                                    | 179894 | 249181 | 2940 | 26   |      |     |        |      |         |          |        |
+| inst                                                                                    | 179893 | 249173 | 2940 | 26   |      |     |        |      |         |          |        |
 |   (inst)                                                                                | 18     | 76     |      |      |      |     |        |      |         |          |        |
 |   conv_output_U                                                                         | 1      |        |      | 24   |      |     |        |      |         |          |        |
 |   convnet_conv1_weights_0_0_0_U                                                         | 2      | 2      |      |      |      |     |        |      |         |          |        |
@@ -106,13 +106,13 @@ SRL:              3306
 |     fcmp_32ns_32ns_1_2_no_dsp_1_U72                                                     | 79     | 63     |      |      |      |     |        |      |         |          |        |
 |     fcmp_32ns_32ns_1_2_no_dsp_1_U73                                                     | 77     | 63     |      |      |      |     |        |      |         |          |        |
 |     flow_control_loop_pipe_sequential_init_U                                            | 85     | 2      |      |      |      |     |        |      |         |          |        |
-|   grp_forward_Pipeline_VITIS_LOOP_63_2_VITIS_LOOP_67_3_fu_3811                          | 116    | 60     |      |      |      |     |        |      |         |          |        |
-|     (grp_forward_Pipeline_VITIS_LOOP_63_2_VITIS_LOOP_67_3_fu_3811)                      | 72     | 45     |      |      |      |     |        |      |         |          |        |
-|     flow_control_loop_pipe_sequential_init_U                                            | 22     | 2      |      |      |      |     |        |      |         |          |        |
+|   grp_forward_Pipeline_VITIS_LOOP_63_2_VITIS_LOOP_67_3_fu_3811                          | 118    | 52     |      |      |      |     |        |      |         |          |        |
+|     (grp_forward_Pipeline_VITIS_LOOP_63_2_VITIS_LOOP_67_3_fu_3811)                      | 75     | 37     |      |      |      |     |        |      |         |          |        |
+|     flow_control_loop_pipe_sequential_init_U                                            | 21     | 2      |      |      |      |     |        |      |         |          |        |
 |     mul_5ns_7ns_11_1_1_U2                                                               | 8      |        |      |      |      |     |        |      |         |          |        |
 |     urem_5ns_3ns_2_9_1_U1                                                               | 14     | 13     |      |      |      |     |        |      |         |          |        |
-|   grp_forward_Pipeline_VITIS_LOOP_81_5_fu_3828                                          | 618    | 409    |      |      |      |     |        |      |         |          |        |
-|     (grp_forward_Pipeline_VITIS_LOOP_81_5_fu_3828)                                      | 562    | 407    |      |      |      |     |        |      |         |          |        |
+|   grp_forward_Pipeline_VITIS_LOOP_81_5_fu_3828                                          | 615    | 409    |      |      |      |     |        |      |         |          |        |
+|     (grp_forward_Pipeline_VITIS_LOOP_81_5_fu_3828)                                      | 559    | 407    |      |      |      |     |        |      |         |          |        |
 |     flow_control_loop_pipe_sequential_init_U                                            | 32     | 2      |      |      |      |     |        |      |         |          |        |
 |     mul_5ns_7ns_11_1_1_U35                                                              |        |        |      |      |      |     |        |      |         |          |        |
 |     mul_5ns_7ns_11_1_1_U36                                                              | 24     |        |      |      |      |     |        |      |         |          |        |
