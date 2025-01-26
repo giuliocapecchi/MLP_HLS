@@ -483,8 +483,15 @@ Here, we can see the results of the synthesis of the MLP forward pass on the FPG
 
 As we can see from the table, the estimated latency is 6.329 ns, with an uncertainty of 2.70 ns. This metric provides an initial indication of the design's performance, with lower values indicating faster execution. The uncertainty value represents the range within which the actual latency is expected to fall, providing a margin of error for the estimation. This falls within the expected range for the MLP forward pass, indicating that the design should be good for efficient execution.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{./assets/MLP/c-synthesis-performanceandresourceestimaes.png}
+    \caption{Perfomance and Resource Estimates in the C-Synthesis Report}
+    \label{fig:convnet-c-synthesis-performance-resources-mlp}
+\end{figure}
 
-From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 216 cycles, corresponding to an execution time of (TODO: riguarda) 2,160 ns under the target clock frequency of 100 MHz (10 ns per cycle). The initiation interval (II) for the main module is reported as 217 cycles, which indicates that the design could benefit from further pipelining to optimize parallel execution and reduce the interval. Examining the resource utilization, the design employs:
+
+From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 216 cycles, corresponding to an execution time of 2,160 ns under the target clock frequency of 100 MHz (10 ns per cycle). The initiation interval (II) for the main module is reported as 217 cycles, which indicates that the design could benefit from further pipelining to optimize parallel execution and reduce the interval. Examining the resource utilization, the design employs:
 \begin{itemize}
     \item \textbf{9,689 Look-Up Tables (LUTs)}, which corresponds to approximately 67.3\% of the total 14,400 LUTs available on the \texttt{xc7z007s-clg225-2}.
     \item \textbf{7,417 Flip-Flops (FFs)}, utilizing 25.7\% of the total 28,800 FFs available.
@@ -1032,15 +1039,15 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
         // Loop over input height
         for (int h = 0; h < INPUT_HEIGHT; h++) {        
 
-            // Tempo buffer for input data (with padding)
-            // Kernel size is 3x3, so a 5-row buffer is needed
-            float temp_input[5][INPUT_WIDTH+2][INPUT_CHANNELS]; 
+            // Temporary buffer for input data (with padding)
+            // Kernel size is 3x3, with a 3-row buffer
+            float temp_input[3][INPUT_WIDTH+2][INPUT_CHANNELS]; 
             
             // Load the input data into the buffer with padding
-            // Load 5 rows of input data
-            for (int i = 0; i < 5; i++) { 
-                // Adjust row index for kernel centering (-2 for padding)
-                int curr_h = h + i - 2;  
+            // Load 3 rows of input data
+            for (int i = 0; i < 3; i++) { 
+                // Adjust row index for kernel centering
+                int curr_h = h + i - 1;  
                 // Input width with padding
                 for (int w = 0; w < INPUT_WIDTH + 2; w++) { 
                     // Loop over input channels
@@ -1067,7 +1074,7 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
                     for (int kh = 0; kh < 3; kh++) {      
                         // Kernel width    
                         for (int kw = 0; kw < 3; kw++) {      
-                            sum += temp_input[kh + 1][w + kw][ic] * convnet.conv1.weights[oc][ic][kh][kw];
+                            sum += temp_input[kh][w + kw][ic] * convnet.conv1.weights[oc][ic][kh][kw];
                         }
                     }
                 }
@@ -1322,10 +1329,6 @@ The image above summarizes the breakdown of the simulation's key loops and modul
     \item The \texttt{convolutional\_layer} function exhibits a latency of 19,330 cycles, with an II of 1 for its critical loop. This highlights the successful application of optimization techniques, such as array partitioning, ensuring maximum utilization of processing resources.
     \item The \texttt{VITIS\_LOOP\_55\_1} loop, part of the convolutional layer, demonstrates a significant latency of 6,443 cycles, as it handles the critical computations of the kernel convolution. This indicates room for further optimization in kernel execution.
 \end{itemize}
-
-
-\paragraph{Observations and Suggestions}
-TODO
 
 \paragraph{Packaging}
 Regarding the Packaging section, there is not much to report, as the Vitis IDE does not generate a detailed report for this stage. However, it can be inferred that the packaging process was completed successfully, ensuring that the ConvNet design is ready for integration into larger FPGA-based systems.

@@ -55,14 +55,14 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
         for (int h = 0; h < INPUT_HEIGHT; h++) {        
 
             // Temporary buffer for input data (with padding)
-            // Kernel size is 3x3, so a 5-row buffer is needed
-            float temp_input[5][INPUT_WIDTH+2][INPUT_CHANNELS]; 
+            // Kernel size is 3x3, with a 3-row buffer
+            float temp_input[3][INPUT_WIDTH+2][INPUT_CHANNELS]; 
             
             // Load the input data into the buffer with padding
-            // Load 5 rows of input data
-            for (int i = 0; i < 5; i++) { 
-                // Adjust row index for kernel centering (-2 for padding)
-                int curr_h = h + i - 2;  
+            // Load 3 rows of input data
+            for (int i = 0; i < 3; i++) { 
+                // Adjust row index for kernel centering
+                int curr_h = h + i - 1;  
                 // Input width with padding
                 for (int w = 0; w < INPUT_WIDTH + 2; w++) { 
                     // Loop over input channels
@@ -89,7 +89,7 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
                     for (int kh = 0; kh < 3; kh++) {      
                         // Kernel width    
                         for (int kw = 0; kw < 3; kw++) {      
-                            sum += temp_input[kh + 1][w + kw][ic] * convnet.conv1.weights[oc][ic][kh][kw];
+                            sum += temp_input[kh][w + kw][ic] * convnet.conv1.weights[oc][ic][kh][kw];
                         }
                     }
                 }
