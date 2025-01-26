@@ -99,8 +99,6 @@ To optimize the C implementation for hardware synthesis, specific \textbf{HLS di
     
     \item \textbf{\texttt{HLS PIPELINE}}: This directive breaks a loop or function into multiple stages (pipeline), allowing multiple iterations or operations to execute simultaneously, thereby increasing the design's throughput. It enables the processing of new iterations in every clock cycle (or at specific intervals called \textit{ initiation interval (II)}). The options for this directive include \texttt{II=N} (to specify the interval between iterations, such as 1 clock cycle) and \texttt{rewind} (to automatically restart the loop after completion). It is typically used in loops that process large amounts of data to maximize throughput in repetitive operations.
 
-    \item \textbf{\texttt{Other Directives Used:}} Several other HLS directives are employed in the implementation to further optimize performance and resource utilization. They will be explained in detail at the points where they appear in the code.
-
 \end{itemize}
 
 It is important to note that the directives discussed in this section represent only a subset of the directives executed by the HLS compiler during the synthesis process. These directives were explicitly added to address specific warnings and improve the design's performance. They were placed on the exact lines of code where they were required to resolve issues or optimize critical sections of the implementation.
@@ -549,7 +547,7 @@ C-RTL cosimulation is a verification process that ensures the functional equival
 From an analysis of the results from the C/RTL co-simulation and synthesis, we can highlights several key observations and metrics:
 
 \begin{itemize}
-    \item \textbf{Initiation Interval (II):} The initiation interval across all loops in the design remains constant at \textbf{205 cycles}. This uniform II suggests a consistent level of pipelining efficiency across the design. However, it also indicates that certain dependencies or resource constraints may limit further reduction of the II.
+    \item \textbf{Initiation Interval (II):} The initiation interval across all loops in the design remains constant at \textbf{205 cycles}. It indicates that certain dependencies or resource constraints may limit further reduction of the II.
 
     \item \textbf{Loop Latencies:} The latencies for individual loops vary significantly:
     \begin{itemize}
@@ -1337,7 +1335,7 @@ The C/RTL simulation was performed to evaluate the performance and resource usag
 The image above summarizes the breakdown of the simulation's key loops and modules. Each hierarchical level of the design is analyzed for critical factors affecting the throughput and latency:
 
 \begin{itemize}
-    \item The \texttt{forward} function is the top-level module, with a latency of 22,879 clock cycles and a consistent initiation interval (II) of 1, indicating efficient pipeline execution.
+    \item The \texttt{forward} function is the top-level module, with a latency of 22,879 clock cycles and a consistent initiation interval (II) of 1.
     \item Submodules within the \texttt{forward} function, such as \texttt{Pipeline\_flatten} and \texttt{Pipeline\_fully\_connected\_loop}, achieve low latency values (592 and 2,364 cycles, respectively) due to effective loop unrolling and partitioning strategies.
     \item The \texttt{convolutional\_layer} function exhibits a latency of 19,330 cycles, with an II of 1 for its critical loop. This highlights the successful application of optimization techniques, such as array partitioning, ensuring maximum utilization of processing resources.
     \item The \texttt{VITIS\_LOOP\_55\_1} loop, part of the convolutional layer, demonstrates a significant latency of 6,443 cycles, as it handles the critical computations of the kernel convolution. This indicates room for further optimization in kernel execution.
