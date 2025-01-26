@@ -1371,31 +1371,31 @@ The results of the synthesis step are summarized in the tables below:
     \makebox[\linewidth]{
     \begin{tabular}{|l|c|c|c|}
     \hline
-    \textbf{Criteria}                                                  & \textbf{Guideline} & \textbf{Actual (\%)} & \textbf{Status} \\ \hline
-    LUT                                                               & 70\%               & 52.71\%              & OK              \\ \hline
-    FD                                                                & 50\%               & 36.51\%              & OK              \\ \hline
-    LUTRAM+SRL                                                        & 25\%               & 1.95\%               & OK              \\ \hline
-    CARRY8                                                            & 25\%               & 16.69\%              & OK              \\ \hline
-    MUXF7                                                             & 15\%               & 0.00\%               & OK              \\ \hline
-    LUT Combining                                                     & 20\%               & 27.81\%              & REVIEW          \\ \hline
-    DSP                                                               & 80\%               & 83.33\%              & REVIEW          \\ \hline
-    RAMB/FIFO                                                         & 80\%               & 1.75\%               & OK              \\ \hline
-    URAM                                                              & 80\%               & 0.00\%               & OK              \\ \hline
-    DSP+RAMB+URAM (Avg)                                               & 70\%               & 42.54\%              & OK              \\ \hline
-    BUFGCE* + BUFGCTRL                                                & 24                 & 0                    & OK              \\ \hline
-    DONT\_TOUCH (cells/nets)                                          & 0                  & 0                    & OK              \\ \hline
-    MARK\_DEBUG (nets)                                                & 0                  & 0                    & OK              \\ \hline
-    Control Sets                                                      & 6399               & 3124                 & OK              \\ \hline
-    Average Fanout for modules \textgreater 100k cells               & 4                  & 1.19                 & OK              \\ \hline
-    Max Average Fanout for modules \textgreater 100k cells           & 4                  & 1.19                 & OK              \\ \hline
-    Non-FD high fanout nets \textgreater 10k loads                   & 0                  & 0                    & OK              \\ \hline
-    TIMING-6 (No common primary clock between related clocks)         & 0                  & 0                    & OK              \\ \hline
-    TIMING-7 (No common node between related clocks)                  & 0                  & 0                    & OK              \\ \hline
-    TIMING-8 (No common period between related clocks)                & 0                  & 0                    & OK              \\ \hline
-    TIMING-14 (LUT on the clock tree)                                 & 0                  & 0                    & OK              \\ \hline
-    TIMING-35 (No common node in paths with the same clock)           & 0                  & 0                    & OK              \\ \hline
-    Number of paths above max LUT budgeting (0.250ns)                 & 0                  & 0                    & OK              \\ \hline
-    Number of paths above max Net budgeting (0.177ns)                 & 0                  & 0                    & OK              \\ \hline
+    \textbf{Criteria}                                                  & \textbf{Guideline (\%)} & \textbf{Actual (\%)} & \textbf{Status} \\ \hline
+    LUT                                                               & 70                      & 52.71                & OK              \\ \hline
+    FD                                                                & 50                      & 36.51                & OK              \\ \hline
+    LUTRAM+SRL                                                        & 25                      & 1.95                 & OK              \\ \hline
+    CARRY8                                                            & 25                      & 16.69                & OK              \\ \hline
+    MUXF7                                                             & 15                      & 0.00                 & OK              \\ \hline
+    LUT Combining                                                     & 20                      & 27.81                & REVIEW          \\ \hline
+    DSP                                                               & 80                      & 83.33                & REVIEW          \\ \hline
+    RAMB/FIFO                                                         & 80                      & 1.75                 & OK              \\ \hline
+    URAM                                                              & 80                      & 0.00                 & OK              \\ \hline
+    DSP+RAMB+URAM (Avg)                                               & 70                      & 42.54                & OK              \\ \hline
+    BUFGCE* + BUFGCTRL                                                & 24                      & 0                    & OK              \\ \hline
+    DONT\_TOUCH (cells/nets)                                          & 0                       & 0                    & OK              \\ \hline
+    MARK\_DEBUG (nets)                                                & 0                       & 0                    & OK              \\ \hline
+    Control Sets                                                      & 6399                    & 3124                 & OK              \\ \hline
+    Average Fanout for modules \textgreater 100k cells                & 4                       & 1.19                 & OK              \\ \hline
+    Max Average Fanout for modules \textgreater 100k cells            & 4                       & 1.19                 & OK              \\ \hline
+    Non-FD high fanout nets \textgreater 10k loads                    & 0                       & 0                    & OK              \\ \hline
+    TIMING-6 (No common primary clock between related clocks)          & 0                       & 0                    & OK              \\ \hline
+    TIMING-7 (No common node between related clocks)                   & 0                       & 0                    & OK              \\ \hline
+    TIMING-8 (No common period between related clocks)                 & 0                       & 0                    & OK              \\ \hline
+    TIMING-14 (LUT on the clock tree)                                  & 0                       & 0                    & OK              \\ \hline
+    TIMING-35 (No common node in paths with the same clock)            & 0                       & 0                    & OK              \\ \hline
+    Number of paths above max LUT budgeting (0.250ns)                 & 0                       & 0                    & OK              \\ \hline
+    Number of paths above max Net budgeting (0.177ns)                 & 0                       & 0                    & OK              \\ \hline
     \end{tabular}
     }
     \caption{Resource Utilization: RTL Synthesis Fail Fast}
@@ -1410,8 +1410,8 @@ The results of the synthesis step are summarized in the tables below:
         \hline
         \textbf{Resource} & \textbf{Utilization} \\
         \hline
-        LUT & 179,894 \\
-        FF & 249,181 \\
+        LUT & 179,893 \\
+        FF & 249,173 \\
         DSP & 2,940 \\
         BRAM & 26 \\
         URAM & 0 \\
@@ -1458,30 +1458,30 @@ The results of the place-and-route step are summarized in the tables below:
     \makebox[\linewidth]{
     \begin{tabular}{|l|c|c|c|}
     \hline
-    \textbf{Criteria}                                                  & \textbf{Guideline} & \textbf{Actual (\%)} & \textbf{Status} \\ \hline
-    LUT                                                               & 70\%               & 44.13\%              & OK              \\ \hline
-    FD                                                                & 50\%               & 36.25\%              & OK              \\ \hline
-    LUTRAM+SRL                                                        & 25\%               & 1.84\%               & OK              \\ \hline
-    CARRY8                                                            & 25\%               & 16.69\%              & OK              \\ \hline
-    MUXF7                                                             & 15\%               & 0.00\%               & OK              \\ \hline
-    DSP                                                               & 80\%               & 83.33\%              & REVIEW          \\ \hline
-    RAMB/FIFO                                                         & 80\%               & 1.75\%               & OK              \\ \hline
-    URAM                                                              & 80\%               & 0.00\%               & OK              \\ \hline
-    DSP+RAMB+URAM (Avg)                                               & 70\%               & 42.54\%              & OK              \\ \hline
-    BUFGCE* + BUFGCTRL                                                & 24                 & 0                    & OK              \\ \hline
-    DONT\_TOUCH (cells/nets)                                          & 0                  & 0                    & OK              \\ \hline
-    MARK\_DEBUG (nets)                                                & 0                  & 0                    & OK              \\ \hline
-    Control Sets                                                      & 6399               & 2546                 & OK              \\ \hline
-    Average Fanout for modules \textgreater 100k cells               & 4                  & 0.99                 & OK              \\ \hline
-    Max Average Fanout for modules \textgreater 100k cells           & 4                  & 0.99                 & OK              \\ \hline
-    Non-FD high fanout nets \textgreater 10k loads                   & 0                  & 0                    & OK              \\ \hline
-    TIMING-6 (No common primary clock between related clocks)         & 0                  & 0                    & OK              \\ \hline
-    TIMING-7 (No common node between related clocks)                  & 0                  & 0                    & OK              \\ \hline
-    TIMING-8 (No common period between related clocks)                & 0                  & 0                    & OK              \\ \hline
-    TIMING-14 (LUT on the clock tree)                                 & 0                  & 0                    & OK              \\ \hline
-    TIMING-35 (No common node in paths with the same clock)           & 0                  & 0                    & OK              \\ \hline
-    Number of paths above max LUT budgeting (0.250ns)                 & 0                  & 0                    & OK              \\ \hline
-    Number of paths above max Net budgeting (0.177ns)                 & 0                  & 0                    & OK              \\ \hline
+    \textbf{Criteria}                                                  & \textbf{Guideline (\%)} & \textbf{Actual (\%)} & \textbf{Status} \\ \hline
+    LUT                                                               & 70                      & 44.10                & OK              \\ \hline
+    FD                                                                & 50                      & 36.25                & OK              \\ \hline
+    LUTRAM+SRL                                                        & 25                      & 1.84                 & OK              \\ \hline
+    CARRY8                                                            & 25                      & 16.69                & OK              \\ \hline
+    MUXF7                                                             & 15                      & 0.00                 & OK              \\ \hline
+    DSP                                                               & 80                      & 83.33                & REVIEW          \\ \hline
+    RAMB/FIFO                                                         & 80                      & 1.75                 & OK              \\ \hline
+    URAM                                                              & 80                      & 0.00                 & OK              \\ \hline
+    DSP+RAMB+URAM (Avg)                                               & 70                      & 42.54                & OK              \\ \hline
+    BUFGCE* + BUFGCTRL                                                & 24                      & 0                    & OK              \\ \hline
+    DONT\_TOUCH (cells/nets)                                          & 0                       & 0                    & OK              \\ \hline
+    MARK\_DEBUG (nets)                                                & 0                       & 0                    & OK              \\ \hline
+    Control Sets                                                      & 6399                    & 2545                 & OK              \\ \hline
+    Average Fanout for modules \textgreater 100k cells                & 4                       & 0.99                 & OK              \\ \hline
+    Max Average Fanout for modules \textgreater 100k cells            & 4                       & 0.99                 & OK              \\ \hline
+    Non-FD high fanout nets \textgreater 10k loads                    & 0                       & 0                    & OK              \\ \hline
+    TIMING-6 (No common primary clock between related clocks)          & 0                       & 0                    & OK              \\ \hline
+    TIMING-7 (No common node between related clocks)                   & 0                       & 0                    & OK              \\ \hline
+    TIMING-8 (No common period between related clocks)                 & 0                       & 0                    & OK              \\ \hline
+    TIMING-14 (LUT on the clock tree)                                  & 0                       & 0                    & OK              \\ \hline
+    TIMING-35 (No common node in paths with the same clock)            & 0                       & 0                    & OK              \\ \hline
+    Number of paths above max LUT budgeting (0.250ns)                 & 0                       & 0                    & OK              \\ \hline
+    Number of paths above max Net budgeting (0.177ns)                 & 0                       & 0                    & OK              \\ \hline
     \end{tabular}
     }
     \caption{Resource Utilization: Place \& Route Fail Fast}
@@ -1494,8 +1494,8 @@ The results of the place-and-route step are summarized in the tables below:
         \hline
         \textbf{Resource} & \textbf{Utilization} \\
         \hline
-        LUT & 150,621 \\
-        FF & 247,414 \\
+        LUT & 150,511 \\
+        FF & 247,406 \\
         DSP & 2,940 \\
         BRAM & 26 \\
         URAM & 0 \\
@@ -1510,13 +1510,13 @@ The results of the place-and-route step are summarized in the tables below:
         \textbf{Timing Metric} & \textbf{Value} \\
         \hline
         Target Clock Period & 10.000 ns \\
-        Post-Route Clock Period & 9.354 ns \\
+        Post-Route Clock Period & 9.359 ns \\
         \hline
     \end{tabular}
     \caption{Vivado Place \& Route Resource Summary and Timing}
 \end{table}
 
-The resource utilization remains within acceptable limits after place-and-route, with slight changes compared to the synthesis stage. \paragraph{Timing Analysis:} The timing was successfully met, with a post-route clock period of 9.354 ns, which is below the target clock period. This indicates that the design is capable of operating at the desired frequency after routing delays are considered: the previously reported Post-Synthesis Clock Period of 3.232 ns reflects the timing achievable after synthesis, where the design is represented at a higher level of abstraction without considering physical constraints like placement and routing. In contrast, at this point we obtain a clock period of 9.354 ns that accounts for the additional delays introduced by the placement and routing phases, including wire propagation delays and congestion. Despite these variations, both timing values comfortably meet the Target Clock Period of 10.000 ns, ensuring that the design operates reliably within the specified timing constraints.
+The resource utilization remains within acceptable limits after place-and-route, with slight changes compared to the synthesis stage. \paragraph{Timing Analysis:} The timing was successfully met, with a post-route clock period of 9.359 ns, which is below the target clock period. This indicates that the design is capable of operating at the desired frequency after routing delays are considered: the previously reported Post-Synthesis Clock Period of 3.232 ns reflects the timing achievable after synthesis, where the design is represented at a higher level of abstraction without considering physical constraints like placement and routing. In contrast, at this point we obtain a clock period of 9.354 ns that accounts for the additional delays introduced by the placement and routing phases, including wire propagation delays and congestion. Despite these variations, both timing values comfortably meet the Target Clock Period of 10.000 ns, ensuring that the design operates reliably within the specified timing constraints.
 
 \paragraph{Fail Fast Results Analysis:}
 The implementation phase results confirm that the design fits within the available resources and meets timing requirements. We have to note that the high DSP utilization (83.33\%) across both stages suggests potential optimization opportunities. However, the design is functional and meets the performance criteria, indicating successful implementation for FPGA acceleration.
