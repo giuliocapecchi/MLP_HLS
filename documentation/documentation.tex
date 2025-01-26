@@ -616,9 +616,9 @@ The following columns are analyzed:
 
 \subsubsection{RTL Synthesis and Fail Fast Analysis}
 
-
 \begin{table}[H]
     \centering
+    \makebox[\linewidth]{
     \begin{tabular}{|l|c|c|c|}
     \hline
     \textbf{Criteria} & \textbf{Guideline (\%)} & \textbf{Actual (\%)} & \textbf{Status} \\ \hline
@@ -644,6 +644,7 @@ The following columns are analyzed:
     Number of paths above max LUT budgeting (0.250ns)                 & 0                  & 0               & OK              \\ \hline
     Number of paths above max Net budgeting (0.177ns)                 & 0                  & 0               & OK              \\ \hline
     \end{tabular}
+    }
     \caption{\centering Resource Utilization: RTL Synthesis Fail Fast}
     \label{tab:mlp-failfast-summary}
 \end{table}
@@ -694,6 +695,7 @@ The fail fast analysis for the RTL synthesis phase indicates that all criteria h
 
 \begin{table}[H]
     \centering
+    \makebox[\linewidth]{
     \begin{tabular}{|l|c|c|c|}
     \hline
     \textbf{Criteria} & \textbf{Guideline (\%)} & \textbf{Actual (\%)} & \textbf{Status} \\ \hline
@@ -719,6 +721,7 @@ The fail fast analysis for the RTL synthesis phase indicates that all criteria h
     Number of paths above max LUT budgeting (0.350ns)                 & 0                  & 0               & OK              \\ \hline
     Number of paths above max Net budgeting (0.177ns)                 & 0                  & 0               & OK              \\ \hline
     \end{tabular}
+    }
     \caption{Resource Utilization: Place \& Route Fail Fast Summary}
     \label{tab:place-route-failfast-summary}
 \end{table}
@@ -1356,7 +1359,7 @@ The synthesis step translates the high-level design into a register-transfer lev
 The results of the synthesis step are summarized in the tables below:
 
 \begin{table}[H]
-
+    \makebox[\linewidth]{
     \begin{tabular}{|l|c|c|c|}
     \hline
     \textbf{Criteria}                                                  & \textbf{Guideline} & \textbf{Actual (\%)} & \textbf{Status} \\ \hline
@@ -1385,6 +1388,7 @@ The results of the synthesis step are summarized in the tables below:
     Number of paths above max LUT budgeting (0.250ns)                 & 0                  & 0                    & OK              \\ \hline
     Number of paths above max Net budgeting (0.177ns)                 & 0                  & 0                    & OK              \\ \hline
     \end{tabular}
+    }
     \caption{Resource Utilization: RTL Synthesis Fail Fast}
 \end{table}
 
@@ -1442,6 +1446,7 @@ The place-and-route step maps the synthesized RTL onto the physical resources of
 The results of the place-and-route step are summarized in the tables below:
 
 \begin{table}[H]
+    \makebox[\linewidth]{
     \begin{tabular}{|l|c|c|c|}
     \hline
     \textbf{Criteria}                                                  & \textbf{Guideline} & \textbf{Actual (\%)} & \textbf{Status} \\ \hline
@@ -1469,6 +1474,7 @@ The results of the place-and-route step are summarized in the tables below:
     Number of paths above max LUT budgeting (0.250ns)                 & 0                  & 0                    & OK              \\ \hline
     Number of paths above max Net budgeting (0.177ns)                 & 0                  & 0                    & OK              \\ \hline
     \end{tabular}
+    }
     \caption{Resource Utilization: Place \& Route Fail Fast}
 \end{table}
 
