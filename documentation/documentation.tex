@@ -49,7 +49,7 @@
 \newpage
 
 \section{Introduction}
-This project focuses on the synthesis of the forward pass for three types of neural network architectures: a \textbf{Multilayer Perceptron (MLP)}, a \textbf{Convolutional Neural Network (ConvNet)}, and a \textbf{Transformer}, implemented on an FPGA (Field Programmable Gate Array).  To achieve this, the network parameters were first obtained using Python and the \textit{PyTorch} library; these were subsequently hardcoded into \texttt{C} code, enabling the hardware synthesis process.
+This project focuses on the synthesis of the forward pass for two types of neural network architectures: a \textbf{Multilayer Perceptron (MLP)} and a \textbf{Convolutional Neural Network (ConvNet)}, implemented on an FPGA (Field Programmable Gate Array).  To achieve this, the network parameters were first obtained using Python and the \textit{PyTorch} library; these were subsequently hardcoded into \texttt{C} code, enabling the hardware synthesis process.
 
 
 \begin{figure}[H]
@@ -59,7 +59,7 @@ This project focuses on the synthesis of the forward pass for three types of neu
     \label{fig:vitis_hls}
 \end{figure}
 
-\textbf{Vitis Unified Software Platform} is a comprehensive suite designed to accelerate the development of applications on FPGAs, Adaptive SoCs, and ACAPs (Adaptive Compute Acceleration Platforms). By combining high-level software programming techniques with hardware-optimized implementations, Vitis enables developers to write applications in \textit{C}, \textit{C++}, or \textit{OpenCL} while leveraging hardware-specific optimizations for enhanced performance. In this project, Vitis was used to synthesize neural network architectures - MLP, ConvNet, and Transformer - onto an FPGA. Its \textbf{High-Level Synthesis (HLS)} tools allow for rapid prototyping and optimization of the \textit{C} code, ensuring efficient resource utilization, parallelism and low-latency execution. The platform's ability to integrate high-level design, simulation, and hardware synthesis simplifies the workflow, bridging the gap between software and hardware development.
+\textbf{Vitis Unified Software Platform} is a comprehensive suite designed to accelerate the development of applications on FPGAs, Adaptive SoCs, and ACAPs (Adaptive Compute Acceleration Platforms). By combining high-level software programming techniques with hardware-optimized implementations, Vitis enables developers to write applications in \textit{C}, \textit{C++}, or \textit{OpenCL} while leveraging hardware-specific optimizations for enhanced performance. In this project, Vitis was used to synthesize neural network architectures - MLP and ConvNet - onto an FPGA. Its \textbf{High-Level Synthesis (HLS)} tools allow for rapid prototyping and optimization of the \textit{C} code, ensuring efficient resource utilization, parallelism and low-latency execution. The platform's ability to integrate high-level design, simulation, and hardware synthesis simplifies the workflow, bridging the gap between software and hardware development.
 
 
 \section{Project Description}
@@ -1299,7 +1299,11 @@ The estimated clock period is 7.103 ns, which is below the target of 10.00 ns, a
     \label{fig:convnet-c-synthesis-performance-resources}
 \end{figure}
 
-From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of 23,221 cycles, corresponding to an execution time of approximately 232,210 ns under the target clock frequency of 100 MHz (10 ns per cycle). The initiation interval (II) for the \texttt{forward\_Pipeline\_fully\_connected\_loop} is reported as 11 cycles, indicating a moderate level of pipelining. This means that tge loop can start a new iteration every 11 cycles. The fully connected layer within this module shows a latency of 2,366 cycles, with usage of DSPs (2,895), flip-flops (266,776), and LUTs (208,584). Similarly, the convolutional layer demonstrates a latency of 19,665 cycles.
+From the above image, we observe that the \texttt{forward} module exhibits an overall estimated latency of \textbf{18,181 cycles}, corresponding to an execution time of approximately \textbf{182,010 ns} under the target clock frequency of 100 MHz (10 ns per cycle).
+
+The \textbf{initiation interval (II)} for the \texttt{forward\_Pipeline\_fully\_connected\_loop} is reported as \textbf{11 cycles}, indicating a moderate level of pipelining. This implies that the loop can start a new iteration every 11 cycles. The \texttt{fully connected layer} within this module shows a latency of \textbf{2,366 cycles}, with the usage of 2,895 DSPs, 266,776 flip-flops (FFs), and 208,584 lookup tables (LUTs).
+
+Similarly, the \texttt{convolutional layer} demonstrates a latency of \textbf{14,625 cycles}, with an iteration latency of 4,875 cycles and a trip count of 3. This layer makes significant use of BRAMs (26) and DSPs (2,940), as well as 292,026 FFs and 216,165 LUTs, highlighting the resource-intensive nature of this computation.
 \\\\As we did for the MLP, let's also check from the report that the hardware interface corresponds to the input and output of the forward pass function, and that the utilized pragma syntax is correct.
 
 \begin{figure}[H]
