@@ -449,7 +449,7 @@ These stages include:
 
     \item \textbf{Packaging:} After verifying the synthesized hardware, the design is packaged into an IP (Intellectual Property) core. The packaging reports detail the generated IP core's properties, ensuring that it adheres to the FPGA's integration requirements and is ready for system-level implementation.
 
-    \item \textbf{Implementation:} In the final stage, the IP core is placed and routed on the FPGA. Implementation reports include metrics such as timing analysis, power estimates, and resource utilization on the physical FPGA fabric. These reports confirm that the design meets the FPGA's constraints, such as timing closure and power consumption.
+    \item \textbf{Implementation:} In the final stage, the IP core is synthesized then placed and routed on the FPGA. Implementation reports include metrics such as timing analysis, power estimates, and resource utilization on the physical FPGA fabric. These reports confirm that the design meets the FPGA's constraints, such as timing closure and power consumption.
 
 \end{itemize}
 By consulting these reports, the development process is highly transparent: each step ensures the correctness, performance, and compliance with the FPGA's requirements, resulting in an efficient and reliable implementation of the top-function, in this case the forward pass.
@@ -1160,7 +1160,7 @@ int forward(float input[INPUT_HEIGHT][INPUT_WIDTH][INPUT_CHANNELS], float output
 
 \begin{enumerate}
     \item \textbf{Array Partitioning (\texttt{\#pragma HLS ARRAY\_PARTITION})}:  
-    The use of the \texttt{ARRAY\_PARTITION} pragma is important for improving parallelism, especially in operations that require concurrent access to multiple data elements. Partitioning arrays into independent variables, as in the case of the input array, convolution weights, and convolution output, allows the design to access different data in parallel without conflicts, improving efficiency. Completing the partition for each dimension of the array means that each element of the array is mapped to a separate hardware resource, enabling simultaneous access to the data. In the code, for example, applying \texttt{\#pragma HLS ARRAY\_PARTITION variable=fc\_input complete} within the forward function
+    The use of the \texttt{ARRAY\_PARTITION} pragma is important for improving parallelism, especially in operations that require concurrent access to multiple data elements. Partitioning arrays into independent variables allows the design to access different data in parallel without conflicts, improving efficiency. Completing the partition for each dimension of the array means that each element of the array is mapped to a separate hardware resource, enabling simultaneous access to the data. In the code, for example, applying \texttt{\#pragma HLS ARRAY\_PARTITION variable=fc\_input complete} within the forward function
     allows concurrent access to every element during the fully connected layer’s multiply-accumulate loops, thereby avoiding memory
     bottlenecks and improving overall throughput.
 
